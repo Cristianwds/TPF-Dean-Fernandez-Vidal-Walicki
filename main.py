@@ -10,6 +10,10 @@ print("Hola mundo")
 #print(screen_info)
 modo_pantalla= True
 screen= pygame.display.set_mode((variables.ANCHO_VENTANA, variables.LARGO_VENTANA))
+pygame.display.set_caption("Plants vs. Zombies")
+icono= pygame.image.load("buenicono.png")
+pygame.display.set_icon(icono)
+
 run= True
 
 while run:
@@ -23,4 +27,4 @@ while run:
 
 pygame.quit()
 final= time.time()
-print(f"Tiempo transcurrido: {final-inicio}")
+print(f"Tiempo transcurrido: {final-inicio:.2f} segundos")
