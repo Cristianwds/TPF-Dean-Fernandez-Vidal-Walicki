@@ -4,19 +4,23 @@ import variables
 
 inicio= time.time()
 pygame.init()
-print("Hola mundo")
 
-#screen_info= pygame.display.get_desktop_sizes()
-#print(screen_info)
-modo_pantalla= True
-screen= pygame.display.set_mode((variables.ANCHO_VENTANA, variables.LARGO_VENTANA))
+# Definicion de pantalla, título e ícono
+modo_pantalla = True
+screen = pygame.display.set_mode((variables.ANCHO_VENTANA, variables.LARGO_VENTANA))
+
 pygame.display.set_caption("Plants vs. Zombies")
-icono= pygame.image.load("assets//buenicono.png")
+icono = pygame.image.load("assets//icon.png")
 pygame.display.set_icon(icono)
+background = pygame.image.load("assets//map.jpeg").convert()
+background = pygame.transform.scale(background, (1080,720))
 
 run= True
 
 while run:
+
+    screen.blit(background, (0,0)) # Fondo
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run= False
