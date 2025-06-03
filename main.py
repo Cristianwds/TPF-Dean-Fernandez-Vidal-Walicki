@@ -13,7 +13,7 @@ pygame.display.set_caption("Plants vs. Zombies")
 icono = pygame.image.load("assets//icon.png")
 pygame.display.set_icon(icono)
 background = pygame.image.load("assets//map.jpeg").convert()
-background = pygame.transform.scale(background, (1080,720))
+background = pygame.transform.scale(background, (1040,650))
 
 run= True
 
