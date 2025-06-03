@@ -45,3 +45,8 @@ class Proyectil(pygame.sprite.Sprite):
         if self.rect.right > constantes.ANCHO_VENTANA:
             self.kill()
 
+
+def dibujar_grilla(screen, celdas_rects):
+    for fila in celdas_rects:
+        for rect in fila:
+            pygame.draw.rect(screen, (255, 255, 255), rect, 1)  # color blanco, borde de 1 píxel
