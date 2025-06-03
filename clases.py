@@ -1,23 +1,20 @@
 import pygame
 
-class Criaturas():
-    def __init__(self, x, y, imagen):
-        self.forma= pygame.Rect(0,0, 30, 40) #Ultimos dos numeros son ancho y alto
-        self.forma.center= (x, y)
+class Criaturas(pygame.sprite.Sprite):
+    def __init__(self, x, y, imagen, vida):
+        super().__init__()
         self.pos_x= x
         self.pos_y= y
-        self.imagen= imagen
-    def dibujar(self, interfaz):
-        interfaz.blit(self.imagen, self.forma)
+        self.imagen= pygame.image.load(imagen).convert_alpha()
+        self.forma= self.imagen.get_rect(center=[x, y])
+        self.vida= vida
 
 class Enemigos(Criaturas):
-    def __init__(self, x, y, imagen, velocidad):
-        super().__init__(x, y, imagen)
+    def __init__(self, x, y, imagen, vida, velocidad):
+        super().__init__(x, y, imagen, vida)
         self.velocidad= velocidad
-    def get_velocidad(self):
-        return self.velocidad
-    def mod_velocidad(self, num):
-        self.velocidad = num
+    def mod_velocidad(self, nueva_vel):
+        self.velocidad = nueva_vel
     def movimiento(self):
         self.pos_x -= self.velocidad
         self.forma.center = (self.pos_x, self.pos_y)
