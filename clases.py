@@ -1,5 +1,7 @@
 import pygame
+import constantes
 
+velocidad_proyectil= 10
 class Criaturas(pygame.sprite.Sprite):
     def __init__(self, x, y, imagen, vida):
         super().__init__()
@@ -8,6 +10,11 @@ class Criaturas(pygame.sprite.Sprite):
         self.imagen= pygame.image.load(imagen).convert_alpha()
         self.forma= self.imagen.get_rect(center=[x, y])
         self.vida= vida
+    def recibir_daño(self, daño):
+        self.vida -= daño
+        if self.vida <= 0:
+            self.kill()
+
 
 class Enemigos(Criaturas):
     def __init__(self, x, y, imagen, vida, velocidad):
@@ -24,4 +31,18 @@ class Plantas(Criaturas):
         super().__init__(x, y, imagen, vida)
         self.cooldown= cooldown
         self.costo= costo
+
+
+class Proyectil(pygame.sprite.Sprite):
+    def __init__(self, imagen, x, y, daño):
+        super().__init__()
+        self.x= x
+        self.y= y
+        self.imagen= pygame.image.load(imagen).convert_alpha()
+        self.daño= daño
+        self.forma= self.imagen.get_rect(center=[x, y])
+    def update(self):
+        self.rect.x += velocidad_proyectil
+        if self.rect.right > constantes.ANCHO_VENTANA:
+            self.kill()
 
