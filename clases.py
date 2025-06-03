@@ -18,3 +18,10 @@ class Enemigos(Criaturas):
     def movimiento(self):
         self.pos_x -= self.velocidad
         self.forma.center = (self.pos_x, self.pos_y)
+
+class Plantas(Criaturas):
+    def __init__(self, x, y, imagen, vida, cooldown, costo):
+        super().__init__(x, y, imagen, vida)
+        self.cooldown= cooldown
+        self.costo= costo
+
