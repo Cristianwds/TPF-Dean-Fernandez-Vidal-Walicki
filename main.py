@@ -1,13 +1,13 @@
 import pygame
 import time
-import variables
+import constantes
 
 inicio= time.time()
 pygame.init()
 
 # Definicion de pantalla, título e ícono
 modo_pantalla = True
-screen = pygame.display.set_mode((variables.ANCHO_VENTANA, variables.LARGO_VENTANA))
+screen = pygame.display.set_mode((constantes.ANCHO_VENTANA, constantes.LARGO_VENTANA))
 
 pygame.display.set_caption("Plants vs. Zombies")
 icono = pygame.image.load("assets//icon.png")
