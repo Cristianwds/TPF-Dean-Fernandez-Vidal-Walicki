@@ -1,7 +1,6 @@
 import pygame
 import constantes
 
-velocidad_proyectil= 10
 class Criaturas(pygame.sprite.Sprite):
     def __init__(self, x, y, imagen, vida):
         super().__init__()
@@ -42,7 +41,7 @@ class Proyectil(pygame.sprite.Sprite):
         self.daño= daño
         self.forma= self.imagen.get_rect(center=[x, y])
     def update(self):
-        self.rect.x += velocidad_proyectil
+        self.rect.x += constantes.VELOCIDAD_PROYECTIL
         if self.rect.right > constantes.ANCHO_VENTANA:
             self.kill()
 
