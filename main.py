@@ -1,8 +1,10 @@
 import pygame
 import time
 import constantes
+import random
 from clases import *
 from funciones import *
+
 inicio= time.time()
 pygame.init()
 
@@ -26,8 +28,11 @@ cuad = pygame.image.load("assets\\cuadrado.png")
 cuadpos = [constantes.grass_start_x, constantes.grass_start_y]
 
 # Def de personajes
-#zombie_img= pygame.image.load("assets\img_zombie.png")
-nuevo_zombie= Enemigos(constantes.ANCHO_VENTANA, 400, "assets\img_zombie.png", 40, 0.04)
+
+#Genera aleatoriamente la fila en la que aparece el zombie
+pos_aleatoria= random.randint(0, 4)
+pos_zombie= [165, 255, 345, 435, 525]
+nuevo_zombie= Enemigos(constantes.ANCHO_VENTANA, pos_zombie[pos_aleatoria], "assets\img_zombie.png", 40, 0.04)
 nuevo_zombie.add(grupo_zombies)
 #  x, y, imagen, vida, velocidad
 run= True
