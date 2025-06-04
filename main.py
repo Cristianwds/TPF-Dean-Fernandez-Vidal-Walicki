@@ -29,8 +29,8 @@ run= True
 while run:
 
     screen.blit(background, (0,0)) # Fondo
-    screen.blit(cuad, cuadpos)
-    #cl.dibujar_grilla(screen, grilla_rects)#Esta funcion dibuja la grilla, comentar para que no se dibuje
+    #screen.blit(cuad, cuadpos)
+    cl.dibujar_grilla(screen, grilla_rects)#Esta funcion dibuja la grilla, comentar para que no se dibuje
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
