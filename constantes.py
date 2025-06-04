@@ -8,3 +8,5 @@ grass_start_y = 120
 
 celda_alto = 90
 celda_ancho = 78
+
+

@@ -6,29 +6,31 @@ import clases as cl
 inicio= time.time()
 pygame.init()
 
-# Definicion de pantalla, título e ícono
-modo_pantalla = True
+# Definicion de pantalla
 screen = pygame.display.set_mode((constantes.ANCHO_VENTANA, constantes.LARGO_VENTANA))
 
+# Titulo e Ícono
 pygame.display.set_caption("Plants vs. Zombies")
 icono = pygame.image.load("assets//icon.png")
 pygame.display.set_icon(icono)
+
+# Fondo de pantalla del juego
 background = pygame.image.load("assets//map.jpeg").convert()
 background = pygame.transform.scale(background, (constantes.ANCHO_VENTANA, constantes.LARGO_VENTANA))
-
-run= True
-
 
 # Grilla de entidades y grilla de rects.
 grilla_rects = [[pygame.Rect(constantes.grass_start_x + col * constantes.celda_ancho, constantes.grass_start_y + fil *constantes.celda_alto,constantes.celda_ancho, constantes.celda_alto) for col in range(9)] for fil in range(5)] #Grilla[fila][columna]
 grilla_entidades = [[0 for x in range(9)] for y in range(5)]
+fila, columna = 0, 0  # indices para moverse por la matriz
+cuad = pygame.image.load("assets\\cuadrado.png")
+cuadpos = [constantes.grass_start_x, constantes.grass_start_y]
 
-
+run= True
 while run:
 
     screen.blit(background, (0,0)) # Fondo
-
-    cl.dibujar_grilla(screen, grilla_rects)#Esta funcion dibuja la grilla, comentar para que no se dibuje
+    screen.blit(cuad, cuadpos)
+    #cl.dibujar_grilla(screen, grilla_rects)#Esta funcion dibuja la grilla, comentar para que no se dibuje
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -36,6 +38,19 @@ while run:
         elif event.type== pygame.KEYDOWN:
             if event.key== pygame.K_ESCAPE:
                 run= False
+            elif event.key == pygame.K_a:
+                cuadpos[0] -= 78
+                columna -= 1
+            elif event.key == pygame.K_d:
+                cuadpos[0] += 78
+                columna += 1
+            elif event.key == pygame.K_w:
+                cuadpos[1] -= 90
+                fila -= 1
+            elif event.key == pygame.K_s:
+                cuadpos[1] += 90
+                fila += 1
+
         elif event.type == pygame.MOUSEBUTTONDOWN:
             x,y = event.pos
             celdaclick = None
