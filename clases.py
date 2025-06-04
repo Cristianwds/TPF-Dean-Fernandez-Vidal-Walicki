@@ -3,19 +3,19 @@ import constantes
 
 grupo_plantas = pygame.sprite.Group()
 grupo_proyectiles = pygame.sprite.Group()
+grupo_zombies = pygame.sprite.Group()
 class Criaturas(pygame.sprite.Sprite):
     def __init__(self, x, y, imagen, vida):
         super().__init__()
         self.pos_x= x
         self.pos_y= y
-        self.imagen= pygame.image.load(imagen).convert_alpha()
-        self.forma= self.imagen.get_rect(center=[x, y])
+        self.image= pygame.image.load(imagen).convert_alpha()
+        self.rect= self.image.get_rect(center=[self.pos_x, self.pos_y])
         self.vida= vida
     def recibir_daño(self, daño):
         self.vida -= daño
         if self.vida <= 0:
             self.kill()
-
 
 class Enemigos(Criaturas):
     def __init__(self, x, y, imagen, vida, velocidad):
@@ -25,7 +25,7 @@ class Enemigos(Criaturas):
         self.velocidad = nueva_vel
     def movimiento(self):
         self.pos_x -= self.velocidad
-        self.forma.center = (self.pos_x, self.pos_y)
+        self.rect.center = (self.pos_x, self.pos_y)
 
 class Plantas(Criaturas):
     def __init__(self, x, y, imagen, vida, cooldown, costo):
@@ -46,12 +46,12 @@ class lanzaguisantes(Plantas):
         self.cool_time = pygame.time.get_ticks()
         self.ultimo_disparo = pygame.time.get_ticks()
 
-        def update(self):
-            now = pygame.time.get_ticks()
-            if now - self.last_shot >= 1500:
-                self.last_shot = now
-                guisante = Proyectil("imagen bala", self.rect.x, self.rect.y, 20)
-                grupo_proyectiles.add(guisante)
+        # def update(self):
+        #     now = pygame.time.get_ticks()
+        #     if now - self.last_shot >= 1500:
+        #         self.last_shot = now
+        #         guisante = Proyectil("imagen bala", self.rect.x, self.rect.y, 20)
+        #         grupo_proyectiles.add(guisante)
 
 
 class Proyectil(pygame.sprite.Sprite):

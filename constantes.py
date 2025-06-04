@@ -1,7 +1,7 @@
 ANCHO_VENTANA= 1040
 LARGO_VENTANA= 650
 VELOCIDAD_PROYECTIL= 10
-
+BLANCO_TRANSLUCIDO= (255, 255, 255, 255)
 #Para la grilla
 grass_start_x = 322
 grass_start_y = 120

@@ -1,7 +1,7 @@
 import pygame
 import time
 import constantes
-import clases as cl
+from clases import *
 
 inicio= time.time()
 pygame.init()
@@ -25,12 +25,17 @@ fila, columna = 0, 0  # indices para moverse por la matriz
 cuad = pygame.image.load("assets\\cuadrado.png")
 cuadpos = [constantes.grass_start_x, constantes.grass_start_y]
 
+# Def de personajes
+#zombie_img= pygame.image.load("assets\img_zombie.png")
+nuevo_zombie= Enemigos(constantes.ANCHO_VENTANA, 400, "assets\img_zombie.png", 40, 0.04)
+nuevo_zombie.add(grupo_zombies)
+#  x, y, imagen, vida, velocidad
 run= True
 while run:
 
     screen.blit(background, (0,0)) # Fondo
-    #screen.blit(cuad, cuadpos)
-    cl.dibujar_grilla(screen, grilla_rects)#Esta funcion dibuja la grilla, comentar para que no se dibuje
+    screen.blit(cuad, cuadpos)
+    #clases.dibujar_grilla(screen, grilla_rects)#Esta funcion dibuja la grilla, comentar para que no se dibuje
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -63,6 +68,9 @@ while run:
                     break
             if celdaclick:
                 pass # Aca es donde se ponen los ifs para poner la planta seleccionada.
+    grupo_zombies.update()
+    grupo_zombies.draw(screen)
+    nuevo_zombie.movimiento()
     pygame.display.update()
 
 pygame.quit()
