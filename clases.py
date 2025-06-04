@@ -1,6 +1,8 @@
 import pygame
 import constantes
 
+grupo_plantas = pygame.sprite.Group()
+grupo_proyectiles = pygame.sprite.Group()
 class Criaturas(pygame.sprite.Sprite):
     def __init__(self, x, y, imagen, vida):
         super().__init__()
@@ -30,6 +32,26 @@ class Plantas(Criaturas):
         super().__init__(x, y, imagen, vida)
         self.cooldown= cooldown
         self.costo= costo
+    
+class lanzaguisantes(Plantas):
+    def __init__(self, x, y, imagen, vida=300, cooldown=7500, costo=100):
+        super().__init__(x, y, imagen, vida, cooldown, costo)
+        self.costo = costo
+        self.cooldown
+        self.vida = vida
+        self.imagen = pygame.image.load(imagen)
+        self.forma = self.imagen.get_rect()
+        self.pos_x = x
+        self.pos_y = y
+        self.cool_time = pygame.time.get_ticks()
+        self.ultimo_disparo = pygame.time.get_ticks()
+
+        def update(self):
+            now = pygame.time.get_ticks()
+            if now - self.last_shot >= 1500:
+                self.last_shot = now
+                guisante = Proyectil("imagen bala", self.rect.x, self.rect.y, 20)
+                grupo_proyectiles.add(guisante)
 
 
 class Proyectil(pygame.sprite.Sprite):
@@ -40,6 +62,7 @@ class Proyectil(pygame.sprite.Sprite):
         self.imagen= pygame.image.load(imagen).convert_alpha()
         self.daño= daño
         self.forma= self.imagen.get_rect(center=[x, y])
+
     def update(self):
         self.rect.x += constantes.VELOCIDAD_PROYECTIL
         if self.rect.right > constantes.ANCHO_VENTANA:
