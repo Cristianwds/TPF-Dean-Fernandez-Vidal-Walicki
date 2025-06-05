@@ -23,7 +23,7 @@ class Enemigos(Criaturas):
         self.velocidad= velocidad
     def mod_velocidad(self, nueva_vel):
         self.velocidad = nueva_vel
-    def movimiento(self):
+    def update(self):
         self.pos_x -= self.velocidad
         self.rect.center = (self.pos_x, self.pos_y)
 
@@ -39,8 +39,8 @@ class lanzaguisantes(Plantas):
         self.costo = costo
         self.cooldown
         self.vida = vida
-        self.imagen = pygame.image.load(imagen)
-        self.forma = self.imagen.get_rect()
+        self.image = pygame.image.load(imagen)
+        self.rect = self.image.get_rect()
         self.pos_x = x
         self.pos_y = y
         self.cool_time = pygame.time.get_ticks()
@@ -59,9 +59,9 @@ class Proyectil(pygame.sprite.Sprite):
         super().__init__()
         self.x= x
         self.y= y
-        self.imagen= pygame.image.load(imagen).convert_alpha()
+        self.image= pygame.image.load(imagen).convert_alpha()
         self.daño= daño
-        self.forma= self.imagen.get_rect(center=[x, y])
+        self.rect= self.image.get_rect(center=[x, y])
 
     def update(self):
         self.rect.x += constantes.VELOCIDAD_PROYECTIL

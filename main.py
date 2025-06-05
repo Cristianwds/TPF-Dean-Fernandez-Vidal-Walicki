@@ -27,13 +27,13 @@ fila, columna = 0, 0  # indices para moverse por la matriz
 cuad = pygame.image.load("assets\\cuadrado.png")
 cuadpos = [constantes.grass_start_x, constantes.grass_start_y]
 
-# Def de personajes
-
-#Genera aleatoriamente la fila en la que aparece el zombie
-pos_aleatoria= random.randint(0, 4)
+# Lista posiciones
 pos_zombie= [165, 255, 345, 435, 525]
-nuevo_zombie= Enemigos(constantes.ANCHO_VENTANA, pos_zombie[pos_aleatoria], "assets\img_zombie.png", 40, 0.04)
-nuevo_zombie.add(grupo_zombies)
+
+# Evento aparicion de zombies
+APARICION_ZOMBIE= pygame.USEREVENT
+pygame.time.set_timer(APARICION_ZOMBIE, constantes.TIEMPO_APARICION)
+
 #  x, y, imagen, vida, velocidad
 run= True
 while run:
@@ -73,9 +73,15 @@ while run:
                     break
             if celdaclick:
                 pass # Aca es donde se ponen los ifs para poner la planta seleccionada.
+        
+        #Cada cierto tiempo spawnean zombies
+        elif event.type == APARICION_ZOMBIE:
+            pos_aleatoria= random.randint(0, 4)
+            nuevo_zombie= Enemigos(constantes.ANCHO_VENTANA, pos_zombie[pos_aleatoria], "assets//img_zombie.png", 40, 0.04)
+            nuevo_zombie.add(grupo_zombies)
+
     grupo_zombies.update()
     grupo_zombies.draw(screen)
-    nuevo_zombie.movimiento()
     pygame.display.update()
 
 pygame.quit()
