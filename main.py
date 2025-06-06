@@ -9,7 +9,7 @@ pygame.init()
 reloj = pygame.time.Clock()
 
 # Definicion de pantalla
-screen = pygame.display.set_mode((constantes.ANCHO_VENTANA, constantes.LARGO_VENTANA))
+screen = pygame.display.set_mode((constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA))
 
 # Titulo e Ícono
 pygame.display.set_caption("Plants vs. Zombies")
@@ -18,30 +18,42 @@ pygame.display.set_icon(icono)
 
 # Fondo de pantalla del juego
 background = pygame.image.load("assets//map.jpeg").convert()
-background = pygame.transform.scale(background, (constantes.ANCHO_VENTANA, constantes.LARGO_VENTANA))
+background = pygame.transform.scale(
+    background, (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA)
+)
 
 # Grilla de entidades y grilla de rects.
-grilla_rects = [[pygame.Rect(constantes.grass_start_x + col * constantes.celda_ancho, constantes.grass_start_y + fil *constantes.celda_alto,constantes.celda_ancho, constantes.celda_alto) for col in range(9)] for fil in range(5)] #Grilla[fila][columna]
+grilla_rects = [
+    [
+        pygame.Rect(
+            constantes.COMIENZO_PASTO_X + col * constantes.CELDA_ANCHO,
+            constantes.COMIENZO_PASTO_Y + fil * constantes.CELDA_ALTO,
+            constantes.CELDA_ANCHO,
+            constantes.CELDA_ALTO,
+        )
+        for col in range(9)
+    ]
+    for fil in range(5)
+]  # Grilla[fila][columna]
 grilla_entidades = [[0 for x in range(9)] for y in range(5)]
 fila, columna = 0, 0  # indices para moverse por la matriz
 cuad = pygame.image.load("assets\\cuadrado.png")
-cuadpos = [constantes.grass_start_x, constantes.grass_start_y]
+cuadpos = [constantes.COMIENZO_PASTO_X, constantes.COMIENZO_PASTO_Y]
 
 # Lista posiciones
-pos_zombie= [165, 255, 345, 435, 525]
+pos_zombie = [165, 255, 345, 435, 525]
 
 # Evento aparicion de zombies
-APARICION_ZOMBIE= pygame.USEREVENT
+APARICION_ZOMBIE = pygame.USEREVENT
 pygame.time.set_timer(APARICION_ZOMBIE, constantes.TIEMPO_APARICION)
 
 #  x, y, imagen, vida, velocidad
-run= True
+run = True
 while run:
 
-    screen.blit(background, (0,0)) # Fondo
+    screen.blit(background, (0, 0))  # Fondo
     screen.blit(cuad, cuadpos)
-    #dibujar_grilla(screen, grilla_rects)#Esta funcion dibuja la grilla, comentar para que no se dibuje
-
+    # dibujar_grilla(screen, grilla_rects)#Esta funcion dibuja la grilla, comentar para que no se dibuje
 
     grupo_plantas.update()
     grupo_plantas.draw(screen)
@@ -63,10 +75,10 @@ while run:
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            run= False
-        elif event.type== pygame.KEYDOWN:
-            if event.key== pygame.K_ESCAPE:
-                run= False
+            run = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                run = False
             elif event.key == pygame.K_a:
                 cuadpos[0] -= 78
                 columna -= 1
@@ -86,22 +98,26 @@ while run:
                     grupo_plantas.add(nueva_planta)
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            x,y = event.pos
-            celdaclick = None
-            for f in range(5):
-                for c in range(9):
-                    if grilla_rects[f][c].collidepoint(x,y):
-                        celdaclick = (f,c)
-                        break
-                if celdaclick:
-                    break
-            if celdaclick:
-                pass # Aca es donde se ponen los ifs para poner la planta seleccionada.
-        
-        #Cada cierto tiempo spawnean zombies
+            x, y = event.pos
+            #Poner plantas con el click
+            if (constantes.COMIENZO_PASTO_X < x < constantes.FIN_PASTO_X and constantes.COMIENZO_PASTO_Y < y < constantes.FIN_PASTO_Y):
+                x = (x - constantes.COMIENZO_PASTO_X) // constantes.CELDA_ANCHO #Devuelve el nro de casilla en x
+                y = (y - constantes.COMIENZO_PASTO_Y) // constantes.CELDA_ALTO #Devuelve el nro de casilla en y
+                if grilla_entidades[y][x] == 0:
+                    nueva_planta = lanzaguisantes((x * constantes.CELDA_ANCHO) + constantes.COMIENZO_PASTO_X - 15,(y * constantes.CELDA_ALTO) + constantes.COMIENZO_PASTO_Y + 20) #En la pos de la planta se pasa de numero de grilla a pixeles.
+                    grilla_entidades[y][x] = nueva_planta
+                    grupo_plantas.add(nueva_planta)
+
+        # Cada cierto tiempo spawnean zombies
         elif event.type == APARICION_ZOMBIE:
-            pos_aleatoria= random.randint(0, 4)
-            nuevo_zombie= Enemigos(constantes.ANCHO_VENTANA, pos_zombie[pos_aleatoria], "assets//img_zombie.png", 181, 0.2)
+            pos_aleatoria = random.randint(0, 4)
+            nuevo_zombie = Enemigos(
+                constantes.ANCHO_VENTANA,
+                pos_zombie[pos_aleatoria],
+                "assets//img_zombie.png",
+                181,
+                constantes.VELOCIDAD_ZOMBIE,
+            )
             nuevo_zombie.add(grupo_zombies)
 
     grupo_zombies.update()
