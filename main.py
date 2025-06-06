@@ -7,6 +7,7 @@ from funciones import *
 
 inicio= time.time()
 pygame.init()
+reloj = pygame.time.Clock()
 
 # Definicion de pantalla
 screen = pygame.display.set_mode((constantes.ANCHO_VENTANA, constantes.LARGO_VENTANA))
@@ -93,6 +94,7 @@ while run:
     grupo_zombies.update()
     grupo_zombies.draw(screen)
     pygame.display.update()
+    reloj.tick(60)
 
 pygame.quit()
 final= time.time()

@@ -67,7 +67,7 @@ class lanzaguisantes(Plantas):
 
         if ahora - self.ultimo_disparo >= 1500:
             self.ultimo_disparo = ahora
-            guisante = Proyectil(f"assets\\lanzaguisante\\pea.png", self.rect.x, self.rect.y, 20)
+            guisante = Proyectil(f"assets\\lanzaguisante\\guisante.png", self.rect.x, self.rect.y, 20)
             grupo_proyectiles.add(guisante)
 
 
