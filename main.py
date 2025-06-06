@@ -40,7 +40,12 @@ while run:
 
     screen.blit(background, (0,0)) # Fondo
     screen.blit(cuad, cuadpos)
-    dibujar_grilla(screen, grilla_rects)#Esta funcion dibuja la grilla, comentar para que no se dibuje
+    #dibujar_grilla(screen, grilla_rects)#Esta funcion dibuja la grilla, comentar para que no se dibuje
+
+    grupo_plantas.update()
+    grupo_plantas.draw(screen)
+    grupo_proyectiles.update()
+    grupo_proyectiles.draw(screen)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -60,6 +65,11 @@ while run:
             elif event.key == pygame.K_s:
                 cuadpos[1] += 90
                 fila += 1
+            elif event.key == pygame.K_e:
+                if grilla_entidades[fila][columna] == 0:
+                    nueva_planta = lanzaguisantes(cuadpos[0] - 15, cuadpos[1] + 20)
+                    grilla_entidades[fila][columna] = nueva_planta
+                    grupo_plantas.add(nueva_planta)
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             x,y = event.pos
