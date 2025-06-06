@@ -1,4 +1,5 @@
 import pygame
+from pygame import mixer
 import time
 import constantes
 import random
@@ -7,6 +8,8 @@ from funciones import *
 
 pygame.init()
 reloj = pygame.time.Clock()
+mixer.music.load("assets/Musica/[Day Stage].mp3")
+mixer.music.play(-1)
 
 # Definicion de pantalla
 screen = pygame.display.set_mode((constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA))
