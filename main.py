@@ -5,7 +5,6 @@ import random
 from clases import *
 from funciones import *
 
-inicio= time.time()
 pygame.init()
 reloj = pygame.time.Clock()
 
@@ -43,23 +42,27 @@ while run:
     screen.blit(cuad, cuadpos)
     #dibujar_grilla(screen, grilla_rects)#Esta funcion dibuja la grilla, comentar para que no se dibuje
 
+
     grupo_plantas.update()
     grupo_plantas.draw(screen)
     grupo_proyectiles.update()
     grupo_proyectiles.draw(screen)
+
+    for planta in grupo_plantas:
+        pygame.draw.rect(screen, (0, 255, 0), planta.hitbox, 1)  # Verde = hitbox
 
     xmin = 322
     ymin = 120
     ymax = ymin + (90 * 4)
     xmax = xmin + (78 * 8)
     if cuadpos[0] <= xmin:
-        cuadpos[0], col = xmin, 0
+        cuadpos[0], columna = xmin, 0
     if cuadpos[1] <= ymin:
-        cuadpos[1], fil = ymin, 0
+        cuadpos[1], fila = ymin, 0
     if cuadpos[0] >= xmax:
-        cuadpos[0], col = xmax, 8
+        cuadpos[0], columna = xmax, 8
     if cuadpos[1] >= ymax:
-        cuadpos[1], fil = ymax, 4
+        cuadpos[1], fila = ymax, 4
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -101,14 +104,13 @@ while run:
         #Cada cierto tiempo spawnean zombies
         elif event.type == APARICION_ZOMBIE:
             pos_aleatoria= random.randint(0, 4)
-            nuevo_zombie= Enemigos(constantes.ANCHO_VENTANA, pos_zombie[pos_aleatoria], "assets//img_zombie.png", 40, 0.04)
+            nuevo_zombie= Enemigos(constantes.ANCHO_VENTANA, pos_zombie[pos_aleatoria], "assets//img_zombie.png", 40, 0.2)
             nuevo_zombie.add(grupo_zombies)
 
     grupo_zombies.update()
     grupo_zombies.draw(screen)
+
     pygame.display.update()
     reloj.tick(60)
 
 pygame.quit()
-final= time.time()
-print(f"Tiempo transcurrido: {final-inicio:.2f} segundos")

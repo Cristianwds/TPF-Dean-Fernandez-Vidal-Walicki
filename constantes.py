@@ -10,4 +10,7 @@ grass_start_y = 120
 celda_alto = 90
 celda_ancho = 78
 
+COLOR_HITBOX_PROYECTIL = (0, 255, 0)
+COLOR_HITBOX_ZOMBIE = (255, 0, 0)
+
 
