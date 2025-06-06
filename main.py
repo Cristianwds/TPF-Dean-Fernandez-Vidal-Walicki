@@ -48,9 +48,6 @@ while run:
     grupo_proyectiles.update()
     grupo_proyectiles.draw(screen)
 
-    for planta in grupo_plantas:
-        pygame.draw.rect(screen, (0, 255, 0), planta.hitbox, 1)  # Verde = hitbox
-
     xmin = 322
     ymin = 120
     ymax = ymin + (90 * 4)
@@ -104,7 +101,7 @@ while run:
         #Cada cierto tiempo spawnean zombies
         elif event.type == APARICION_ZOMBIE:
             pos_aleatoria= random.randint(0, 4)
-            nuevo_zombie= Enemigos(constantes.ANCHO_VENTANA, pos_zombie[pos_aleatoria], "assets//img_zombie.png", 40, 0.2)
+            nuevo_zombie= Enemigos(constantes.ANCHO_VENTANA, pos_zombie[pos_aleatoria], "assets//img_zombie.png", 181, 0.2)
             nuevo_zombie.add(grupo_zombies)
 
     grupo_zombies.update()

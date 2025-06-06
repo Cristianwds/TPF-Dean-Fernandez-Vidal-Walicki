@@ -17,6 +17,7 @@ class Criaturas(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect(center=[self.pos_x, self.pos_y])
         self.vida = vida
+        
     def recibir_daño(self, daño):
         self.vida -= daño
         if self.vida <= 0:
@@ -55,13 +56,15 @@ class Plantas(Criaturas):
         super().__init__(x, y, imagen, vida)
         self.cooldown = cooldown
         self.costo = costo
+        self.pos_x = x
+        self.pos_y = y
 
         # El rect sigue siendo para dibujar la imagen
-        self.rect = self.image.get_rect(midleft=(x, y))
+        self.rect = self.image.get_rect(midleft=(self.pos_x, self.pos_y))
         
         # Hitbox separada: más pequeña, para colisiones
-        self.hitbox = pygame.Rect(0, 0, self.rect.width - 20, self.rect.height - 30)
-        self.hitbox.center = self.rect.center
+        self.hitbox = pygame.Rect(0, 0, self.rect.width - 50, self.rect.height - 40)
+        self.hitbox.midbottom = self.rect.midbottom
 
     
 class lanzaguisantes(Plantas):
@@ -83,24 +86,21 @@ class lanzaguisantes(Plantas):
         Plantas.__init__(self, x, y, self.image, vida, cooldown, costo)
 
 
-def update(self):
-    ahora = pygame.time.get_ticks()
-    
-    if ahora - self.ultimo_frame > self.velocidad_animacion:
-        self.ultimo_frame = ahora
-        self.indice_frames = (self.indice_frames + 1) % len(self.frames)
-        self.image = self.frames[self.indice_frames]
+    def update(self):
+        ahora = pygame.time.get_ticks()
+        
+        if ahora - self.ultimo_frame > self.velocidad_animacion:
+            self.ultimo_frame = ahora
+            self.indice_frames = (self.indice_frames + 1) % len(self.frames)
+            self.image = self.frames[self.indice_frames]
+            self.rect = self.image.get_rect(midleft= (self.pos_x,self.pos_y))
 
-        # Actualizar rect para que la animación se vea bien posicionada
-        self.rect = self.image.get_rect(midleft=(self.pos_x, self.pos_y))
+            # Actualizar rect para que la animación se vea bien posicionada
 
-    # Hitbox se mantiene centrada sobre la planta
-    self.hitbox.center = self.rect.center
-
-    if ahora - self.ultimo_disparo >= 1500:
-        self.ultimo_disparo = ahora
-        guisante = Proyectil("assets\\lanzaguisante\\guisante.png", self.rect.x, self.rect.y, 20)
-        grupo_proyectiles.add(guisante)
+        if ahora - self.ultimo_disparo >= 1500:
+            self.ultimo_disparo = ahora
+            guisante = Proyectil("assets\\lanzaguisante\\guisante.png", self.hitbox.x + 60, self.hitbox.y + 6, 20)
+            grupo_proyectiles.add(guisante)
 
 
 class Proyectil(pygame.sprite.Sprite):
@@ -110,23 +110,24 @@ class Proyectil(pygame.sprite.Sprite):
         self.y = y
         self.image = pygame.image.load(imagen).convert_alpha()
         self.daño = daño
+
+        # rect para posicionar y dibujar la imagen
         self.rect = self.image.get_rect(center=[x, y])
 
-        self.hitbox = pygame.Rect(0, 0, 20, 20)
+        # hitbox más pequeña para colisiones
+        self.hitbox = pygame.Rect(0, 0, self.rect.width - 10, self.rect.height - 10)
         self.hitbox.center = self.rect.center
 
-def update(self):
-    self.rect.x += constantes.VELOCIDAD_PROYECTIL
-    for zombie in grupo_zombies:
-        if self.rect.colliderect(zombie.hitbox):
-            zombie.recibir_daño(self.daño)
+    def update(self):
+        self.rect.x += constantes.VELOCIDAD_PROYECTIL
+        self.hitbox.center = self.rect.center  # mantener hitbox alineada
+
+        for zombie in grupo_zombies:
+            if self.hitbox.colliderect(zombie.hitbox):
+                zombie.recibir_daño(self.daño)
+                self.kill()
+                break
+
+        if self.rect.right > constantes.ANCHO_VENTANA:
             self.kill()
-            break
-    if self.rect.right > constantes.ANCHO_VENTANA:
-        self.kill()
 
-
-def dibujar_grilla(screen, celdas_rects):
-    for fila in celdas_rects:
-        for rect in fila:
-            pygame.draw.rect(screen, (255, 255, 255), rect, 1)  # color blanco, borde de 1 píxel
