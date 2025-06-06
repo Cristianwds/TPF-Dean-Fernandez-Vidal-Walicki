@@ -48,6 +48,19 @@ while run:
     grupo_proyectiles.update()
     grupo_proyectiles.draw(screen)
 
+    xmin = 322
+    ymin = 120
+    ymax = ymin + (90 * 4)
+    xmax = xmin + (78 * 8)
+    if cuadpos[0] <= xmin:
+        cuadpos[0], col = xmin, 0
+    if cuadpos[1] <= ymin:
+        cuadpos[1], fil = ymin, 0
+    if cuadpos[0] >= xmax:
+        cuadpos[0], col = xmax, 8
+    if cuadpos[1] >= ymax:
+        cuadpos[1], fil = ymax, 4
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run= False
