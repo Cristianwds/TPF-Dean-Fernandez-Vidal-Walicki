@@ -50,6 +50,7 @@ pos_zombie = [165, 255, 345, 435, 525]
 APARICION_ZOMBIE = pygame.USEREVENT
 pygame.time.set_timer(APARICION_ZOMBIE, constantes.TIEMPO_APARICION)
 
+seleccion_planta = "lanzaguisantes"
 #  x, y, imagen, vida, velocidad
 run = True
 while run:
@@ -99,15 +100,26 @@ while run:
                     nueva_planta = lanzaguisantes(cuadpos[0] - 15, cuadpos[1] + 20)
                     grilla_entidades[fila][columna] = nueva_planta
                     grupo_plantas.add(nueva_planta)
+            elif event.key == pygame.K_1:
+                seleccion_planta = "lanzaguisantes"
+            elif event.key == pygame.K_2:
+                seleccion_planta = "girasol"
+            elif event.key == pygame.K_3:
+                seleccion_planta = "nuez"
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             x, y = event.pos
-            #Poner plantas con el click
+            # Poner plantas con el click
             if (constantes.COMIENZO_PASTO_X < x < constantes.FIN_PASTO_X and constantes.COMIENZO_PASTO_Y < y < constantes.FIN_PASTO_Y):
                 x = (x - constantes.COMIENZO_PASTO_X) // constantes.CELDA_ANCHO #Devuelve el nro de casilla en x
                 y = (y - constantes.COMIENZO_PASTO_Y) // constantes.CELDA_ALTO #Devuelve el nro de casilla en y
                 if grilla_entidades[y][x] == 0:
-                    nueva_planta = lanzaguisantes((x * constantes.CELDA_ANCHO) + constantes.COMIENZO_PASTO_X - 15,(y * constantes.CELDA_ALTO) + constantes.COMIENZO_PASTO_Y + 20) #En la pos de la planta se pasa de numero de grilla a pixeles.
+                    if seleccion_planta == "lanzaguisantes":
+                        nueva_planta = lanzaguisantes((x * constantes.CELDA_ANCHO) + constantes.COMIENZO_PASTO_X - 15,(y * constantes.CELDA_ALTO) + constantes.COMIENZO_PASTO_Y + 20) #En la pos de la planta se pasa de numero de grilla a pixeles.
+                    elif seleccion_planta == "girasol":
+                        nueva_planta = Girasol((x * constantes.CELDA_ANCHO)+ constantes.COMIENZO_PASTO_X- 15,(y * constantes.CELDA_ALTO)+ constantes.COMIENZO_PASTO_Y+ 20,)
+                    elif seleccion_planta == "nuez":
+                        nueva_planta = Nuez((x * constantes.CELDA_ANCHO)+ constantes.COMIENZO_PASTO_X- 15,(y * constantes.CELDA_ALTO)+ constantes.COMIENZO_PASTO_Y+ 20,)
                     grilla_entidades[y][x] = nueva_planta
                     grupo_plantas.add(nueva_planta)
 

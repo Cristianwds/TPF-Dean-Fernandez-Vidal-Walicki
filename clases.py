@@ -1,5 +1,9 @@
 import pygame
 import constantes
+import random
+from pygame import mixer
+
+pygame.mixer.init()
 
 grupo_plantas = pygame.sprite.Group()
 grupo_proyectiles = pygame.sprite.Group()
@@ -56,7 +60,6 @@ class Enemigos(Criaturas):
         # pygame.draw.rect(screen, (255, 0, 0), self.hitbox, 1)
 
 
-
 class Plantas(Criaturas):
     def __init__(self, x, y, imagen, vida, cooldown, costo):
         super().__init__(x, y, imagen, vida)
@@ -72,7 +75,7 @@ class Plantas(Criaturas):
         self.hitbox = pygame.Rect(0, 0, self.rect.width - 50, self.rect.height - 40)
         self.hitbox.midbottom = self.rect.midbottom
 
-    
+
 class lanzaguisantes(Plantas):
     def __init__(self, x, y, vida=300, cooldown=7500, costo=100):
         self.frames = [pygame.image.load(f"assets\\lanzaguisante\\frame_{i}.png").convert_alpha() for i in range(48)]
@@ -91,10 +94,9 @@ class lanzaguisantes(Plantas):
         self.rect = self.image.get_rect(midleft= (x,y))
         Plantas.__init__(self, x, y, self.image, vida, cooldown, costo)
 
-
     def update(self):
         ahora = pygame.time.get_ticks()
-        
+
         if ahora - self.ultimo_frame > self.velocidad_animacion:
             self.ultimo_frame = ahora
             self.indice_frames = (self.indice_frames + 1) % len(self.frames)
@@ -109,13 +111,39 @@ class lanzaguisantes(Plantas):
             grupo_proyectiles.add(guisante)
 
 
+class Girasol(Plantas):
+    def __init__(self, x, y, vida=300, cooldown=7500, costo=50):
+        self.x = x
+        self.y = y
+        self.vida = vida
+        self.cooldown = cooldown
+        self.costo = costo
+        self.image = pygame.image.load("assets\girasol\girasol.png")
+        self.rect = self.image.get_rect(midleft=(x, y))
+        super().__init__(x, y, self.image, vida, cooldown, costo)
+
+
+class Nuez(Plantas):
+    def __init__(self, x, y, vida=1000, cooldown=7500, costo=50):
+        self.x = x
+        self.y = y
+        self.vida = vida
+        self.cooldown = cooldown
+        self.costo = costo
+        self.image = pygame.image.load("assets/nuez/wallnut.png")
+        self.rect = self.image.get_rect(midleft=(x, y))
+        super().__init__(x, y, self.image, vida, cooldown, costo)
+
+
 class Proyectil(pygame.sprite.Sprite):
-    def __init__(self, imagen, x, y, daño):
+
+    def __init__(self,imagen,x,y,daño,impacto=[pygame.mixer.Sound("assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\Hit1.ogg"),pygame.mixer.Sound("assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\Hit2.mp3"),pygame.mixer.Sound("assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\Hit3.ogg")]):
         super().__init__()
         self.x = x
         self.y = y
         self.image = pygame.image.load(imagen).convert_alpha()
         self.daño = daño
+        self.impacto = impacto
 
         # rect para posicionar y dibujar la imagen
         self.rect = self.image.get_rect(center=[x, y])
@@ -130,10 +158,10 @@ class Proyectil(pygame.sprite.Sprite):
 
         for zombie in grupo_zombies:
             if self.hitbox.colliderect(zombie.hitbox):
+                random.choice(self.impacto).play()
                 zombie.recibir_daño(self.daño)
                 self.kill()
                 break
 
         if self.rect.right > constantes.ANCHO_VENTANA:
             self.kill()
-
