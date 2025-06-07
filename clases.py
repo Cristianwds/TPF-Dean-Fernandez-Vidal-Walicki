@@ -24,14 +24,15 @@ class Criaturas(pygame.sprite.Sprite):
             self.kill()
 
 class Enemigos(Criaturas):
-    def __init__(self, x, y, imagen, vida, velocidad):
-        super().__init__(x, y, imagen, vida)
+    def __init__(self, x, y, frames, vida, velocidad):
+        super().__init__(x, y, frames[0], vida)
         self.velocidad = velocidad
         self.pos_x = float(x)  # para suavidad
         self.pos_y = y
-
+        self.frames= frames
+        self.indice_frame= 0
         # Redimensionar imagen si hace falta
-        self.image = pygame.transform.scale(self.image, (96, 130))  # opcional
+        self.image = pygame.transform.scale(self.image, (120, 140))  # opcional
 
         # Rect de dibujo
         self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y - 90))
@@ -45,6 +46,11 @@ class Enemigos(Criaturas):
         self.rect.x = int(self.pos_x)
         self.hitbox.center = self.rect.center
         self.hitbox.x += 5
+
+        #Cambia de frame cuando se actualiza
+        self.indice_frame = (self.indice_frame + 1) % len(self.frames)  # Ciclar entre frames
+        self.image = self.frames[self.indice_frame]  # Cambiar al siguiente frame
+        self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y - 90))  # Actualizar el rect
 
         # DEBUG: dibujar hitbox
         # pygame.draw.rect(screen, (255, 0, 0), self.hitbox, 1)

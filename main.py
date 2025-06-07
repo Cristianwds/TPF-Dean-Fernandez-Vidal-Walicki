@@ -114,10 +114,12 @@ while run:
         # Cada cierto tiempo spawnean zombies
         elif event.type == APARICION_ZOMBIE:
             pos_aleatoria = random.randint(0, 4)
+            ubicacion_frames= [f"assets\\zombies\\cono\\caminata\\frame_{i}.png" for i in range(1, 60)]
+            frame_actual= [pygame.image.load(frame).convert_alpha() for frame in ubicacion_frames]
             nuevo_zombie = Enemigos(
                 constantes.ANCHO_VENTANA,
                 pos_zombie[pos_aleatoria],
-                "assets//img_zombie.png",
+                frame_actual,
                 181,
                 constantes.VELOCIDAD_ZOMBIE,
             )
