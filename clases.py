@@ -13,12 +13,7 @@ class Criaturas(pygame.sprite.Sprite):
         super().__init__()
         self.pos_x = x
         self.pos_y = y
-
-        if isinstance(imagen, str):
-            self.image = pygame.image.load(imagen).convert_alpha()
-        else:
-            self.image = imagen  # Ya es una Surface
-
+        self.image = imagen  # Si ya es una Surface
         self.rect = self.image.get_rect(center=[self.pos_x, self.pos_y])
         self.vida = vida
         
@@ -26,35 +21,53 @@ class Criaturas(pygame.sprite.Sprite):
         self.vida -= daño
         if self.vida <= 0:
             self.kill()
+            return True
 
 class Enemigos(Criaturas):
-    def __init__(self, x, y, frames, vida, velocidad):
+    def __init__(self, x, y, frames, vida, daño, velocidad= constantes.VELOCIDAD_ZOMBIE):
         super().__init__(x, y, frames[0], vida)
         self.velocidad = velocidad
+        self.ultimo_frame = pygame.time.get_ticks()
         self.pos_x = float(x)  # para suavidad
         self.pos_y = y
         self.frames= frames
         self.indice_frame= 0
+        self.daño= daño
+        self.velocidad_animacion = constantes.VEL_ANIM_ZOMBIE  # milisegundos por frame
         # Redimensionar imagen si hace falta
-        self.image = pygame.transform.scale(self.image, (120, 140))  # opcional
+        #self.image = pygame.transform.scale(self.image, (120, 140))  # opcional
 
         # Rect de dibujo
         self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y - 90))
 
         # Hitbox para colisiones
-        self.hitbox = pygame.Rect(0, 0, 30, 80)
+        self.hitbox = pygame.Rect(0, 0, 30, 60)
         self.hitbox.center = self.rect.center
-
+        self.ultimo_ataque= pygame.time.get_ticks()
     def update(self):
         self.pos_x -= self.velocidad
         self.rect.x = int(self.pos_x)
         self.hitbox.center = self.rect.center
         self.hitbox.x += 5
 
+        for planta in grupo_plantas:
+            ahora = pygame.time.get_ticks()
+            if self.hitbox.colliderect(planta.hitbox):
+                self.velocidad= 0
+                if ahora - self.ultimo_ataque >= constantes.VELOCIDAD_ATAQUE_ZOMBIE:
+                    self.ultimo_ataque = ahora
+                    #random.choice(self.impacto).play()
+                    if planta.recibir_daño(self.daño):
+                        self.velocidad = constantes.VELOCIDAD_ZOMBIE
+                    
+        
+        tiempo_frame= pygame.time.get_ticks()
         #Cambia de frame cuando se actualiza
-        self.indice_frame = (self.indice_frame + 1) % len(self.frames)  # Ciclar entre frames
-        self.image = self.frames[self.indice_frame]  # Cambiar al siguiente frame
-        self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y - 90))  # Actualizar el rect
+        if tiempo_frame - self.ultimo_frame > self.velocidad_animacion:
+            self.ultimo_frame = tiempo_frame
+            self.indice_frame = (self.indice_frame + 1) % len(self.frames)  # Ciclar entre frames
+            self.image = self.frames[self.indice_frame]  # Cambiar al siguiente frame
+            self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y - 90))  # Actualizar el rect
 
         # DEBUG: dibujar hitbox
         # pygame.draw.rect(screen, (255, 0, 0), self.hitbox, 1)
@@ -72,9 +85,8 @@ class Plantas(Criaturas):
         self.rect = self.image.get_rect(midleft=(self.pos_x, self.pos_y))
         
         # Hitbox separada: más pequeña, para colisiones
-        self.hitbox = pygame.Rect(0, 0, self.rect.width - 50, self.rect.height - 40)
+        self.hitbox = pygame.Rect(0, 0, self.rect.width - 50, self.rect.height - 60)
         self.hitbox.midbottom = self.rect.midbottom
-
 
 class lanzaguisantes(Plantas):
     def __init__(self, x, y, vida=300, cooldown=7500, costo=100):
@@ -96,9 +108,10 @@ class lanzaguisantes(Plantas):
 
     def update(self):
         ahora = pygame.time.get_ticks()
+        tiempo_frame= pygame.time.get_ticks()
 
-        if ahora - self.ultimo_frame > self.velocidad_animacion:
-            self.ultimo_frame = ahora
+        if tiempo_frame - self.ultimo_frame > self.velocidad_animacion:
+            self.ultimo_frame = tiempo_frame
             self.indice_frames = (self.indice_frames + 1) % len(self.frames)
             self.image = self.frames[self.indice_frames]
             self.rect = self.image.get_rect(midleft= (self.pos_x,self.pos_y))

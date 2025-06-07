@@ -64,18 +64,14 @@ while run:
     grupo_proyectiles.update()
     grupo_proyectiles.draw(screen)
 
-    xmin = 322
-    ymin = 120
-    ymax = ymin + (90 * 4)
-    xmax = xmin + (78 * 8)
-    if cuadpos[0] <= xmin:
-        cuadpos[0], columna = xmin, 0
-    if cuadpos[1] <= ymin:
-        cuadpos[1], fila = ymin, 0
-    if cuadpos[0] >= xmax:
-        cuadpos[0], columna = xmax, 8
-    if cuadpos[1] >= ymax:
-        cuadpos[1], fila = ymax, 4
+    if cuadpos[0] <= constantes.COMIENZO_PASTO_X:
+        cuadpos[0], columna = constantes.COMIENZO_PASTO_X, 0
+    if cuadpos[1] <= constantes.COMIENZO_PASTO_Y:
+        cuadpos[1], fila = constantes.COMIENZO_PASTO_Y, 0
+    if cuadpos[0] >= constantes.XMAX:
+        cuadpos[0], columna = constantes.XMAX, 8
+    if cuadpos[1] >= constantes.YMAX:
+        cuadpos[1], fila = constantes.YMAX, 4
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -126,15 +122,15 @@ while run:
         # Cada cierto tiempo spawnean zombies
         elif event.type == APARICION_ZOMBIE:
             pos_aleatoria = random.randint(0, 4)
-            ubicacion_frames= [f"assets\\zombies\\cono\\caminata\\frame_{i}.png" for i in range(1, 60)]
+            ubicacion_frames= [f"assets\\zombies\\cono\\caminata\\frame_{i}.png" for i in range(1, 61)]
             frame_actual= [pygame.image.load(frame).convert_alpha() for frame in ubicacion_frames]
             nuevo_zombie = Enemigos(
                 constantes.ANCHO_VENTANA,
                 pos_zombie[pos_aleatoria],
                 frame_actual,
                 181,
-                constantes.VELOCIDAD_ZOMBIE,
-            )
+                constantes.DAÑO_ZOMBIE_NORMAL,
+                constantes.VELOCIDAD_ZOMBIE)
             nuevo_zombie.add(grupo_zombies)
 
     grupo_zombies.update()
