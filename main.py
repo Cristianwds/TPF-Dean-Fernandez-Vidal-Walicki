@@ -1,12 +1,12 @@
 import pygame
 from pygame import mixer
-import time
 import constantes
 import random
 from clases import *
 from funciones import *
 
 pygame.init()
+
 reloj = pygame.time.Clock()
 mixer.music.load("assets/Musica/[Day Stage].mp3")
 mixer.music.play(-1)
@@ -53,13 +53,14 @@ pos_zombie = [165, 255, 345, 435, 525]
 APARICION_ZOMBIE = pygame.USEREVENT
 pygame.time.set_timer(APARICION_ZOMBIE, constantes.TIEMPO_APARICION)
 
-seleccion_planta = "lanzaguisantes"
+seleccion_planta = "lanzaguisantes" #seleccion_planta = False
 #  x, y, imagen, vida, velocidad
 run = True
 while run:
 
     screen.blit(background, (0, 0))  # Fondo
-    screen.blit(cuad, cuadpos)
+    if seleccion_planta != False:
+        screen.blit(cuad, cuadpos)
     # dibujar_grilla(screen, grilla_rects) #Esta funcion dibuja la grilla, comentar para que no se dibuje
 
     grupo_plantas.update()
