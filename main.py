@@ -40,7 +40,10 @@ grilla_rects = [
 ]  # Grilla[fila][columna]
 grilla_entidades = [[0 for x in range(9)] for y in range(5)]
 fila, columna = 0, 0  # indices para moverse por la matriz
-cuad = pygame.image.load("assets\\cuadrado.png")
+
+
+cuad = pygame.Surface((80, 90), pygame.SRCALPHA)
+cuad.fill((255, 255, 255, 128))
 cuadpos = [constantes.COMIENZO_PASTO_X, constantes.COMIENZO_PASTO_Y]
 
 # Lista posiciones
@@ -57,7 +60,7 @@ while run:
 
     screen.blit(background, (0, 0))  # Fondo
     screen.blit(cuad, cuadpos)
-    # dibujar_grilla(screen, grilla_rects)#Esta funcion dibuja la grilla, comentar para que no se dibuje
+    # dibujar_grilla(screen, grilla_rects) #Esta funcion dibuja la grilla, comentar para que no se dibuje
 
     grupo_plantas.update()
     grupo_plantas.draw(screen)
@@ -108,7 +111,9 @@ while run:
             # Poner plantas con el click
             if (constantes.COMIENZO_PASTO_X < x < constantes.FIN_PASTO_X and constantes.COMIENZO_PASTO_Y < y < constantes.FIN_PASTO_Y):
                 x = (x - constantes.COMIENZO_PASTO_X) // constantes.CELDA_ANCHO #Devuelve el nro de casilla en x
+                cuadpos[0] = constantes.COMIENZO_PASTO_X + (x * constantes.CELDA_ANCHO)
                 y = (y - constantes.COMIENZO_PASTO_Y) // constantes.CELDA_ALTO #Devuelve el nro de casilla en y
+                cuadpos[1] = constantes.COMIENZO_PASTO_Y + (y * constantes.CELDA_ALTO)
                 if grilla_entidades[y][x] == 0:
                     if seleccion_planta == "lanzaguisantes":
                         nueva_planta = lanzaguisantes((x * constantes.CELDA_ANCHO) + constantes.COMIENZO_PASTO_X - 15,(y * constantes.CELDA_ALTO) + constantes.COMIENZO_PASTO_Y + 20) #En la pos de la planta se pasa de numero de grilla a pixeles.
@@ -118,6 +123,15 @@ while run:
                         nueva_planta = Nuez((x * constantes.CELDA_ANCHO)+ constantes.COMIENZO_PASTO_X- 15,(y * constantes.CELDA_ALTO)+ constantes.COMIENZO_PASTO_Y+ 20,)
                     grilla_entidades[y][x] = nueva_planta
                     grupo_plantas.add(nueva_planta)
+
+        elif event.type == pygame.MOUSEMOTION:
+            x, y = event.pos
+            if (constantes.COMIENZO_PASTO_X < x < constantes.FIN_PASTO_X and constantes.COMIENZO_PASTO_Y < y < constantes.FIN_PASTO_Y):
+                x = (x - constantes.COMIENZO_PASTO_X) // constantes.CELDA_ANCHO #Devuelve el nro de casilla en x
+                cuadpos[0] = constantes.COMIENZO_PASTO_X + (x * constantes.CELDA_ANCHO)
+                y = (y - constantes.COMIENZO_PASTO_Y) // constantes.CELDA_ALTO #Devuelve el nro de casilla en y
+                cuadpos[1] = constantes.COMIENZO_PASTO_Y + (y * constantes.CELDA_ALTO)
+
 
         # Cada cierto tiempo spawnean zombies
         elif event.type == APARICION_ZOMBIE:
