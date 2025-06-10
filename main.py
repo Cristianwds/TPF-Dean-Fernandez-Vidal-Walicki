@@ -53,7 +53,7 @@ pos_zombie = [165, 255, 345, 435, 525]
 APARICION_ZOMBIE = pygame.USEREVENT
 pygame.time.set_timer(APARICION_ZOMBIE, constantes.TIEMPO_APARICION)
 
-seleccion_planta = "lanzaguisantes" #seleccion_planta = False
+seleccion_planta = False
 #  x, y, imagen, vida, velocidad
 run = True
 while run:
@@ -97,9 +97,10 @@ while run:
                 fila += 1
             elif event.key == pygame.K_e:
                 if grilla_entidades[fila][columna] == 0:
-                    nueva_planta = lanzaguisantes(cuadpos[0] - 15, cuadpos[1] + 20)
-                    grilla_entidades[fila][columna] = nueva_planta
-                    grupo_plantas.add(nueva_planta)
+                    if seleccion_planta != False:
+                        nueva_planta = lanzaguisantes(cuadpos[0] - 15, cuadpos[1] + 20)
+                        grilla_entidades[fila][columna] = nueva_planta
+                        grupo_plantas.add(nueva_planta)
             elif event.key == pygame.K_1:
                 seleccion_planta = "lanzaguisantes"
             elif event.key == pygame.K_2:
@@ -116,14 +117,15 @@ while run:
                 y = (y - constantes.COMIENZO_PASTO_Y) // constantes.CELDA_ALTO #Devuelve el nro de casilla en y
                 cuadpos[1] = constantes.COMIENZO_PASTO_Y + (y * constantes.CELDA_ALTO)
                 if grilla_entidades[y][x] == 0:
-                    if seleccion_planta == "lanzaguisantes":
-                        nueva_planta = lanzaguisantes((x * constantes.CELDA_ANCHO) + constantes.COMIENZO_PASTO_X - 15,(y * constantes.CELDA_ALTO) + constantes.COMIENZO_PASTO_Y + 20) #En la pos de la planta se pasa de numero de grilla a pixeles.
-                    elif seleccion_planta == "girasol":
-                        nueva_planta = Girasol((x * constantes.CELDA_ANCHO)+ constantes.COMIENZO_PASTO_X- 15,(y * constantes.CELDA_ALTO)+ constantes.COMIENZO_PASTO_Y+ 20,)
-                    elif seleccion_planta == "nuez":
-                        nueva_planta = Nuez((x * constantes.CELDA_ANCHO)+ constantes.COMIENZO_PASTO_X- 15,(y * constantes.CELDA_ALTO)+ constantes.COMIENZO_PASTO_Y+ 20,)
-                    grilla_entidades[y][x] = nueva_planta
-                    grupo_plantas.add(nueva_planta)
+                    if seleccion_planta != False:
+                        if seleccion_planta == "lanzaguisantes":
+                            nueva_planta = lanzaguisantes((x * constantes.CELDA_ANCHO) + constantes.COMIENZO_PASTO_X - 15,(y * constantes.CELDA_ALTO) + constantes.COMIENZO_PASTO_Y + 20) #En la pos de la planta se pasa de numero de grilla a pixeles.
+                        elif seleccion_planta == "girasol":
+                            nueva_planta = Girasol((x * constantes.CELDA_ANCHO)+ constantes.COMIENZO_PASTO_X- 15,(y * constantes.CELDA_ALTO)+ constantes.COMIENZO_PASTO_Y+ 20,)
+                        elif seleccion_planta == "nuez":
+                            nueva_planta = Nuez((x * constantes.CELDA_ANCHO)+ constantes.COMIENZO_PASTO_X- 15,(y * constantes.CELDA_ALTO)+ constantes.COMIENZO_PASTO_Y+ 20,)
+                        grilla_entidades[y][x] = nueva_planta
+                        grupo_plantas.add(nueva_planta)
 
         elif event.type == pygame.MOUSEMOTION:
             x, y = event.pos
