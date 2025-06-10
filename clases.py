@@ -137,7 +137,7 @@ class Girasol(Plantas):
 
 
 class Nuez(Plantas):
-    def __init__(self, x, y, vida=1000, cooldown=7500, costo=50):
+    def __init__(self, x, y, vida=4000, cooldown=30000, costo=50):
         self.x = x
         self.y = y
         self.vida = vida
