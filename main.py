@@ -8,7 +8,7 @@ from funciones import *
 pygame.init()
 
 reloj = pygame.time.Clock()
-mixer.music.load("assets/Musica/[Day Stage].mp3")
+mixer.music.load(r"assets/Musica/[Day Stage].mp3")
 mixer.music.play(-1)
 
 # Definicion de pantalla
@@ -16,12 +16,12 @@ screen = pygame.display.set_mode((constantes.ANCHO_VENTANA, constantes.ALTO_VENT
 
 # Titulo e Ícono
 pygame.display.set_caption("Plants vs. Zombies")
-icono = pygame.image.load("assets//icon.png")
+icono = pygame.image.load(r"assets//icon.png")
 pygame.display.set_icon(icono)
 
 
 # Fondo de pantalla del juego
-background = pygame.image.load("assets//map.jpeg").convert()
+background = pygame.image.load(r"assets//map.jpeg").convert()
 background = pygame.transform.scale(
     background, (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA)
 )
@@ -60,9 +60,9 @@ APARICION_ZOMBIE = pygame.USEREVENT
 pygame.time.set_timer(APARICION_ZOMBIE, constantes.TIEMPO_APARICION)
 
 # Defino semillas
-s_girasol = Semillas(30, 30, "assets\semillas\semillas_girasol.png", "girasol")
-s_lanzaguisantes = Semillas(30, 128, "assets//semillas//semillas_lanzaguisantes.png")
-s_nuez = Semillas(30, 226, "assets//semillas//semillas_nuez.png", "nuez")
+s_girasol = Semillas(380, 10, r"assets\semillas\semillas_girasol.png", "girasol")
+s_lanzaguisantes = Semillas(440, 10, r"assets//semillas//semillas_lanzaguisantes.png", "lanzaguisantes")
+s_nuez = Semillas(500, 10, r"assets//semillas//semillas_nuez.png", "nuez")
 s_lanzaguisantes.add(grupo_semillas)
 s_girasol.add(grupo_semillas)
 s_nuez.add(grupo_semillas)

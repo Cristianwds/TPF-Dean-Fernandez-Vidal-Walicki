@@ -148,7 +148,7 @@ class lanzaguisantes(Plantas):
 
         if ahora - self.ultimo_disparo >= 1500:
             self.ultimo_disparo = ahora
-            guisante = Proyectil("assets\\lanzaguisante\\guisante.png", self.hitbox.x + 60, self.hitbox.y + 6, 20)
+            guisante = Proyectil(r"assets\\lanzaguisante\\guisante.png", self.hitbox.x + 60, self.hitbox.y + 6, 20)
             grupo_proyectiles.add(guisante)
 
 
@@ -159,7 +159,7 @@ class Girasol(Plantas):
         self.vida = vida
         self.cooldown = cooldown
         self.costo = costo
-        self.image = pygame.image.load("assets\girasol\girasol.png")
+        self.image = pygame.image.load(r"assets\girasol\girasol.png")
         self.rect = self.image.get_rect(midleft=(x, y))
         super().__init__(x, y, self.image, vida, cooldown, costo)
 
@@ -171,14 +171,14 @@ class Nuez(Plantas):
         self.vida = vida
         self.cooldown = cooldown
         self.costo = costo
-        self.image = pygame.image.load("assets/nuez/wallnut.png")
+        self.image = pygame.image.load(r"assets/nuez/wallnut.png")
         self.rect = self.image.get_rect(midleft=(x, y))
         super().__init__(x, y, self.image, vida, cooldown, costo)
 
 
 class Proyectil(pygame.sprite.Sprite):
 
-    def __init__(self,imagen,x,y,daño,impacto=[pygame.mixer.Sound("assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\Hit1.ogg"),pygame.mixer.Sound("assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\Hit2.mp3"),pygame.mixer.Sound("assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\Hit3.ogg")]):
+    def __init__(self,imagen,x,y,daño,impacto=[pygame.mixer.Sound(r"assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\Hit1.ogg"),pygame.mixer.Sound("assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\Hit2.mp3"),pygame.mixer.Sound("assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\Hit3.ogg")]):
         super().__init__()
         self.x = x
         self.y = y
