@@ -59,6 +59,14 @@ pos_zombie = [165, 255, 345, 435, 525]
 APARICION_ZOMBIE = pygame.USEREVENT
 pygame.time.set_timer(APARICION_ZOMBIE, constantes.TIEMPO_APARICION)
 
+# Defino semillas
+s_girasol = Semillas(30, 30, "assets\semillas\semillas_girasol.png", "girasol")
+s_lanzaguisantes = Semillas(30, 128, "assets//semillas//semillas_lanzaguisantes.png")
+s_nuez = Semillas(30, 226, "assets//semillas//semillas_nuez.png", "nuez")
+s_lanzaguisantes.add(grupo_semillas)
+s_girasol.add(grupo_semillas)
+s_nuez.add(grupo_semillas)
+
 seleccion_planta = False
 #  x, y, imagen, vida, velocidad
 run = True
@@ -69,12 +77,12 @@ while run:
         screen.blit(cuad, cuadpos)
     # dibujar_grilla(screen, grilla_rects) #Esta funcion dibuja la grilla, comentar para que no se dibuje
 
-
     grupo_plantas.update()
     grupo_plantas.draw(screen)
     grupo_proyectiles.update()
     grupo_proyectiles.draw(screen)
     screen.blit(barra, (300, 0))
+    grupo_semillas.draw(screen)
 
     if cuadpos[0] <= constantes.COMIENZO_PASTO_X:
         cuadpos[0], columna = constantes.COMIENZO_PASTO_X, 0
@@ -134,6 +142,11 @@ while run:
                             nueva_planta = Nuez((x * constantes.CELDA_ANCHO)+ constantes.COMIENZO_PASTO_X- 15,(y * constantes.CELDA_ALTO)+ constantes.COMIENZO_PASTO_Y+ 20,)
                         grilla_entidades[y][x] = nueva_planta
                         grupo_plantas.add(nueva_planta)
+            else: #Este else puede cambiarse por un elif con las dimensiones del rectangulo donde estan las semillas x ejemplo.
+                grupo_semillas.update(event)
+                for semillas in grupo_semillas:
+                    if semillas.clicked:
+                        seleccion_planta = semillas.item
 
         elif event.type == pygame.MOUSEMOTION:
             x, y = event.pos
@@ -142,7 +155,6 @@ while run:
                 cuadpos[0] = constantes.COMIENZO_PASTO_X + (x * constantes.CELDA_ANCHO)
                 y = (y - constantes.COMIENZO_PASTO_Y) // constantes.CELDA_ALTO #Devuelve el nro de casilla en y
                 cuadpos[1] = constantes.COMIENZO_PASTO_Y + (y * constantes.CELDA_ALTO)
-
 
         # Cada cierto tiempo spawnean zombies
         elif event.type == APARICION_ZOMBIE:

@@ -8,6 +8,8 @@ pygame.mixer.init()
 grupo_plantas = pygame.sprite.Group()
 grupo_proyectiles = pygame.sprite.Group()
 grupo_zombies = pygame.sprite.Group()
+
+grupo_semillas = pygame.sprite.Group()
 class Criaturas(pygame.sprite.Sprite):
     def __init__(self, x, y, imagen, vida):
         super().__init__()
@@ -204,3 +206,33 @@ class Proyectil(pygame.sprite.Sprite):
 
         if self.rect.right > constantes.ANCHO_VENTANA:
             self.kill()
+
+
+class Semillas(pygame.sprite.Sprite):
+
+    def __init__(
+        self,
+        x,
+        y,
+        image,
+        item="lanzaguisantes",
+        valor=0,
+        cooldown=0,
+    ):
+        super().__init__()
+        self.x = x
+        self.y = y
+        self.image = pygame.image.load(image)
+        self.valor = valor
+        self.cooldown = cooldown
+        self.item = item
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (x, y)
+        self.clicked = False
+
+    def update(self, evento):
+        if evento.type == pygame.MOUSEBUTTONDOWN:
+            if self.rect.collidepoint(evento.pos):
+                self.clicked = True
+            else:
+                self.clicked = False
