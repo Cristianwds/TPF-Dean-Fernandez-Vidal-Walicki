@@ -82,6 +82,8 @@ class Enemigos(Criaturas):
                 self.frames = self.frames_caminata
                 self.indice_frame = 0
             self.pos_x -= self.velocidad
+            if self.pos_x <= 0:
+                self.kill()
 
         self.rect.x = round(self.pos_x)
         self.hitbox.center = self.rect.center
