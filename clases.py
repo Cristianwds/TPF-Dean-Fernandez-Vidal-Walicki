@@ -24,17 +24,26 @@ class Criaturas(pygame.sprite.Sprite):
             return True
 
 class Enemigos(Criaturas):
-    def __init__(self, x, y, frames, vida, daño, velocidad= constantes.VELOCIDAD_ZOMBIE):
-        super().__init__(x, y, frames[0], vida)
+    def __init__(self, x, y, tipo = "cono", vida=181, daño= constantes.DAÑO_ZOMBIE_NORMAL, velocidad= constantes.VELOCIDAD_ZOMBIE):
+        
+        # Se cargan los frames
+        self.frames_caminata = [pygame.image.load(f"assets/zombies/{tipo}/caminata/frame_{i}.png").convert_alpha() for i in range(1, 56)]
+        
+        self.frames= self.frames_caminata
+        imagen_inicial = self.frames[0]
+
+        # Se llama a la Superclase con la imagen cargada
+        super().__init__(x, y, imagen_inicial, vida)
+
         self.velocidad = velocidad
-        self.ultimo_frame = pygame.time.get_ticks()
-        self.pos_x = float(x)  # para suavidad
+        self.daño = daño
+        self.tipo = tipo
+        self.pos_x = float(x)
         self.pos_y = y
-        self.frames= frames
-        self.indice_frame= 0
-        self.daño= daño
-        self.velocidad_animacion = constantes.VEL_ANIM_ZOMBIE  # milisegundos por frame
-        # Redimensionar imagen si hace falta
+        self.indice_frame = 0
+        self.ultimo_frame = pygame.time.get_ticks()
+        self.ultimo_ataque = pygame.time.get_ticks()
+        self.velocidad_animacion = constantes.VEL_ANIM_ZOMBIE
         #self.image = pygame.transform.scale(self.image, (120, 140))  # opcional
 
         # Rect de dibujo
@@ -43,7 +52,7 @@ class Enemigos(Criaturas):
         # Hitbox para colisiones
         self.hitbox = pygame.Rect(0, 0, 30, 60)
         self.hitbox.center = self.rect.center
-        self.ultimo_ataque= pygame.time.get_ticks()
+        
     def update(self):
         self.pos_x -= self.velocidad
         self.rect.x = int(self.pos_x)
