@@ -28,6 +28,9 @@ background = pygame.transform.scale(
 barra = pygame.image.load(r"assets/barra.png")
 barra = pygame.transform.scale(barra, (540,100))
 
+perdiste = pygame.image.load(r"assets/ZombiesWon.png")
+perdiste = pygame.transform.scale(perdiste, (925,770))
+
 # Grilla de entidades y grilla de rects.
 grilla_rects = [
     [
@@ -65,6 +68,7 @@ while run:
     if seleccion_planta != False:
         screen.blit(cuad, cuadpos)
     # dibujar_grilla(screen, grilla_rects) #Esta funcion dibuja la grilla, comentar para que no se dibuje
+
 
     grupo_plantas.update()
     grupo_plantas.draw(screen)
@@ -148,6 +152,10 @@ while run:
 
     grupo_zombies.update()
     grupo_zombies.draw(screen)
+
+    for zombie in grupo_zombies:
+        if zombie.hitbox.x <= 260:
+            screen.blit(perdiste, (100,25))
 
     pygame.display.update()
     reloj.tick(60)
