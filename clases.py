@@ -29,7 +29,7 @@ class Enemigos(Criaturas):
         # Se cargan los frames
         self.frames_caminata = [pygame.image.load(f"assets/zombies/{tipo}/caminata/frame_{i}.png").convert_alpha() for i in range(1, 56)]
         # Para futuro cuando tengamos la animacion de ataque
-        self.frames_ataque = [pygame.image.load(f"assets/zombies/{tipo}/ataque/frames_{i}.png").convert_alpha() for i in range (1, 21)] # Por ahora tiene las mismas img de movimiento
+        self.frames_ataque = [pygame.image.load(f"assets/zombies/{tipo}/ataque/frame_{i}.png").convert_alpha() for i in range (1, 21)] # Por ahora tiene las mismas img de movimiento
         self.estado= "caminar" # caminar o atacar
         self.frames= self.frames_caminata
         imagen_inicial = self.frames[0]
