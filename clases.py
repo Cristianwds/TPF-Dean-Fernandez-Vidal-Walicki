@@ -28,7 +28,9 @@ class Enemigos(Criaturas):
         
         # Se cargan los frames
         self.frames_caminata = [pygame.image.load(f"assets/zombies/{tipo}/caminata/frame_{i}.png").convert_alpha() for i in range(1, 56)]
-        
+        # Para futuro cuando tengamos la animacion de ataque
+        self.frames_ataque = [pygame.image.load(f"assets/zombies/{tipo}/ataque/frames_{i}.png").convert_alpha() for i in range (1, 21)] # Por ahora tiene las mismas img de movimiento
+        self.estado= "caminar" # caminar o atacar
         self.frames= self.frames_caminata
         imagen_inicial = self.frames[0]
 
@@ -54,21 +56,34 @@ class Enemigos(Criaturas):
         self.hitbox.center = self.rect.center
         
     def update(self):
-        self.pos_x -= self.velocidad
-        self.rect.x = int(self.pos_x)
-        self.hitbox.center = self.rect.center
-        self.hitbox.x += 5
+        atacando = False
 
         for planta in grupo_plantas:
             ahora = pygame.time.get_ticks()
             if self.hitbox.colliderect(planta.hitbox):
+                atacando = True
                 self.velocidad= 0
                 if ahora - self.ultimo_ataque >= constantes.VELOCIDAD_ATAQUE_ZOMBIE:
                     self.ultimo_ataque = ahora
                     #random.choice(self.impacto).play()
                     if planta.recibir_daño(self.daño):
                         self.velocidad = constantes.VELOCIDAD_ZOMBIE
-                    
+            
+        if atacando:
+            if self.estado != "atacar":
+                self.estado = "atacar"
+                self.frames = self.frames_ataque
+                self.indice_frame = 0
+        else:
+            if self.estado != "caminar":
+                self.estado = "caminar"
+                self.frames = self.frames_caminata
+                self.indice_frame = 0
+            self.pos_x -= self.velocidad
+
+        self.rect.x = round(self.pos_x)
+        self.hitbox.center = self.rect.center
+        self.hitbox.x += 5
         
         tiempo_frame= pygame.time.get_ticks()
         #Cambia de frame cuando se actualiza
