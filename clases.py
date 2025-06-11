@@ -26,7 +26,7 @@ class Criaturas(pygame.sprite.Sprite):
             return True
 
 class Enemigos(Criaturas):
-    def __init__(self, x, y, tipo, vida=181, daño= constantes.DAÑO_ZOMBIE_NORMAL, velocidad= constantes.VELOCIDAD_ZOMBIE):
+    def __init__(self, x, y, tipo, vida, daño= constantes.DAÑO_ZOMBIE, velocidad= constantes.VELOCIDAD_ZOMBIE):
         
         # Se cargan los frames
         self.tipo = tipo
