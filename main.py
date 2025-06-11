@@ -25,7 +25,7 @@ background = pygame.image.load("assets//map.jpeg").convert()
 background = pygame.transform.scale(
     background, (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA)
 )
-barra = pygame.image.load(r"C:\Users\Equipo\Downloads\barra.png")
+barra = pygame.image.load(r"assets/barra.png")
 barra = pygame.transform.scale(barra, (540,100))
 
 # Grilla de entidades y grilla de rects.
