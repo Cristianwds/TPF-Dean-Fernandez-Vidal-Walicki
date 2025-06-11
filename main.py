@@ -19,11 +19,14 @@ pygame.display.set_caption("Plants vs. Zombies")
 icono = pygame.image.load("assets//icon.png")
 pygame.display.set_icon(icono)
 
+
 # Fondo de pantalla del juego
 background = pygame.image.load("assets//map.jpeg").convert()
 background = pygame.transform.scale(
     background, (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA)
 )
+barra = pygame.image.load(r"C:\Users\Equipo\Downloads\barra.png")
+barra = pygame.transform.scale(barra, (540,100))
 
 # Grilla de entidades y grilla de rects.
 grilla_rects = [
@@ -67,6 +70,7 @@ while run:
     grupo_plantas.draw(screen)
     grupo_proyectiles.update()
     grupo_proyectiles.draw(screen)
+    screen.blit(barra, (300, 0))
 
     if cuadpos[0] <= constantes.COMIENZO_PASTO_X:
         cuadpos[0], columna = constantes.COMIENZO_PASTO_X, 0
