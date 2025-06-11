@@ -204,7 +204,8 @@ while run:
             # Cada cierto tiempo spawnean zombies
             elif event.type == APARICION_ZOMBIE:
                 pos_aleatoria = random.randint(0, 4)
-                nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, pos_zombie[pos_aleatoria], tipo="cono")
+                tipo= random.choice(constantes.TIPOS_ZOMBIES)
+                nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, pos_zombie[pos_aleatoria], tipo)
                 nuevo_zombie.add(grupo_zombies)
 
         grupo_zombies.update()

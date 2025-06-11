@@ -1,3 +1,5 @@
+import os
+
 ANCHO_VENTANA = 1040
 ALTO_VENTANA = 650
 VELOCIDAD_PROYECTIL = 10
@@ -21,3 +23,8 @@ VEL_ANIM_LG= 15
 
 YMAX = 480
 XMAX = 946
+
+TIPOS_ZOMBIES = ["normal", "cono", "balde"]
+Cant_frames= {"normal": [len(os.listdir(r"assets\zombies\normal\caminata")), len(os.listdir(r"assets\zombies\normal\ataque"))],
+              "cono": [len(os.listdir(r"assets\zombies\cono\caminata")), len(os.listdir(r"assets\zombies\cono\ataque"))], 
+              "balde":[len(os.listdir(r"assets\zombies\balde\caminata")), len(os.listdir(r"assets\zombies\balde\ataque"))]}
