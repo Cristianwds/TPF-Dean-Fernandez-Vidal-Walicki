@@ -90,7 +90,9 @@ class Plantas(Criaturas):
 
 class lanzaguisantes(Plantas):
     def __init__(self, x, y, vida=300, cooldown=7500, costo=100):
-        self.frames = [pygame.image.load(f"assets\\lanzaguisante\\frame_{i}.png").convert_alpha() for i in range(48)]
+        self.frames = [pygame.image.load(f"assets\lanzaguisante\\frame_{i}.png").convert_alpha() for i in range(48)]
+        #"C:\Users\wikiw\OneDrive\Documentos\Pensamiento_Computacional\Python\TPs\TP3\TPF-Dean-Fernandez-Vidal-Walicki\assets\zombies\cono\caminata"
+        #C:\Users\wikiw\OneDrive\Documentos\Pensamiento_Computacional\Python\TPs\TP3\TPF-Dean-Fernandez-Vidal-Walicki\assets\lanzaguisante
         self.indice_frames = 0
         self.image = self.frames[self.indice_frames]
         self.costo = costo
