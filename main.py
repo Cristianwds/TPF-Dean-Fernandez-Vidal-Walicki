@@ -19,6 +19,24 @@ pygame.display.set_caption("Plants vs. Zombies")
 icono = pygame.image.load(r"assets//icon.png")
 pygame.display.set_icon(icono)
 
+# Interfaz del juego
+
+fondo_interfaz = pygame.image.load(r'TPF-Dean-Fernandez-Vidal-Walicki\assets\interfaz.play.png')
+fondo_interfaz = pygame.transform.scale(fondo_interfaz, (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA))
+
+boton_jugar = pygame.Rect(constantes.ANCHO_VENTANA / 2 + 25, constantes.ALTO_VENTANA/ 2 - 210, 300, 100)
+boton_salir = pygame.Rect(constantes.ANCHO_VENTANA / 2 + 25, constantes.ALTO_VENTANA/ 2 - 85, 300, 110)
+
+def pantalla_inicio():
+    screen.blit(fondo_interfaz, (0,0))
+    #dibujar_texto(' Plantas vs zombies', font_titulo, constantes.BLANCO, constantes.ANCHO_VENTANA / 2 - 280 , constantes.ALTO_VENTANA / 2 - 200)
+    #pygame.draw.rect(ventana_del_juego, (0,0,0,0), boton_jugar)
+    #pygame.draw.rect(ventana_del_juego, (0,0,0,0), boton_salir)
+    #ventana_del_juego.blit(texto_boton_jugar, (boton_jugar.x + 190, boton_jugar.y -120))
+    #ventana_del_juego.blit(texto_boton_salir, (boton_salir.x + 200, boton_salir.y - 90))
+    pygame.display.update()
+
+
 
 # Fondo de pantalla del juego
 background = pygame.image.load(r"assets//map.jpeg").convert()
@@ -70,7 +88,25 @@ s_nuez.add(grupo_semillas)
 seleccion_planta = False
 #  x, y, imagen, vida, velocidad
 run = True
+mostrar_inicio = True 
 while run:
+    if mostrar_inicio:
+        pantalla_inicio()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if boton_jugar.collidepoint(event.pos):
+                    mostrar_inicio  = False
+                if boton_salir.collidepoint(event.pos):
+                    run = False 
+    #else:
+        #reloj.tick(constantes.FPS)
+        #screen.fill(constantes.COLOR_BG) #VAMOS A LLNAR EL FONDO CON EL COLOR BG
+
+        # Dibujar fondo con imagen de grilla
+        #screen.blit(background, (0,0))
+        
 
     screen.blit(background, (0, 0))  # Fondo
     if seleccion_planta != False:
