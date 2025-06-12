@@ -29,10 +29,10 @@ boton_salir = pygame.Rect(constantes.ANCHO_VENTANA / 2 + 25, constantes.ALTO_VEN
 
 # Botones para chequear (PLAY Y EXIT)
 
-#font_inicio = pygame.font.SysFont('arial',30 )
-#font_titulo = pygame.font.SysFont('arial', 75)
-#texto_boton_jugar = font_inicio.render('', True, (0,0,0))
-#texto_boton_salir = font_inicio.render('', True, (255,255,255))
+# font_inicio = pygame.font.SysFont('arial',30 )
+# font_titulo = pygame.font.SysFont('arial', 75)
+# texto_boton_jugar = font_inicio.render('', True, (0,0,0))
+# texto_boton_salir = font_inicio.render('', True, (255,255,255))
 
 def dibujar_texto(texto, fuente, color, x, y):
     superficie_texto = fuente.render(texto, True, color)
@@ -94,6 +94,20 @@ s_nuez = Semillas(500, 10, r"assets//semillas//semillas_nuez.png", "nuez")
 s_lanzaguisantes.add(grupo_semillas)
 s_girasol.add(grupo_semillas)
 s_nuez.add(grupo_semillas)
+# Defino las cortapastos
+cortapastos_col = []
+cortapastos_col += [
+    [
+        Cortapasto(
+            constantes.COMIENZO_PASTO_X - constantes.CELDA_ANCHO - 20,
+            constantes.COMIENZO_PASTO_Y + constantes.CELDA_ALTO * fil,
+            cortapastos_col,
+        )
+    ]
+    for fil in range(5)
+]
+for cortapasto_id in cortapastos_col:
+    grupo_cortapastos.add(cortapasto_id)
 
 seleccion_planta = False
 #  x, y, imagen, vida, velocidad
@@ -111,12 +125,12 @@ while run:
                 if boton_salir.collidepoint(event.pos):
                     run = False 
     else:
-        #reloj.tick(constantes.FPS)
-        #screen.fill(constantes.COLOR_BG) #VAMOS A LLNAR EL FONDO CON EL COLOR BG
+        # reloj.tick(constantes.FPS)
+        # screen.fill(constantes.COLOR_BG) #VAMOS A LLNAR EL FONDO CON EL COLOR BG
 
-        #Dibujar fondo con imagen de grilla
-        #screen.blit(background, (0,0))
-        
+        # Dibujar fondo con imagen de grilla
+        # screen.blit(background, (0,0))
+
         screen.blit(background, (0, 0))  # Fondo
         if seleccion_planta != False:
             screen.blit(cuad, cuadpos)
@@ -128,6 +142,8 @@ while run:
         grupo_proyectiles.draw(screen)
         screen.blit(barra, (300, 0))
         grupo_semillas.draw(screen)
+        grupo_cortapastos.draw(screen)
+        grupo_cortapastos.update()
 
         if cuadpos[0] <= constantes.COMIENZO_PASTO_X:
             cuadpos[0], columna = constantes.COMIENZO_PASTO_X, 0
@@ -180,13 +196,17 @@ while run:
                     if grilla_entidades[y][x] == 0:
                         if seleccion_planta != False:
                             if seleccion_planta == "lanzaguisantes":
-                                nueva_planta = lanzaguisantes((x * constantes.CELDA_ANCHO) + constantes.COMIENZO_PASTO_X - 15,(y * constantes.CELDA_ALTO) + constantes.COMIENZO_PASTO_Y + 20) #En la pos de la planta se pasa de numero de grilla a pixeles.
+                                nueva_planta = lanzaguisantes((x * constantes.CELDA_ANCHO) + constantes.COMIENZO_PASTO_X - 15,(y * constantes.CELDA_ALTO) + constantes.COMIENZO_PASTO_Y + 20, grilla_entidades) #En la pos de la planta se pasa de numero de grilla a pixeles.
                             elif seleccion_planta == "girasol":
-                                nueva_planta = Girasol((x * constantes.CELDA_ANCHO)+ constantes.COMIENZO_PASTO_X- 15,(y * constantes.CELDA_ALTO)+ constantes.COMIENZO_PASTO_Y+ 20,)
+                                nueva_planta = Girasol((x * constantes.CELDA_ANCHO)+ constantes.COMIENZO_PASTO_X- 15,(y * constantes.CELDA_ALTO)+ constantes.COMIENZO_PASTO_Y+ 20, grilla_entidades)
                             elif seleccion_planta == "nuez":
-                                nueva_planta = Nuez((x * constantes.CELDA_ANCHO)+ constantes.COMIENZO_PASTO_X- 15,(y * constantes.CELDA_ALTO)+ constantes.COMIENZO_PASTO_Y+ 20,)
+                                nueva_planta = Nuez((x * constantes.CELDA_ANCHO)+ constantes.COMIENZO_PASTO_X- 15,(y * constantes.CELDA_ALTO)+ constantes.COMIENZO_PASTO_Y+ 20, grilla_entidades)
+                            seleccion_planta = False
                             grilla_entidades[y][x] = nueva_planta
                             grupo_plantas.add(nueva_planta)
+                            pygame.mixer.Sound(
+                                r"assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\semillas\semillas_plantar.ogg"
+                            ).play()
                 else: #Este else puede cambiarse por un elif con las dimensiones del rectangulo donde estan las semillas x ejemplo.
                     grupo_semillas.update(event)
                     for semillas in grupo_semillas:

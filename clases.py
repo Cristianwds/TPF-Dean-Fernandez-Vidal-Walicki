@@ -2,13 +2,13 @@ import pygame
 import constantes
 import random
 from pygame import mixer
-
+from funciones import *
 pygame.mixer.init()
 
 grupo_plantas = pygame.sprite.Group()
 grupo_proyectiles = pygame.sprite.Group()
 grupo_zombies = pygame.sprite.Group()
-
+grupo_cortapastos = pygame.sprite.Group()
 grupo_semillas = pygame.sprite.Group()
 class Criaturas(pygame.sprite.Sprite):
     def __init__(self, x, y, imagen, vida):
@@ -102,7 +102,8 @@ class Enemigos(Criaturas):
 
 
 class Plantas(Criaturas):
-    def __init__(self, x, y, imagen, vida, cooldown, costo):
+    plantas_id = 0
+    def __init__(self, x, y, imagen, vida, cooldown, costo, lista_entidades):
         super().__init__(x, y, imagen, vida)
         self.cooldown = cooldown
         self.costo = costo
@@ -115,9 +116,19 @@ class Plantas(Criaturas):
         # Hitbox separada: más pequeña, para colisiones
         self.hitbox = pygame.Rect(0, 0, self.rect.width - 50, self.rect.height - 60)
         self.hitbox.midbottom = self.rect.midbottom
+        self.lista_entidades = lista_entidades
+        Plantas.plantas_id += 1
+        self.id = Plantas.plantas_id
+
+    def recibir_daño(self, daño):
+        self.vida -= daño
+        if self.vida <= 0:
+            eliminar(self.lista_entidades, self.id)
+            self.kill()
+            return True
 
 class lanzaguisantes(Plantas):
-    def __init__(self, x, y, vida=300, cooldown=7500, costo=100):
+    def __init__(self, x, y, lista_entidades, vida=300, cooldown=7500, costo=100):
         self.frames = [pygame.image.load(f"assets\lanzaguisante\\frame_{i}.png").convert_alpha() for i in range(48)]
         #"C:\Users\wikiw\OneDrive\Documentos\Pensamiento_Computacional\Python\TPs\TP3\TPF-Dean-Fernandez-Vidal-Walicki\assets\zombies\cono\caminata"
         #C:\Users\wikiw\OneDrive\Documentos\Pensamiento_Computacional\Python\TPs\TP3\TPF-Dean-Fernandez-Vidal-Walicki\assets\lanzaguisante
@@ -134,7 +145,7 @@ class lanzaguisantes(Plantas):
         self.ultimo_frame = pygame.time.get_ticks()
         self.velocidad_animacion = 18  # milisegundos por frame
         self.rect = self.image.get_rect(midleft= (x,y))
-        Plantas.__init__(self, x, y, self.image, vida, cooldown, costo)
+        Plantas.__init__(self, x, y, self.image, vida, cooldown, costo, lista_entidades)
 
     def update(self):
         ahora = pygame.time.get_ticks()
@@ -155,7 +166,7 @@ class lanzaguisantes(Plantas):
 
 
 class Girasol(Plantas):
-    def __init__(self, x, y, vida=300, cooldown=7500, costo=50):
+    def __init__(self, x, y, lista_entidades, vida=300, cooldown=7500, costo=50):
         self.x = x
         self.y = y
         self.vida = vida
@@ -163,11 +174,11 @@ class Girasol(Plantas):
         self.costo = costo
         self.image = pygame.image.load(r"assets\girasol\girasol.png")
         self.rect = self.image.get_rect(midleft=(x, y))
-        super().__init__(x, y, self.image, vida, cooldown, costo)
+        super().__init__(x, y, self.image, vida, cooldown, costo, lista_entidades)
 
 
 class Nuez(Plantas):
-    def __init__(self, x, y, vida=4000, cooldown=30000, costo=50):
+    def __init__(self, x, y, lista_entidades, vida=4000, cooldown=30000, costo=50):
         self.x = x
         self.y = y
         self.vida = vida
@@ -175,7 +186,7 @@ class Nuez(Plantas):
         self.costo = costo
         self.image = pygame.image.load(r"assets/nuez/wallnut.png")
         self.rect = self.image.get_rect(midleft=(x, y))
-        super().__init__(x, y, self.image, vida, cooldown, costo)
+        super().__init__(x, y, self.image, vida, cooldown, costo, lista_entidades)
 
 
 class Proyectil(pygame.sprite.Sprite):
@@ -236,5 +247,37 @@ class Semillas(pygame.sprite.Sprite):
         if evento.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(evento.pos):
                 self.clicked = True
+                pygame.mixer.Sound(
+                    "assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\semillas\semillas_seleccion.ogg"
+                ).play()
             else:
                 self.clicked = False
+
+
+class Cortapasto(pygame.sprite.Sprite):
+    cortapasto_id = 0
+
+    def __init__(self, x, y, lista):
+        self.image = pygame.image.load("assets\cortapasto\cortapasto.png")
+        self.rect = self.image.get_rect(topleft=[x, y])
+        self.hitbox = pygame.Rect(0, 0, self.rect.width, self.rect.height - 60)
+        self.hitbox.center = self.rect.center
+        self.moving = False
+        Cortapasto.cortapasto_id += 1
+        self.id = Cortapasto.cortapasto_id
+        self.cortapastos_col = lista
+        super().__init__()
+
+    def update(self):
+        for zombies in grupo_zombies:
+            if self.moving == 0 and self.hitbox.colliderect(zombies.hitbox):
+                self.moving = True
+                pygame.mixer.Sound("assets\cortapasto\cortapastos_activa.ogg").play()
+            elif self.moving == 1 and self.hitbox.colliderect(zombies.hitbox):
+                zombies.kill()
+        if self.moving == True:
+            self.rect.x += 10
+            self.hitbox.center = self.rect.center
+        if self.rect.x >= constantes.FIN_PASTO_X:
+            eliminar(self.cortapastos_col, self.id)
+            self.kill()
