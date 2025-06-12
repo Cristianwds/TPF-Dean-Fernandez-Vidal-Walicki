@@ -138,12 +138,14 @@ while run:
 
         grupo_plantas.update()
         grupo_plantas.draw(screen)
+        grupo_cortapastos.draw(screen)
+        grupo_cortapastos.update()
+        grupo_zombies.update()
+        grupo_zombies.draw(screen)
         grupo_proyectiles.update()
         grupo_proyectiles.draw(screen)
         screen.blit(barra, (300, 0))
         grupo_semillas.draw(screen)
-        grupo_cortapastos.draw(screen)
-        grupo_cortapastos.update()
 
         if cuadpos[0] <= constantes.COMIENZO_PASTO_X:
             cuadpos[0], columna = constantes.COMIENZO_PASTO_X, 0
@@ -227,9 +229,6 @@ while run:
                 tipo= random.choice(constantes.TIPOS_ZOMBIES)
                 nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, pos_zombie[pos_aleatoria], tipo, constantes.VIDA_ZOMBIES[tipo])
                 nuevo_zombie.add(grupo_zombies)
-
-        grupo_zombies.update()
-        grupo_zombies.draw(screen)
 
         for zombie in grupo_zombies:
             if zombie.hitbox.x <= 260:

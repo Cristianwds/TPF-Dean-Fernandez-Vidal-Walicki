@@ -130,8 +130,6 @@ class Plantas(Criaturas):
 class lanzaguisantes(Plantas):
     def __init__(self, x, y, lista_entidades, vida=300, cooldown=7500, costo=100):
         self.frames = [pygame.image.load(f"assets\lanzaguisante\\frame_{i}.png").convert_alpha() for i in range(48)]
-        #"C:\Users\wikiw\OneDrive\Documentos\Pensamiento_Computacional\Python\TPs\TP3\TPF-Dean-Fernandez-Vidal-Walicki\assets\zombies\cono\caminata"
-        #C:\Users\wikiw\OneDrive\Documentos\Pensamiento_Computacional\Python\TPs\TP3\TPF-Dean-Fernandez-Vidal-Walicki\assets\lanzaguisante
         self.indice_frames = 0
         self.image = self.frames[self.indice_frames]
         self.costo = costo
@@ -155,9 +153,6 @@ class lanzaguisantes(Plantas):
             self.ultimo_frame = tiempo_frame
             self.indice_frames = (self.indice_frames + 1) % len(self.frames)
             self.image = self.frames[self.indice_frames]
-            self.rect = self.image.get_rect(midleft= (self.pos_x,self.pos_y))
-
-            # Actualizar rect para que la animación se vea bien posicionada
 
         if ahora - self.ultimo_disparo >= 1500:
             self.ultimo_disparo = ahora
@@ -170,12 +165,23 @@ class Girasol(Plantas):
         self.x = x
         self.y = y
         self.vida = vida
+        self.frames = [pygame.image.load(f"assets\girasol\\frame_{i}.png").convert_alpha() for i in range(36)]
+        self.indice_frames = 0
+        self.image = self.frames[self.indice_frames]
         self.cooldown = cooldown
         self.costo = costo
-        self.image = pygame.image.load(r"assets\girasol\girasol.png")
+        self.ultimo_frame = pygame.time.get_ticks()
+        self.velocidad_animacion = 18
         self.rect = self.image.get_rect(midleft=(x, y))
         super().__init__(x, y, self.image, vida, cooldown, costo, lista_entidades)
 
+    def update(self):
+        tiempo_frame= pygame.time.get_ticks()
+
+        if tiempo_frame - self.ultimo_frame > self.velocidad_animacion:
+            self.ultimo_frame = tiempo_frame
+            self.indice_frames = (self.indice_frames + 1) % len(self.frames)
+            self.image = self.frames[self.indice_frames]
 
 class Nuez(Plantas):
     def __init__(self, x, y, lista_entidades, vida=4000, cooldown=30000, costo=50):
