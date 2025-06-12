@@ -146,7 +146,7 @@ while run:
         grupo_proyectiles.draw(screen)
         screen.blit(barra, (300, 0))
         grupo_semillas.draw(screen)
-
+# CAMBIAR ESTA PARTE PORQUE HAY UN ERROR DE QUE SE VA DE LA GRILLA"""""
         if cuadpos[0] <= constantes.COMIENZO_PASTO_X:
             cuadpos[0], columna = constantes.COMIENZO_PASTO_X, 0
         if cuadpos[1] <= constantes.COMIENZO_PASTO_Y:
