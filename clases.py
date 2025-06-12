@@ -2,7 +2,7 @@ import pygame
 import constantes
 import random
 from pygame import mixer
-from funciones import *
+import funciones
 pygame.mixer.init()
 
 grupo_plantas = pygame.sprite.Group()
@@ -124,7 +124,7 @@ class Plantas(Criaturas):
     def recibir_daño(self, daño):
         self.vida -= daño
         if self.vida <= 0:
-            eliminar(self.lista_entidades, self.id)
+            funciones.eliminar(self.lista_entidades, self.id)
             self.kill()
             return True
 
@@ -298,7 +298,7 @@ class Cortapasto(pygame.sprite.Sprite):
             self.rect.x += 10
             self.hitbox.center = self.rect.center
         if self.rect.x >= constantes.FIN_PASTO_X:
-            eliminar(self.cortapastos_col, self.id)
+            funciones.eliminar(self.cortapastos_col, self.id)
             self.kill()
 
 
