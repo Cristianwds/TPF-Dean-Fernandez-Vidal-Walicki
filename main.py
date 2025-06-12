@@ -87,6 +87,10 @@ pos_zombie = [165, 255, 345, 435, 525]
 APARICION_ZOMBIE = pygame.USEREVENT
 pygame.time.set_timer(APARICION_ZOMBIE, constantes.TIEMPO_APARICION)
 
+##Evento de aparicion de soles
+#APARICION_SOLES = pygame.USEREVENT
+#pygame.time.set_timer(APARICION_SOLES, constantes.TIEMPO_APARICION_SOL)
+
 # Defino semillas
 s_girasol = Semillas(380, 10, r"assets\semillas\semillas_girasol.png", "girasol")
 s_lanzaguisantes = Semillas(440, 10, r"assets//semillas//semillas_lanzaguisantes.png", "lanzaguisantes")
@@ -229,6 +233,9 @@ while run:
                 tipo= random.choice(constantes.TIPOS_ZOMBIES)
                 nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, pos_zombie[pos_aleatoria], tipo, constantes.VIDA_ZOMBIES[tipo])
                 nuevo_zombie.add(grupo_zombies)
+            ## Cada cierto tiempo spawnean soles
+            #elif event.type == APARICION_SOLES:
+            #    caida_aleatoria = random.randint(0,8)
 
         for zombie in grupo_zombies:
             if zombie.hitbox.x <= 260:
