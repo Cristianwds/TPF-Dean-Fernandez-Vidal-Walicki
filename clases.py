@@ -10,6 +10,7 @@ grupo_proyectiles = pygame.sprite.Group()
 grupo_zombies = pygame.sprite.Group()
 grupo_cortapastos = pygame.sprite.Group()
 grupo_semillas = pygame.sprite.Group()
+grupo_pala = pygame.sprite.Group()
 class Criaturas(pygame.sprite.Sprite):
     def __init__(self, x, y, imagen, vida):
         super().__init__()
@@ -299,3 +300,28 @@ class Cortapasto(pygame.sprite.Sprite):
         if self.rect.x >= constantes.FIN_PASTO_X:
             eliminar(self.cortapastos_col, self.id)
             self.kill()
+
+
+
+class Pala(pygame.sprite.Sprite):
+
+    def __init__(self):
+        self.image = pygame.image.load(r"assets\pala\pala_icono.jpg")
+        self.x = 860
+        self.y = 10
+        self.rect = self.image.get_rect(topleft = [self.x, self.y])
+        self.clicked = False
+        self.sonido = pygame.mixer.Sound(r"assets\pala\pala_sonido.mp3")
+        self.cursor = pygame.image.load(r"assets\pala\pala_cursor.png")
+        super().__init__()
+
+    def update(self, evento):
+        if self.rect.collidepoint(evento.pos):
+            self.clicked = True
+            self.sonido.play()
+        else:
+            self.clicked = False
+
+    def dibujar_cursor(self, x,y,screen):
+        self.cursor_rect = self.cursor.get_rect(bottomleft = [x, y])
+        screen.blit(self.cursor, self.cursor_rect)

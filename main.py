@@ -113,6 +113,21 @@ cortapastos_col += [
 for cortapasto_id in cortapastos_col:
     grupo_cortapastos.add(cortapasto_id)
 
+
+#defino la pala
+pala = Pala()
+grupo_pala.add(pala)
+
+#Este diccionario es para las previews, se puede llegar a cambiar por una alternativa mejor.
+preview_dict = {
+    "lanzaguisantes": pygame.image.load(r"assets\lanzaguisante\frame_0.png"),
+    "girasol": pygame.image.load(r"assets\girasol\frame_0.png"),
+    "nuez": pygame.image.load(r"assets\nuez\frame_0.png"),
+}
+for values in preview_dict.values():
+    values.set_alpha(128)
+
+
 seleccion_planta = False
 #  x, y, imagen, vida, velocidad
 run = True
@@ -136,8 +151,6 @@ while run:
         # screen.blit(background, (0,0))
 
         screen.blit(background, (0, 0))  # Fondo
-        if seleccion_planta != False:
-            screen.blit(cuad, cuadpos)
         # dibujar_grilla(screen, grilla_rects) #Esta funcion dibuja la grilla, comentar para que no se dibuje
 
         grupo_plantas.update()
@@ -150,6 +163,8 @@ while run:
         grupo_proyectiles.draw(screen)
         screen.blit(barra, (300, 0))
         grupo_semillas.draw(screen)
+        grupo_pala.draw(screen
+                        )
 # CAMBIAR ESTA PARTE PORQUE HAY UN ERROR DE QUE SE VA DE LA GRILLA"""""
         if cuadpos[0] <= constantes.COMIENZO_PASTO_X:
             cuadpos[0], columna = constantes.COMIENZO_PASTO_X, 0
@@ -159,6 +174,32 @@ while run:
             cuadpos[0], columna = constantes.XMAX, 8
         if cuadpos[1] >= constantes.YMAX:
             cuadpos[1], fila = constantes.YMAX, 4
+
+
+# Esta parte del code muestra la planta previsualizada en la grilla, el rect de previsualización en la grilla y llama a la función para dibujar la pala.
+        x, y = pygame.mouse.get_pos()
+        if seleccion_planta == "pala":
+            pala.dibujar_cursor(x, y, screen)
+        if (
+            constantes.COMIENZO_PASTO_X < x < constantes.FIN_PASTO_X
+            and constantes.COMIENZO_PASTO_Y < y < constantes.FIN_PASTO_Y
+        ):
+            x = (
+                x - constantes.COMIENZO_PASTO_X
+            ) // constantes.CELDA_ANCHO  # Devuelve el nro de casilla en x
+            cuadpos[0] = constantes.COMIENZO_PASTO_X + (x * constantes.CELDA_ANCHO)
+            y = (
+                y - constantes.COMIENZO_PASTO_Y
+            ) // constantes.CELDA_ALTO  # Devuelve el nro de casilla en y
+            cuadpos[1] = constantes.COMIENZO_PASTO_Y + (y * constantes.CELDA_ALTO)
+            
+            if seleccion_planta != False:
+                if seleccion_planta != "pala" and not (isinstance(grilla_entidades[y][x], Plantas)):
+                    screen.blit(preview_dict[seleccion_planta],(cuadpos[0] - 15, cuadpos[1] - 25),)
+                    screen.blit(cuad, cuadpos)
+                elif seleccion_planta == "pala":
+                    screen.blit(cuad, cuadpos)
+
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -199,33 +240,41 @@ while run:
                     cuadpos[0] = constantes.COMIENZO_PASTO_X + (x * constantes.CELDA_ANCHO)
                     y = (y - constantes.COMIENZO_PASTO_Y) // constantes.CELDA_ALTO #Devuelve el nro de casilla en y
                     cuadpos[1] = constantes.COMIENZO_PASTO_Y + (y * constantes.CELDA_ALTO)
-                    if grilla_entidades[y][x] == 0:
-                        if seleccion_planta != False:
-                            if seleccion_planta == "lanzaguisantes":
-                                nueva_planta = lanzaguisantes((x * constantes.CELDA_ANCHO) + constantes.COMIENZO_PASTO_X - 15,(y * constantes.CELDA_ALTO) + constantes.COMIENZO_PASTO_Y + 20, grilla_entidades) #En la pos de la planta se pasa de numero de grilla a pixeles.
-                            elif seleccion_planta == "girasol":
-                                nueva_planta = Girasol((x * constantes.CELDA_ANCHO)+ constantes.COMIENZO_PASTO_X- 15,(y * constantes.CELDA_ALTO)+ constantes.COMIENZO_PASTO_Y+ 20, grilla_entidades)
-                            elif seleccion_planta == "nuez":
-                                nueva_planta = Nuez((x * constantes.CELDA_ANCHO)+ constantes.COMIENZO_PASTO_X- 15,(y * constantes.CELDA_ALTO)+ constantes.COMIENZO_PASTO_Y+ 20, grilla_entidades)
-                            seleccion_planta = False
-                            grilla_entidades[y][x] = nueva_planta
-                            grupo_plantas.add(nueva_planta)
-                            pygame.mixer.Sound(
-                                r"assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\semillas\semillas_plantar.ogg"
-                            ).play()
-                else: #Este else puede cambiarse por un elif con las dimensiones del rectangulo donde estan las semillas x ejemplo.
+                    if grilla_entidades[y][x] == 0 and seleccion_planta != False and seleccion_planta != "pala":
+                        if seleccion_planta == "lanzaguisantes":
+                            nueva_planta = lanzaguisantes((x * constantes.CELDA_ANCHO) + constantes.COMIENZO_PASTO_X - 15,(y * constantes.CELDA_ALTO) + constantes.COMIENZO_PASTO_Y + 20, grilla_entidades) #En la pos de la planta se pasa de numero de grilla a pixeles.
+                        elif seleccion_planta == "girasol":
+                            nueva_planta = Girasol((x * constantes.CELDA_ANCHO)+ constantes.COMIENZO_PASTO_X- 15,(y * constantes.CELDA_ALTO)+ constantes.COMIENZO_PASTO_Y+ 20, grilla_entidades)
+                        elif seleccion_planta == "nuez":
+                            nueva_planta = Nuez((x * constantes.CELDA_ANCHO)+ constantes.COMIENZO_PASTO_X- 15,(y * constantes.CELDA_ALTO)+ constantes.COMIENZO_PASTO_Y+ 20, grilla_entidades)
+                        seleccion_planta = False
+                        grilla_entidades[y][x] = nueva_planta
+                        grupo_plantas.add(nueva_planta)
+                        pygame.mixer.Sound(
+                            r"assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\semillas\semillas_plantar.ogg"
+                        ).play()
+                    #Funcionamiento de la pala + sonido.
+                    elif (isinstance(grilla_entidades[y][x], Plantas)and seleccion_planta == "pala"):
+                        pala.sonido.play()
+                        grilla_entidades[y][x].kill()
+                        eliminar(grilla_entidades, grilla_entidades[y][x].id)
+                        seleccion_planta = False
+                    elif seleccion_planta == "pala":
+                        seleccion_planta = False
+                #Funcionamiento de la seleccion de semillas
+                elif (
+                    370 < x < 841 and 10 < y < 100
+                ):  # Este else puede cambiarse por un elif con las dimensiones del rectangulo donde estan las semillas x ejemplo.
                     grupo_semillas.update(event)
                     for semillas in grupo_semillas:
                         if semillas.clicked:
                             seleccion_planta = semillas.item
+                #Seleccion de pala
+                elif 860 < x < 931 and 10 < y < 81:
+                    grupo_pala.update(event)
+                    if pala.clicked:
+                        seleccion_planta = "pala"
 
-            elif event.type == pygame.MOUSEMOTION:
-                x, y = event.pos
-                if (constantes.COMIENZO_PASTO_X < x < constantes.FIN_PASTO_X and constantes.COMIENZO_PASTO_Y < y < constantes.FIN_PASTO_Y):
-                    x = (x - constantes.COMIENZO_PASTO_X) // constantes.CELDA_ANCHO #Devuelve el nro de casilla en x
-                    cuadpos[0] = constantes.COMIENZO_PASTO_X + (x * constantes.CELDA_ANCHO)
-                    y = (y - constantes.COMIENZO_PASTO_Y) // constantes.CELDA_ALTO #Devuelve el nro de casilla en y
-                    cuadpos[1] = constantes.COMIENZO_PASTO_Y + (y * constantes.CELDA_ALTO)
 
             # Cada cierto tiempo spawnean zombies
             elif event.type == APARICION_ZOMBIE:
