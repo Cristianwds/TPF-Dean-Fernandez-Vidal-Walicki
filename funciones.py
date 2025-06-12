@@ -21,7 +21,6 @@ def eliminar(lista:list, id_obj:int) -> None:
                     columna_index = filas.index(objetos)
                     lista[fila_index][columna_index] = 0
                     objetos.kill()
-                    print(lista)
 
 
 def de_pixeles_a_grilla(pixeles_x:int, pixeles_y:int) -> tuple:
