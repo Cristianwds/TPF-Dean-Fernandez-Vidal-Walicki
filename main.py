@@ -99,7 +99,7 @@ grupo_pala.add(pala)
 #Este diccionario es para las previews, se puede llegar a cambiar por una alternativa mejor.
 preview_dict = {
     "lanzaguisantes": pygame.image.load(r"assets\lanzaguisante\frame_0.png"),
-    "girasol": pygame.image.load(r"assets\girasol\frame_0.png"),
+    "girasol": pygame.image.load(r"assets\girasol\frame_1.png"),
     "nuez": pygame.image.load(r"assets\nuez\frame_0.png"),
 }
 for values in preview_dict.values():
