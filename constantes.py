@@ -30,3 +30,7 @@ TIPOS_ZOMBIES = ["normal", "cono", "balde"]
 Cant_frames= {"normal": [len(os.listdir(r"assets\zombies\normal\caminata")), len(os.listdir(r"assets\zombies\normal\ataque"))],
               "cono": [len(os.listdir(r"assets\zombies\cono\caminata")), len(os.listdir(r"assets\zombies\cono\ataque"))], 
               "balde":[len(os.listdir(r"assets\zombies\balde\caminata")), len(os.listdir(r"assets\zombies\balde\ataque"))]}
+
+CANT_FRAMES_PLANTAS= {"girasol": len(os.listdir(r"assets\girasol")), 
+                     "lanzaguisante": len(os.listdir(r"assets\lanzaguisante")), 
+                     "nuez": len(os.listdir(r"assets\nuez"))}

@@ -129,7 +129,7 @@ class Plantas(Criaturas):
 
 class lanzaguisantes(Plantas):
     def __init__(self, x, y, lista_entidades, vida=300, cooldown=7500, costo=100):
-        self.frames = [pygame.image.load(f"assets\lanzaguisante\\frame_{i}.png").convert_alpha() for i in range(48)]
+        self.frames = [pygame.image.load(f"assets\lanzaguisante\\frame_{i}.png").convert_alpha() for i in range(constantes.CANT_FRAMES_PLANTAS["lanzaguisante"])]
         self.indice_frames = 0
         self.image = self.frames[self.indice_frames]
         self.costo = costo
@@ -156,7 +156,7 @@ class lanzaguisantes(Plantas):
 
         if ahora - self.ultimo_disparo >= 1500:
             self.ultimo_disparo = ahora
-            guisante = Proyectil(r"assets\\lanzaguisante\\guisante.png", self.hitbox.x + 60, self.hitbox.y - 15, 20)
+            guisante = Proyectil(r"assets\\proyectil\\guisante.png", self.hitbox.x + 60, self.hitbox.y - 15, 20)
             grupo_proyectiles.add(guisante)
 
 
@@ -165,7 +165,7 @@ class Girasol(Plantas):
         self.x = x
         self.y = y
         self.vida = vida
-        self.frames = [pygame.image.load(f"assets\girasol\\frame_{i}.png").convert_alpha() for i in range(36)]
+        self.frames = [pygame.image.load(f"assets\girasol\\frame_{i}.png").convert_alpha() for i in range(constantes.CANT_FRAMES_PLANTAS["girasol"])]
         self.indice_frames = 0
         self.image = self.frames[self.indice_frames]
         self.cooldown = cooldown
@@ -190,9 +190,21 @@ class Nuez(Plantas):
         self.vida = vida
         self.cooldown = cooldown
         self.costo = costo
-        self.image = pygame.image.load(r"assets/nuez/wallnut.png")
+        self.frames = [pygame.image.load(f"assets\\nuez\\frame_{i}.png").convert_alpha() for i in range(constantes.CANT_FRAMES_PLANTAS["nuez"])]
+        self.indice_frames = 0
+        self.ultimo_frame = pygame.time.get_ticks()
+        self.velocidad_animacion= 35
+        self.image = self.frames[self.indice_frames]
         self.rect = self.image.get_rect(midleft=(x, y))
         super().__init__(x, y, self.image, vida, cooldown, costo, lista_entidades)
+
+    def update(self):
+        tiempo_frame= pygame.time.get_ticks()
+
+        if tiempo_frame - self.ultimo_frame > self.velocidad_animacion:
+            self.ultimo_frame = tiempo_frame
+            self.indice_frames = (self.indice_frames + 1) % len(self.frames)
+            self.image = self.frames[self.indice_frames]
 
 
 class Proyectil(pygame.sprite.Sprite):
