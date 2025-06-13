@@ -72,6 +72,8 @@ APARICION_ZOMBIE = pygame.USEREVENT
 pygame.time.set_timer(APARICION_ZOMBIE, constantes.TIEMPO_APARICION)
 nivel_dificultad = 0
 
+APARICION_OLEADA = pygame.USEREVENT + 1
+
 ##Evento de aparicion de soles
 #APARICION_SOLES = pygame.USEREVENT
 #pygame.time.set_timer(APARICION_SOLES, constantes.TIEMPO_APARICION_SOL)
@@ -96,12 +98,12 @@ grupo_pala.add(pala)
 
 #Este diccionario es para las previews, se puede llegar a cambiar por una alternativa mejor.
 preview_dict = {
-    "lanzaguisantes": pygame.image.load(r"assets\lanzaguisante\frame_0.png"),
-    "girasol": pygame.image.load(r"assets\girasol\frame_1.png"),
-    "nuez": pygame.image.load(r"assets\nuez\frame_0.png"),
+    "lanzaguisantes": [pygame.image.load(r"assets\lanzaguisante\frame_0.png"),-15,-34],
+    "girasol": [pygame.image.load(r"assets\girasol\frame_1.png"),-3,-12],
+    "nuez": [pygame.image.load(r"assets\nuez\frame_0.png"),1,-5],
 }
 for values in preview_dict.values():
-    values.set_alpha(128)
+    values[0].set_alpha(128)
 
 
 seleccion_planta = False
@@ -165,7 +167,7 @@ while run:
             
             if seleccion_planta != False:
                 if seleccion_planta != "pala" and not (isinstance(grilla_entidades[y][x], Plantas)):
-                    screen.blit(preview_dict[seleccion_planta],(cuadpos[0] - 15, cuadpos[1] - 25),)
+                    screen.blit(preview_dict[seleccion_planta][0],(cuadpos[0] + preview_dict[seleccion_planta][1], cuadpos[1] + preview_dict[seleccion_planta][2]),)
                     screen.blit(cuad, cuadpos)
                 elif seleccion_planta == "pala":
                     screen.blit(cuad, cuadpos)
@@ -199,18 +201,64 @@ while run:
 
             # Cada cierto tiempo spawnean zombies
             elif event.type == APARICION_ZOMBIE:
+                
                 pos_aleatoria = random.randint(0, 4)
                 tipo= random.choice(constantes.TIPOS_ZOMBIES)
-                nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[pos_aleatoria], tipo, constantes.VIDA_ZOMBIES[tipo])
-                nuevo_zombie.add(grupo_zombies)
+
+                if (nivel_dificultad % 8) == 0 and nivel_dificultad >= 8:
+                    constantes.CANT_APARICION += 1
+
+                if nivel_dificultad == 10:
+                    constantes.TIPOS_ZOMBIES.append("cono")
+                    nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[pos_aleatoria], "cono", constantes.VIDA_ZOMBIES["cono"])
+                    nuevo_zombie.add(grupo_zombies)
+                
+                if nivel_dificultad % 2 == 0 and nivel_dificultad >= 12 and nivel_dificultad <= 24:
+                    #Aumentamos la probabilidad de que aparezcan zombies cono
+                    constantes.TIPOS_ZOMBIES.append("cono")
+                    
+                if nivel_dificultad == 20:
+                    constantes.TIPOS_ZOMBIES.append("balde")
+                    nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[pos_aleatoria], "cono", constantes.VIDA_ZOMBIES["cono"])
+                    nuevo_zombie.add(grupo_zombies)
+                    nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[pos_aleatoria], "balde", constantes.VIDA_ZOMBIES["balde"])
+                    nuevo_zombie.add(grupo_zombies)
+                
+                if nivel_dificultad >= 21 and (nivel_dificultad % 2) != 0:
+                    constantes.TIPOS_ZOMBIES.append("balde")
+
+                for i in range(constantes.CANT_APARICION):
+                    pos_random = random.randint(0, 4)
+                    tipo_zb = random.choice(constantes.TIPOS_ZOMBIES)
+                    nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[pos_random], tipo, constantes.VIDA_ZOMBIES[tipo_zb])
+                    nuevo_zombie.add(grupo_zombies)
+
+                nivel_dificultad += 1
+                
+                print(nivel_dificultad)
+                print(constantes.TIEMPO_APARICION)
+                print(constantes.TIPOS_ZOMBIES)
+
+                if constantes.TIEMPO_APARICION >= 2000:
+                    constantes.TIEMPO_APARICION -= 500
             ## Cada cierto tiempo spawnean soles
             #elif event.type == APARICION_SOLES:
             #    caida_aleatoria = random.randint(0,8)
 
+            elif event.type == APARICION_OLEADA:
+
+                if nivel_dificultad % 10 == 0:
+                    for n in range(constantes.OLEADA_CANT_ZB):
+                        pos_random = random.randint(0, 4)
+                        tipo_zb = random.choice(constantes.TIPOS_ZOMBIES)
+                        nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[pos_random], tipo, constantes.VIDA_ZOMBIES[tipo_zb])
+                        nuevo_zombie.add(grupo_zombies)
+                    constantes.OLEADA_CANT_ZB += 3
+
         for zombie in grupo_zombies:
             if zombie.hitbox.x <= 260:
                 screen.blit(perdiste, (100,25))
-
+                
         pygame.display.update()
     reloj.tick(60)
 

@@ -117,6 +117,7 @@ class Plantas(Criaturas):
         # Hitbox separada: más pequeña, para colisiones
         self.hitbox = pygame.Rect(0, 0, self.rect.width - 50, self.rect.height - 60)
         self.hitbox.midbottom = self.rect.midbottom
+        self.hitbox.y -= 20
         self.lista_entidades = lista_entidades
         Plantas.plantas_id += 1
         self.id = Plantas.plantas_id
@@ -147,6 +148,7 @@ class lanzaguisantes(Plantas):
         Plantas.__init__(self, x, y, self.image, vida, cooldown, costo, lista_entidades)
 
     def update(self):
+        global grupo_zombies
         ahora = pygame.time.get_ticks()
         tiempo_frame= pygame.time.get_ticks()
 
@@ -155,16 +157,25 @@ class lanzaguisantes(Plantas):
             self.indice_frames = (self.indice_frames + 1) % len(self.frames)
             self.image = self.frames[self.indice_frames]
 
-        if ahora - self.ultimo_disparo >= 1500:
+        # Chequear si hay zombies en el mismo carril y delante de la planta
+        hay_zombie_en_frente = False
+        for zombie in grupo_zombies:
+            mismo_carril = abs(zombie.hitbox.centery - self.hitbox.centery) < 50
+            esta_adelante = zombie.hitbox.x >= self.hitbox.x and zombie.hitbox.x <= constantes.ANCHO_VENTANA - 27
+            if mismo_carril and esta_adelante:
+                hay_zombie_en_frente = True
+                break
+
+        if hay_zombie_en_frente and ((ahora - self.ultimo_disparo) >= 1500):
             self.ultimo_disparo = ahora
-            guisante = Proyectil(r"assets\\proyectil\\guisante.png", self.hitbox.x + 60, self.hitbox.y - 15, 20)
+            guisante = Proyectil(r"assets\\proyectil\\guisante.png", self.hitbox.x + 60, self.hitbox.y, 20)
             grupo_proyectiles.add(guisante)
 
 
 class Girasol(Plantas):
     def __init__(self, x, y, lista_entidades, vida=300, cooldown=7500, costo=50):
-        self.x = x
-        self.y = y
+        self.x = x +12
+        self.y = y +12
         self.vida = vida
         self.frames = [pygame.image.load(f"assets\girasol\\frame_{i}.png").convert_alpha() for i in range(constantes.CANT_FRAMES_PLANTAS["girasol"])]
         self.indice_frames = 0
@@ -173,8 +184,8 @@ class Girasol(Plantas):
         self.costo = costo
         self.ultimo_frame = pygame.time.get_ticks()
         self.velocidad_animacion = 18
-        self.rect = self.image.get_rect(midleft=(x, y))
-        super().__init__(x, y, self.image, vida, cooldown, costo, lista_entidades)
+        self.rect = self.image.get_rect(midleft=(self.x, self.y))
+        super().__init__(self.x, self.y, self.image, vida, cooldown, costo, lista_entidades)
 
     def update(self):
         tiempo_frame= pygame.time.get_ticks()
@@ -196,8 +207,8 @@ class Nuez(Plantas):
         self.ultimo_frame = pygame.time.get_ticks()
         self.velocidad_animacion= 35
         self.image = self.frames[self.indice_frames]
-        self.rect = self.image.get_rect(midleft=(x, y))
-        super().__init__(x, y, self.image, vida, cooldown, costo, lista_entidades)
+        self.rect = self.image.get_rect(midleft=(self.x, self.y))
+        super().__init__(self.x + 17, self.y+ 17, self.image, vida, cooldown, costo, lista_entidades)
 
     def update(self):
         tiempo_frame= pygame.time.get_ticks()
