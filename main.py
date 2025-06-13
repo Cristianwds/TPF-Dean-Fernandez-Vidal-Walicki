@@ -52,7 +52,7 @@ def pantalla_inicio():
 background = pygame.image.load(r"assets//map.jpeg").convert()
 background = pygame.transform.scale(background, (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA))
 barra = pygame.image.load(r"assets/barra.png")
-barra = pygame.transform.scale(barra, (540,100))
+barra = pygame.transform.scale(barra, (constantes.LARGO_BARRA, constantes.ALTO_BARRA))
 
 perdiste = pygame.image.load(r"assets/ZombiesWon.png")
 perdiste = pygame.transform.scale(perdiste, (925,770))
@@ -66,9 +66,6 @@ fila, columna = 0, 0  # indices para moverse por la matriz
 cuad = pygame.Surface((80, 90), pygame.SRCALPHA)
 cuad.fill((255, 255, 255, 128))
 cuadpos = [constantes.COMIENZO_PASTO_X, constantes.COMIENZO_PASTO_Y]
-
-# Lista posiciones
-pos_zombie = [165, 255, 345, 435, 525]
 
 # Evento aparicion de zombies
 APARICION_ZOMBIE = pygame.USEREVENT
@@ -203,7 +200,7 @@ while run:
             elif event.type == APARICION_ZOMBIE:
                 pos_aleatoria = random.randint(0, 4)
                 tipo= random.choice(constantes.TIPOS_ZOMBIES)
-                nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, pos_zombie[pos_aleatoria], tipo, constantes.VIDA_ZOMBIES[tipo])
+                nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[pos_aleatoria], tipo, constantes.VIDA_ZOMBIES[tipo])
                 nuevo_zombie.add(grupo_zombies)
             ## Cada cierto tiempo spawnean soles
             #elif event.type == APARICION_SOLES:
