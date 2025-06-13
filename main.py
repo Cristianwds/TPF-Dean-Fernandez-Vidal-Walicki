@@ -234,10 +234,6 @@ while run:
                     nuevo_zombie.add(grupo_zombies)
 
                 nivel_dificultad += 1
-                
-                print(nivel_dificultad)
-                print(constantes.TIEMPO_APARICION)
-                print(constantes.TIPOS_ZOMBIES)
 
                 if constantes.TIEMPO_APARICION >= 2000:
                     constantes.TIEMPO_APARICION -= 500
@@ -258,7 +254,7 @@ while run:
         for zombie in grupo_zombies:
             if zombie.hitbox.x <= 260:
                 screen.blit(perdiste, (100,25))
-                
+
         pygame.display.update()
     reloj.tick(60)
 
