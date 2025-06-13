@@ -70,6 +70,7 @@ cuadpos = [constantes.COMIENZO_PASTO_X, constantes.COMIENZO_PASTO_Y]
 # Evento aparicion de zombies
 APARICION_ZOMBIE = pygame.USEREVENT
 pygame.time.set_timer(APARICION_ZOMBIE, constantes.TIEMPO_APARICION)
+nivel_dificultad = 0
 
 ##Evento de aparicion de soles
 #APARICION_SOLES = pygame.USEREVENT
