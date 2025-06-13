@@ -67,6 +67,8 @@ cuad = pygame.Surface((80, 90), pygame.SRCALPHA)
 cuad.fill((255, 255, 255, 128))
 cuadpos = [constantes.COMIENZO_PASTO_X, constantes.COMIENZO_PASTO_Y]
 
+traslucido = 5
+vivo = True
 # Evento aparicion de zombies
 APARICION_ZOMBIE = pygame.USEREVENT
 pygame.time.set_timer(APARICION_ZOMBIE, constantes.TIEMPO_APARICION)
@@ -251,9 +253,9 @@ while run:
                         nuevo_zombie.add(grupo_zombies)
                     constantes.OLEADA_CANT_ZB += 3
 
-        for zombie in grupo_zombies:
-            if zombie.hitbox.x <= 260:
-                screen.blit(perdiste, (100,25))
+
+
+        traslucido, vivo = perder(traslucido, grupo_zombies, screen, vivo)
 
         pygame.display.update()
     reloj.tick(60)

@@ -64,3 +64,22 @@ def excavar(grilla_entidades:list, grilla_x:int, grilla_y:int, seleccion_planta:
     elif seleccion_planta == "pala":
         seleccion_planta = False
     return seleccion_planta
+
+def perder(traslucido, grupo_zombies, screen, vivo):
+    for zombie in grupo_zombies:
+        if zombie.hitbox.x <= 260:
+            vivo = False
+    if vivo == False:
+        perdiste = pygame.image.load(r"assets/ZombiesWon.png")
+        perdiste = pygame.transform.scale(perdiste, (740,616))
+        perdida = pygame.Surface((1040, 650), pygame.SRCALPHA)
+        perdida.fill((0, 0, 0, traslucido))
+        ahora = pygame.time.get_ticks()
+        screen.blit(perdida, (0,0))
+        screen.blit(perdiste, (190,28))
+        if ahora > 600 and traslucido < 254:
+            traslucido += 1
+            ahora = pygame.time.get_ticks()
+            perdida.fill((0, 0, 0, traslucido))
+    traslucidez = traslucido
+    return traslucidez, vivo
