@@ -272,6 +272,6 @@ while run:
         traslucido, vivo = perder(traslucido, grupo_zombies, screen, vivo)
 
         pygame.display.update()
-    reloj.tick(90)
+    reloj.tick(constantes.FPS)
 
 pygame.quit()
