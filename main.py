@@ -222,9 +222,12 @@ while run:
                     
                 if nivel_dificultad == 20:
                     constantes.TIPOS_ZOMBIES.append("balde")
-                    nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[pos_aleatoria], "cono", constantes.VIDA_ZOMBIES["cono"])
+                    lista_ubis = [0, 1, 2, 3, 4]
+                    ubi1 = lista_ubis.pop(random.choice(lista_ubis))
+                    ubi2 = lista_ubis.pop(random.choice(lista_ubis))
+                    nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[ubi1], "cono", constantes.VIDA_ZOMBIES["cono"])
                     nuevo_zombie.add(grupo_zombies)
-                    nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[pos_aleatoria], "balde", constantes.VIDA_ZOMBIES["balde"])
+                    nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[ubi2], "balde", constantes.VIDA_ZOMBIES["balde"])
                     nuevo_zombie.add(grupo_zombies)
                 
                 if nivel_dificultad >= 21 and (nivel_dificultad % 2) != 0:
@@ -238,8 +241,8 @@ while run:
 
                 nivel_dificultad += 1
 
-                if constantes.TIEMPO_APARICION >= 3000:
-                    constantes.TIEMPO_APARICION -= 500
+                if constantes.TIEMPO_APARICION >= 6000:
+                    constantes.TIEMPO_APARICION -= 400
             ## Cada cierto tiempo spawnean soles
             #elif event.type == APARICION_SOLES:
             #    caida_aleatoria = random.randint(0,8)
@@ -250,13 +253,17 @@ while run:
                     for n in range(constantes.OLEADA_CANT_ZB):
                         pos_random = random.randint(0, 4)
                         tipo_zb = random.choice(constantes.TIPOS_ZOMBIES)
-                        nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[pos_random], tipo, constantes.VIDA_ZOMBIES[tipo_zb])
-                        nuevo_zombie.add(grupo_zombies)
+                        vida = constantes.VIDA_ZOMBIES[tipo_zb]
+                        zombies_a_spawnear.append((pos_random, tipo_zb, vida))
+                        # pos_random = random.randint(0, 4)
+                        # tipo_zb = random.choice(constantes.TIPOS_ZOMBIES)
+                        # nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[pos_random], tipo, constantes.VIDA_ZOMBIES[tipo_zb])
+                        # nuevo_zombie.add(grupo_zombies)
                     constantes.OLEADA_CANT_ZB += 3
 
         if zombies_a_spawnear:
             tiempo_actual = pygame.time.get_ticks()
-            if tiempo_actual - delay_spawn_zombie > 900:
+            if tiempo_actual - delay_spawn_zombie > 1500:
                 fila, tipo, vida = zombies_a_spawnear.pop(0)
                 nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[fila], tipo, vida)
                 nuevo_zombie.add(grupo_zombies)
@@ -265,6 +272,6 @@ while run:
         traslucido, vivo = perder(traslucido, grupo_zombies, screen, vivo)
 
         pygame.display.update()
-    reloj.tick(60)
+    reloj.tick(90)
 
 pygame.quit()
