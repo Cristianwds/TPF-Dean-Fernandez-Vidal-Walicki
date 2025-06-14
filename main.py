@@ -263,7 +263,7 @@ while run:
 
         if zombies_a_spawnear:
             tiempo_actual = pygame.time.get_ticks()
-            if tiempo_actual - delay_spawn_zombie > 1500:
+            if tiempo_actual - delay_spawn_zombie > 1750:
                 fila, tipo, vida = zombies_a_spawnear.pop(0)
                 nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[fila], tipo, vida)
                 nuevo_zombie.add(grupo_zombies)
