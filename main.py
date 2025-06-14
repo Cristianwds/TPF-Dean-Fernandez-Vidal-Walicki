@@ -73,7 +73,8 @@ vivo = True
 APARICION_ZOMBIE = pygame.USEREVENT
 pygame.time.set_timer(APARICION_ZOMBIE, constantes.TIEMPO_APARICION)
 nivel_dificultad = 0
-
+delay_spawn_zombie= 0
+zombies_a_spawnear = []
 APARICION_OLEADA = pygame.USEREVENT + 1
 
 ##Evento de aparicion de soles
@@ -232,12 +233,12 @@ while run:
                 for i in range(constantes.CANT_APARICION):
                     pos_random = random.randint(0, 4)
                     tipo_zb = random.choice(constantes.TIPOS_ZOMBIES)
-                    nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[pos_random], tipo, constantes.VIDA_ZOMBIES[tipo_zb])
-                    nuevo_zombie.add(grupo_zombies)
+                    vida = constantes.VIDA_ZOMBIES[tipo_zb]
+                    zombies_a_spawnear.append((pos_random, tipo_zb, vida))
 
                 nivel_dificultad += 1
 
-                if constantes.TIEMPO_APARICION >= 2000:
+                if constantes.TIEMPO_APARICION >= 3000:
                     constantes.TIEMPO_APARICION -= 500
             ## Cada cierto tiempo spawnean soles
             #elif event.type == APARICION_SOLES:
@@ -253,7 +254,13 @@ while run:
                         nuevo_zombie.add(grupo_zombies)
                     constantes.OLEADA_CANT_ZB += 3
 
-
+        if zombies_a_spawnear:
+            tiempo_actual = pygame.time.get_ticks()
+            if tiempo_actual - delay_spawn_zombie > 900:
+                fila, tipo, vida = zombies_a_spawnear.pop(0)
+                nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[fila], tipo, vida)
+                nuevo_zombie.add(grupo_zombies)
+                delay_spawn_zombie = tiempo_actual
 
         traslucido, vivo = perder(traslucido, grupo_zombies, screen, vivo)
 
