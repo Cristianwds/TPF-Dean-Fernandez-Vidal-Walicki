@@ -176,6 +176,7 @@ class Enemigos(Criaturas):
                 else:
                     self.frames = self.frames_caminatahielo
                 self.indice_frame = 0
+            self.velocidad = constantes.VELOCIDAD_ZOMBIE
             self.pos_x -= self.velocidad
             if self.pos_x <= 0:
                 self.kill()
