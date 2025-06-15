@@ -128,7 +128,7 @@ preview_dict = {
     "girasol": [pygame.image.load(r"assets\girasol\frame_1.png"),-3,-12],
     "nuez": [pygame.image.load(r"assets\nuez\frame_0.png"),1,-5],
     "petacereza": [pygame.image.load(r"assets\petacereza\gif\frame_1.png"), 0 , 0],
-    "papapum" : [pygame.image.load(r"assets\papapum\papapum_activado\frame_2.png"), 0, 0]
+    "papapum" : [pygame.image.load(r"assets\papapum\papapum_activado\frame_2.png"), -10, 0]
 }
 for values in preview_dict.values():
     values[0].set_alpha(128)

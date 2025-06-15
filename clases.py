@@ -262,7 +262,7 @@ class Nuez(Plantas):
         self.frames = [pygame.image.load(f"assets\\nuez\\frame_{i}.png").convert_alpha() for i in range(constantes.CANT_FRAMES_PLANTAS["nuez"])]
         self.indice_frames = 0
         self.ultimo_frame = pygame.time.get_ticks()
-        self.velocidad_animacion= 35
+        self.velocidad_animacion= 50
         self.image = self.frames[self.indice_frames]
         self.rect = self.image.get_rect(midleft=(self.x, self.y))
         super().__init__(self.x + 17, self.y+ 17, self.image, vida, cooldown, costo, lista_entidades, reproductor_de_sonido)
@@ -292,7 +292,7 @@ class Papapum(Plantas):
         self.frame_explosion_contador = 0
         self.indice_frames = 0
         self.ultimo_frame = pygame.time.get_ticks()
-        self.velocidad_animacion= 35
+        self.velocidad_animacion= 20
         self.image = self.frames_desactivados[self.indice_frames]
         self.rect = self.image.get_rect(midleft=(self.x, self.y))
         super().__init__(x, y, self.image, vida, cooldown, costo, lista_entidades, reproductor_de_sonido)
@@ -327,23 +327,29 @@ class Papapum(Plantas):
                     self.ultimo_frame = tiempo_frame
                     self.indice_frames = (self.indice_frames + 1) % len(self.frames_desactivados)
                     self.image = self.frames_desactivados[self.indice_frames]
-                if self.contador_activacion == 300:
+                    self.rect = self.image.get_rect(center = (self.x + constantes.CELDA_ANCHO / 2 + 10, self.y))
+                if self.contador_activacion == 600:
                     self.cambiar_animacion("activado")
         elif self.estado == "activado":
             for zombie in grupo_zombies:
                 if self.hitbox_activacion.colliderect(zombie.hitbox):
                     self.cambiar_animacion("explosion")
-            if tiempo_frame - self.ultimo_frame > self.velocidad_animacion:
+            if tiempo_frame - self.ultimo_frame > self.velocidad_animacion * 1.7:
                 self.indice_frames = (self.indice_frames + 1) % len(self.frames_activados)
                 self.image = self.frames_activados[self.indice_frames]
+                self.ultimo_frame = tiempo_frame
+                self.rect = self.image.get_rect(center = (self.x  + constantes.CELDA_ANCHO / 1.5,self.y + constantes.CELDA_ALTO / 4))
         else:
-            if tiempo_frame - self.ultimo_frame > 70:
-                if self.frame_explosion_contador < 25:
+            self.indice_frames = 0 if self.frame_explosion_contador == 0 else tiempo_frame
+            if tiempo_frame - self.ultimo_frame > 80:
+                if self.frame_explosion_contador < 10:
+                    self.frame_explosion_contador += 1
                     self.indice_frames = (self.indice_frames + 1) % len(self.frames_explosion)
                     self.image  = self.frames_explosion[self.indice_frames]
-                    self.frame_explosion_contador += 1
-                else:
-                    funciones.eliminar(self.lista_entidades, self.id, Plantas)
+                    self.rect = self.image.get_rect(center = (self.x + constantes.CELDA_ANCHO / 1.5, self.y ))
+                    self.ultimo_frame = tiempo_frame
+            if self.frame_explosion_contador >= 10:
+                funciones.eliminar(self.lista_entidades, self.id, Plantas)
 
         # if self.exploto == False:    
         #     if tiempo_frame - self.ultimo_frame > self.velocidad_animacion and self.contador_activacion <= 300:
