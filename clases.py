@@ -18,6 +18,7 @@ class Administrador_de_sonido():
         pygame.mixer.set_num_channels(32)
         self.sonidos = {}
         self.canales_sonidos_ocupados = {}#Aca se guarda el nombre del sonido y su canal nada mas cuando se ejecuta reproducir_sonido con evitar_superposicion = True
+    
     def cargar_sonido(self, ruta_sonido:str, nombre_sonido:str):
         try:
             sonido = pygame.mixer.Sound(ruta_sonido)
@@ -148,6 +149,12 @@ class Enemigos(Criaturas):
 
         # DEBUG: dibujar hitbox
         # pygame.draw.rect(screen, (255, 0, 0), self.hitbox, 1)
+    def recibir_daño(self, daño):
+        self.vida -= daño
+        if self.vida <= 0:
+            if self.estado == "atacar":
+                self.reproductor_de_sonido.detener_reproduccion("zombie_masticar")
+            self.kill()
 
 
 class Plantas(Criaturas):
@@ -306,7 +313,7 @@ class Petacereza(pygame.sprite.Sprite):
             self.administrador_de_sonido.reproducir_sonido("petacereza_explosion", 0, True)
             for zombie in grupo_zombies:
                 if self.hitbox_explosion.colliderect(zombie.hitbox):
-                    zombie.kill()          
+                    zombie.recibir_daño(10000)          
         if self.contador_explosion >= 6:
             self.image.set_alpha(self.alpha)
             self.alpha -= 3
@@ -401,7 +408,7 @@ class Cortapasto(pygame.sprite.Sprite):
                 self.moving = True
                 self.reproductor_de_sonido.reproducir_sonido("cortapastos_activar", 0, True)
             elif self.moving == 1 and self.hitbox.colliderect(zombies.hitbox):
-                zombies.kill()
+                zombies.recibir_daño(10000)
         if self.moving == True:
             self.rect.x += 10
             self.hitbox.center = self.rect.center
