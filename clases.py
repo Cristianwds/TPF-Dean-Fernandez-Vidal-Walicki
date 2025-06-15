@@ -276,6 +276,111 @@ class Nuez(Plantas):
             self.image = self.frames[self.indice_frames]
 
 
+class Papapum(Plantas):
+    def __init__(self, x, y,lista_entidades, reproductor_de_sonido, vida= 300, cooldown = 8000, costo = 25):
+        self.x = x
+        self.y = y
+        self.vida = vida
+        self.cooldown = cooldown
+        self.costo = costo
+        self.frames_activados = [pygame.image.load(f"assets\\papapum\\papapum_activado\\frame_{i}.png").convert_alpha() for i in range(28)]
+        self.frames_desactivados = [pygame.image.load(f"assets\\papapum\\papapum_desactivado\\frame_{i}.png").convert_alpha() for i in range(24)]
+        self.frames_explosion = [pygame.image.load(f"assets\\papapum\\papapum_explosion\\frame_{i}.png").convert_alpha() for i in range(26)]
+        self.estado = "desactivado"
+        self.contador_activacion = 0
+        self.frame_desactivado_contador = 0
+        self.frame_explosion_contador = 0
+        self.indice_frames = 0
+        self.ultimo_frame = pygame.time.get_ticks()
+        self.velocidad_animacion= 35
+        self.image = self.frames_desactivados[self.indice_frames]
+        self.rect = self.image.get_rect(midleft=(self.x, self.y))
+        super().__init__(x, y, self.image, vida, cooldown, costo, lista_entidades, reproductor_de_sonido)
+
+    def activar_hitbox(self):
+        self.hitbox_activacion = pygame.Rect(0, 0, constantes.CELDA_ANCHO // 2, constantes.CELDA_ALTO // 2)
+        self.hitbox_explosion = pygame.Rect(0, 0, constantes.CELDA_ANCHO, constantes.CELDA_ALTO)
+        self.hitbox_activacion.center = self.rect.center
+        self.hitbox_explosion.center = self.rect.center
+
+    def explotar(self):
+        self.reproductor_de_sonido.reproducir_sonido("petacereza_explosion", 0, -1)
+        for zombie in grupo_zombies:
+            if self.hitbox_explosion.colliderect(zombie.hitbox):
+                zombie.recibir_daño(10000)
+        
+    def cambiar_animacion(self, animacion):
+        if animacion == "activado":
+            self.activar_hitbox()
+            self.estado = "activado"
+        else:
+            self.estado ="explosion"
+            self.explotar()
+
+    def update(self):
+        tiempo_frame= pygame.time.get_ticks()
+        if self.estado == "desactivado":
+            if tiempo_frame - self.ultimo_frame > self.velocidad_animacion:
+                self.contador_activacion += 1
+                if self.frame_desactivado_contador < 23:
+                    self.frame_desactivado_contador += 1
+                    self.ultimo_frame = tiempo_frame
+                    self.indice_frames = (self.indice_frames + 1) % len(self.frames_desactivados)
+                    self.image = self.frames_desactivados[self.indice_frames]
+                if self.contador_activacion == 300:
+                    self.cambiar_animacion("activado")
+        elif self.estado == "activado":
+            for zombie in grupo_zombies:
+                if self.hitbox_activacion.colliderect(zombie.hitbox):
+                    self.cambiar_animacion("explosion")
+            if tiempo_frame - self.ultimo_frame > self.velocidad_animacion:
+                self.indice_frames = (self.indice_frames + 1) % len(self.frames_activados)
+                self.image = self.frames_activados[self.indice_frames]
+        else:
+            if tiempo_frame - self.ultimo_frame > 70:
+                if self.frame_explosion_contador < 25:
+                    self.indice_frames = (self.indice_frames + 1) % len(self.frames_explosion)
+                    self.image  = self.frames_explosion[self.indice_frames]
+                    self.frame_explosion_contador += 1
+                else:
+                    funciones.eliminar(self.lista_entidades, self.id, Plantas)
+
+        # if self.exploto == False:    
+        #     if tiempo_frame - self.ultimo_frame > self.velocidad_animacion and self.contador_activacion <= 300:
+        #         self.contador_activacion += 1
+        #         if self.frame_desactivado_contador < 23:
+        #             self.frame_desactivado_contador += 1
+        #             self.ultimo_frame = tiempo_frame
+        #             self.indice_frames = (self.indice_frames + 1) % len(self.frames_desactivados)
+        #             self.image = self.frames_desactivados[self.indice_frames]
+        #     if self.contador_activacion > 300:
+        #         self.ultimo_frame = tiempo_frame
+        #         if self.contador_activacion == 300:
+        #             self.indice_frames =  0
+        #             self.activar_hitbox()
+        #         else:
+        #             self.indice_frames = (self.indice_frames + 1) % len(self.frames_activados)
+        #         for zombie in grupo_zombies:
+        #             if self.hitbox_activacion.colliderect(zombie.hitbox):
+        #                 self.explotar()
+        #         self.image = self.frames_activados[self.indice_frames]
+        # else:
+        #     self.ultimo_frame = tiempo_frame
+        #     self.indice_frames = (self.indice_frames + 1) % len(self.frames_desactivados)
+        #     self.image = self.frames_desactivados[self.indice_frames]
+
+                
+                
+        # if self.contador_activacion == 6:
+        #     self.indice_frames = 0
+        #     self.ultimo_frame = 0
+        #     tiempo_frame = 0
+        #     self.estado = "activado"
+            #     self.contador_activacion += 1
+            # if self.estado == "activado":
+            #     self.ultimo_frame = tiempo_frame
+            #     self.indice_frames = (self.indice_frames + 1) % len(self.frames_activados)
+            #     self.image = self.frames_activados[self.indice_frames]
 
 class Petacereza(pygame.sprite.Sprite):
     petacerezas_id = 0
