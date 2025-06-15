@@ -39,33 +39,38 @@ def de_pixeles_a_grilla(pixeles_x:int, pixeles_y:int) -> tuple:
         raise(ValueError)
     
 
-def plantar(grilla_entidades:list, seleccion_planta:str, grilla_x:int, grilla_y:int):
+def plantar(grilla_entidades:list, seleccion_planta:str, grilla_x:int, grilla_y:int, reproductor_de_sonido):
     if seleccion_planta == "lanzaguisantes":
-        nueva_planta = cl.lanzaguisantes((grilla_x * constantes.CELDA_ANCHO) + constantes.COMIENZO_PASTO_X - 15,(grilla_y * constantes.CELDA_ALTO) + constantes.COMIENZO_PASTO_Y + 20, grilla_entidades) #En la pos de la planta se pasa de numero de grilla a pixeles.
+        nueva_planta = cl.lanzaguisantes((grilla_x * constantes.CELDA_ANCHO) + constantes.COMIENZO_PASTO_X - 15,(grilla_y * constantes.CELDA_ALTO) + constantes.COMIENZO_PASTO_Y + 20, grilla_entidades, reproductor_de_sonido) #En la pos de la planta se pasa de numero de grilla a pixeles.
     elif seleccion_planta == "girasol":
-        nueva_planta = cl.Girasol((grilla_x * constantes.CELDA_ANCHO)+ constantes.COMIENZO_PASTO_X- 15,(grilla_y * constantes.CELDA_ALTO)+ constantes.COMIENZO_PASTO_Y+ 20, grilla_entidades)
+        nueva_planta = cl.Girasol((grilla_x * constantes.CELDA_ANCHO)+ constantes.COMIENZO_PASTO_X- 15,(grilla_y * constantes.CELDA_ALTO)+ constantes.COMIENZO_PASTO_Y+ 20, grilla_entidades, reproductor_de_sonido)
     elif seleccion_planta == "nuez":
-        nueva_planta = cl.Nuez((grilla_x * constantes.CELDA_ANCHO)+ constantes.COMIENZO_PASTO_X- 15,(grilla_y * constantes.CELDA_ALTO)+ constantes.COMIENZO_PASTO_Y+ 20, grilla_entidades)
+        nueva_planta = cl.Nuez((grilla_x * constantes.CELDA_ANCHO)+ constantes.COMIENZO_PASTO_X- 15,(grilla_y * constantes.CELDA_ALTO)+ constantes.COMIENZO_PASTO_Y+ 20, grilla_entidades, reproductor_de_sonido)
+    elif seleccion_planta == "petacereza":
+        nueva_planta = cl.Petacereza((grilla_x * constantes.CELDA_ANCHO)+ constantes.COMIENZO_PASTO_X- 15,(grilla_y * constantes.CELDA_ALTO)+ constantes.COMIENZO_PASTO_Y+ 20, reproductor_de_sonido)
     seleccion_planta = False
     grilla_entidades[grilla_y][grilla_x] = nueva_planta
-    cl.grupo_plantas.add(nueva_planta)
-    pygame.mixer.Sound(
-        r"assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\semillas\semillas_plantar.ogg"
-    ).play()
+    if isinstance(nueva_planta, cl.Plantas):
+        cl.grupo_plantas.add(nueva_planta)
+    else:
+        cl.grupo_deplegables.add(nueva_planta)
+    reproductor_de_sonido.reproducir_sonido("semilla_plantar")
     return seleccion_planta
 
 
-def excavar(grilla_entidades:list, grilla_x:int, grilla_y:int, seleccion_planta: str, pala):
-    if (isinstance(grilla_entidades[grilla_y][grilla_x], cl.Plantas)):
-        pala.sonido.play()
-        # grilla_entidades[grilla_y][grilla_x].kill()
-        eliminar(grilla_entidades, grilla_entidades[grilla_y][grilla_x].id)
-        seleccion_planta = False
-    elif seleccion_planta == "pala":
-        seleccion_planta = False
-    return seleccion_planta
+def iniciar_administrador_sonido(diccionario_sonidos:dict):
+    """
+    diccionario_sonidos = {"nombre_sonido": "ruta_sonido"}
+    """
+    administrador_de_sonido = cl.Administrador_de_sonido()
 
-def perder(traslucido, grupo_zombies, screen, vivo):
+    for nombre_sonido, ruta_sonido in diccionario_sonidos.items():
+        administrador_de_sonido.cargar_sonido(ruta_sonido, nombre_sonido)
+
+    return administrador_de_sonido
+
+
+def perder(traslucido, grupo_zombies, screen, vivo, reproductor_de_sonido, contador):
     for zombie in grupo_zombies:
         if zombie.hitbox.x <= 260:
             vivo = False
@@ -77,9 +82,13 @@ def perder(traslucido, grupo_zombies, screen, vivo):
         ahora = pygame.time.get_ticks()
         screen.blit(perdida, (0,0))
         screen.blit(perdiste, (190,28))
+        if contador == 0:
+            reproductor_de_sonido.detener_reproduccion("musica_nivel_dia")
+            reproductor_de_sonido.reproducir_sonido("perder", 0, True)
+            contador += 1
         if ahora > 600 and traslucido < 254:
             traslucido += 1
             ahora = pygame.time.get_ticks()
             perdida.fill((0, 0, 0, traslucido))
     traslucidez = traslucido
-    return traslucidez, vivo
+    return traslucidez, vivo, contador

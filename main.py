@@ -6,10 +6,29 @@ from clases import *
 from funciones import *
 
 pygame.init()
+contador_para_perder = 0
+administrador_de_sonido = iniciar_administrador_sonido(
+    {
+        "musica_menu_principal": r"assets\Musica\[Main Menu].mp3",
+        "musica_nivel_dia": r"assets\Musica\[Day Stage].mp3",
+        "hit1": r"assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\Hit1.ogg",
+        "hit2": r"assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\Hit2.mp3",
+        "hit3": r"assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\Hit3.ogg",
+        "semilla_seleccionar": r"assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\semillas\semillas_seleccion.ogg",
+        "semilla_plantar": r"assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\semillas\semillas_plantar.ogg",
+        "zombie_masticar": r"assets\zombies\zombie_masticando.ogg",
+        "zombie_tragar": r"assets\zombies\zombie_tragando_planta.ogg",
+        "cortapastos_activar": r"assets\cortapasto\cortapastos_activa.ogg",
+        "pala_sonido": r"assets\pala\pala_sonido.mp3",
+        "petacereza_explosion": r"assets\petacereza\petacereza_explosion_sonido.ogg",
+        "perder": r"assets\Musica\[You Lost].mp3",
+        "botones": r"assets\boton_inicio.mp3"
+    }
+)
+
 
 reloj = pygame.time.Clock()
-mixer.music.load(r"assets/Musica/[Day Stage].mp3")
-mixer.music.play(-1)
+
 
 # Definicion de pantalla
 screen = pygame.display.set_mode((constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA))
@@ -82,21 +101,29 @@ APARICION_OLEADA = pygame.USEREVENT + 1
 #pygame.time.set_timer(APARICION_SOLES, constantes.TIEMPO_APARICION_SOL)
 
 # Defino semillas
-s_girasol = Semillas(380, 10, r"assets\semillas\semillas_girasol.png", "girasol")
-s_lanzaguisantes = Semillas(440, 10, r"assets//semillas//semillas_lanzaguisantes.png", "lanzaguisantes")
-s_nuez = Semillas(500, 10, r"assets//semillas//semillas_nuez.png", "nuez")
+s_girasol = Semillas(380, 10, r"assets\semillas\semillas_girasol.png", administrador_de_sonido, "girasol")
+s_lanzaguisantes = Semillas(440, 10, r"assets//semillas//semillas_lanzaguisantes.png", administrador_de_sonido, "lanzaguisantes")
+s_nuez = Semillas(500, 10, r"assets//semillas//semillas_nuez.png", administrador_de_sonido, "nuez")
+s_petacereza = Semillas(
+    560,
+    10,
+    r"assets\semillas\semilla_petacereza.png",
+    administrador_de_sonido,
+    "petacereza",
+)
 s_lanzaguisantes.add(grupo_semillas)
 s_girasol.add(grupo_semillas)
 s_nuez.add(grupo_semillas)
+s_petacereza.add(grupo_semillas)
 # Defino las cortapastos
-cortapastos_col = []
-cortapastos_col += [[Cortapasto(constantes.COMIENZO_PASTO_X - constantes.CELDA_ANCHO - 20,constantes.COMIENZO_PASTO_Y + constantes.CELDA_ALTO * fil,cortapastos_col,)]for fil in range(5)]
-for cortapasto_id in cortapastos_col:
-    grupo_cortapastos.add(cortapasto_id)
+# cortapastos_col = []
+# cortapastos_col += [[Cortapasto(constantes.COMIENZO_PASTO_X - constantes.CELDA_ANCHO - 20,constantes.COMIENZO_PASTO_Y + constantes.CELDA_ALTO * fil,cortapastos_col, administrador_de_sonido)]for fil in range(5)]
+# for cortapasto_id in cortapastos_col:
+#     grupo_cortapastos.add(cortapasto_id)
 
 
 #defino la pala
-pala = Pala()
+pala = Pala(administrador_de_sonido)
 grupo_pala.add(pala)
 
 #Este diccionario es para las previews, se puede llegar a cambiar por una alternativa mejor.
@@ -104,6 +131,7 @@ preview_dict = {
     "lanzaguisantes": [pygame.image.load(r"assets\lanzaguisante\frame_0.png"),-15,-34],
     "girasol": [pygame.image.load(r"assets\girasol\frame_1.png"),-3,-12],
     "nuez": [pygame.image.load(r"assets\nuez\frame_0.png"),1,-5],
+    "petacereza": [pygame.image.load(r"assets\petacereza\gif\frame_1.png"), 0 , 0]
 }
 for values in preview_dict.values():
     values[0].set_alpha(128)
@@ -116,13 +144,20 @@ mostrar_inicio = True
 while run:
     if mostrar_inicio:
         pantalla_inicio()
+        administrador_de_sonido.reproducir_sonido("musica_menu_principal", -1, True)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if boton_jugar.collidepoint(event.pos):
                     mostrar_inicio  = False
+                    administrador_de_sonido.detener_reproduccion(
+                        "musica_menu_principal"
+                    )
+                    administrador_de_sonido.reproducir_sonido("botones")
+                    administrador_de_sonido.reproducir_sonido("musica_nivel_dia", -1, True)
                 if boton_salir.collidepoint(event.pos):
+                    administrador_de_sonido.reproducir_sonido("botones")
                     run = False 
     else:
         # reloj.tick(constantes.FPS)
@@ -145,6 +180,8 @@ while run:
         screen.blit(barra, (300, 0))
         grupo_semillas.draw(screen)
         grupo_pala.draw(screen)
+        grupo_deplegables.draw(screen)
+        grupo_deplegables.update(grilla_entidades)
         
 # CAMBIAR ESTA PARTE PORQUE HAY UN ERROR DE QUE SE VA DE LA GRILLA"""""
         if cuadpos[0] <= constantes.COMIENZO_PASTO_X:
@@ -161,15 +198,17 @@ while run:
         
         
         x, y = pygame.mouse.get_pos()
+
         if seleccion_planta == "pala":
             pala.dibujar_cursor(x, y, screen)
         if (constantes.COMIENZO_PASTO_X < x < constantes.FIN_PASTO_X and constantes.COMIENZO_PASTO_Y < y < constantes.FIN_PASTO_Y):
+            
             x,y = de_pixeles_a_grilla(x,y)
             cuadpos[0] = constantes.COMIENZO_PASTO_X + (x * constantes.CELDA_ANCHO)
             cuadpos[1] = constantes.COMIENZO_PASTO_Y + (y * constantes.CELDA_ALTO)
             
             if seleccion_planta != False:
-                if seleccion_planta != "pala" and not (isinstance(grilla_entidades[y][x], Plantas)):
+                if seleccion_planta != "pala" and not (isinstance(grilla_entidades[y][x], (Plantas, Petacereza))):
                     screen.blit(preview_dict[seleccion_planta][0],(cuadpos[0] + preview_dict[seleccion_planta][1], cuadpos[1] + preview_dict[seleccion_planta][2]),)
                     screen.blit(cuad, cuadpos)
                 elif seleccion_planta == "pala":
@@ -186,9 +225,9 @@ while run:
                     cuadpos[0] = constantes.COMIENZO_PASTO_X + (x * constantes.CELDA_ANCHO)
                     cuadpos[1] = constantes.COMIENZO_PASTO_Y + (y * constantes.CELDA_ALTO)
                     if grilla_entidades[y][x] == 0 and seleccion_planta != False and seleccion_planta != "pala":
-                        seleccion_planta = plantar(grilla_entidades, seleccion_planta, x, y)
+                        seleccion_planta = plantar(grilla_entidades, seleccion_planta, x, y, administrador_de_sonido)
                     elif (seleccion_planta == "pala"):
-                        seleccion_planta = excavar(grilla_entidades, x, y, seleccion_planta, pala)
+                        seleccion_planta = pala.excavar(grilla_entidades, x, y, seleccion_planta)
                 #Funcionamiento de la seleccion de semillas
                 elif (370 < x < 841 and 10 < y < 100):
                     grupo_semillas.update(event)
@@ -213,7 +252,7 @@ while run:
 
                 if nivel_dificultad == 10:
                     constantes.TIPOS_ZOMBIES.append("cono")
-                    nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[pos_aleatoria], "cono", constantes.VIDA_ZOMBIES["cono"])
+                    nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[pos_aleatoria], "cono", constantes.VIDA_ZOMBIES["cono"], administrador_de_sonido)
                     nuevo_zombie.add(grupo_zombies)
                 
                 if nivel_dificultad % 2 == 0 and nivel_dificultad >= 12 and nivel_dificultad <= 24:
@@ -225,9 +264,9 @@ while run:
                     lista_ubis = [0, 1, 2, 3, 4]
                     ubi1 = lista_ubis.pop(random.choice(lista_ubis))
                     ubi2 = lista_ubis.pop(random.choice(lista_ubis))
-                    nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[ubi1], "cono", constantes.VIDA_ZOMBIES["cono"])
+                    nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[ubi1], "cono", constantes.VIDA_ZOMBIES["cono"], Administrador_de_sonido)
                     nuevo_zombie.add(grupo_zombies)
-                    nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[ubi2], "balde", constantes.VIDA_ZOMBIES["balde"])
+                    nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[ubi2], "balde", constantes.VIDA_ZOMBIES["balde"], administrador_de_sonido)
                     nuevo_zombie.add(grupo_zombies)
                 
                 if nivel_dificultad >= 21 and (nivel_dificultad % 2) != 0:
@@ -265,11 +304,11 @@ while run:
             tiempo_actual = pygame.time.get_ticks()
             if tiempo_actual - delay_spawn_zombie > 1750:
                 fila, tipo, vida = zombies_a_spawnear.pop(0)
-                nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[fila], tipo, vida)
+                nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[fila], tipo, vida, administrador_de_sonido)
                 nuevo_zombie.add(grupo_zombies)
                 delay_spawn_zombie = tiempo_actual
 
-        traslucido, vivo = perder(traslucido, grupo_zombies, screen, vivo)
+        traslucido, vivo, contador_para_perder = perder(traslucido, grupo_zombies, screen, vivo, administrador_de_sonido, contador_para_perder)
 
         pygame.display.update()
     reloj.tick(constantes.FPS)

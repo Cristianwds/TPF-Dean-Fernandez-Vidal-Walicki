@@ -3,7 +3,6 @@ import constantes
 import random
 from pygame import mixer
 import funciones
-pygame.mixer.init()
 
 grupo_plantas = pygame.sprite.Group()
 grupo_proyectiles = pygame.sprite.Group()
@@ -11,14 +10,63 @@ grupo_zombies = pygame.sprite.Group()
 grupo_cortapastos = pygame.sprite.Group()
 grupo_semillas = pygame.sprite.Group()
 grupo_pala = pygame.sprite.Group()
+grupo_deplegables = pygame.sprite.Group()
+class Administrador_de_sonido():
+
+    def __init__(self):
+        pygame.mixer.init()
+        pygame.mixer.set_num_channels(32)
+        self.sonidos = {}
+        self.canales_sonidos_ocupados = {}#Aca se guarda el nombre del sonido y su canal nada mas cuando se ejecuta reproducir_sonido con evitar_superposicion = True
+    def cargar_sonido(self, ruta_sonido:str, nombre_sonido:str):
+        try:
+            sonido = pygame.mixer.Sound(ruta_sonido)
+            self.sonidos[nombre_sonido] = sonido
+        except pygame.error as error:
+            print(f"Error al cargar el sonido {nombre_sonido}\nRuta: {ruta_sonido}\nError: {error}")
+
+
+    def reproducir_sonido(self, nombre_sonido:str, loop = 0, evitar_superposicion = False):
+
+        if nombre_sonido in self.sonidos:
+            if evitar_superposicion:
+                if nombre_sonido in self.canales_sonidos_ocupados:
+                    #Si el canal que se le asigno al sonido está reproduciendo, el método finaliza.
+                    canal = self.canales_sonidos_ocupados[nombre_sonido]
+                    if canal.get_busy():
+                        return
+                    #Si no está asignado a un canal, se le asigna uno.
+                else:
+                    canal = pygame.mixer.find_channel()
+                    self.canales_sonidos_ocupados[nombre_sonido] = canal
+                if canal:
+                    canal.play(self.sonidos[nombre_sonido], loops = loop)
+            else:
+                self.sonidos[nombre_sonido].play(loops = loop)
+        else:
+            print(f"Sonido {nombre_sonido} no encontrado.")
+
+
+    def detener_reproduccion(self, nombre_sonido:str):
+        if nombre_sonido in self.canales_sonidos_ocupados:
+            self.canales_sonidos_ocupados[nombre_sonido].stop()
+            del self.canales_sonidos_ocupados[nombre_sonido]
+        elif nombre_sonido in self.sonidos:
+            self.sonidos[nombre_sonido].stop()
+
+    def detener_todos(self):
+        pygame.mixer.stop()
+
+        
 class Criaturas(pygame.sprite.Sprite):
-    def __init__(self, x, y, imagen, vida):
+    def __init__(self, x, y, imagen, vida, reproductor_de_sonido):
         super().__init__()
         self.pos_x = x
         self.pos_y = y
         self.image = imagen  # Si ya es una Surface
         self.rect = self.image.get_rect(center=[self.pos_x, self.pos_y])
         self.vida = vida
+        self.reproductor_de_sonido = reproductor_de_sonido
         
     def recibir_daño(self, daño):
         self.vida -= daño
@@ -27,7 +75,7 @@ class Criaturas(pygame.sprite.Sprite):
             return True
 
 class Enemigos(Criaturas):
-    def __init__(self, x, y, tipo, vida, daño= constantes.DAÑO_ZOMBIE, velocidad= constantes.VELOCIDAD_ZOMBIE):
+    def __init__(self, x, y, tipo, vida, reproductor_de_sonido, daño= constantes.DAÑO_ZOMBIE, velocidad= constantes.VELOCIDAD_ZOMBIE):
         
         # Se cargan los frames
         self.tipo = tipo
@@ -39,7 +87,7 @@ class Enemigos(Criaturas):
         imagen_inicial = self.frames[0]
 
         # Se llama a la Superclase con la imagen cargada
-        super().__init__(x, y, imagen_inicial, vida)
+        super().__init__(x, y, imagen_inicial, vida, reproductor_de_sonido)
 
         self.velocidad = velocidad
         self.daño = daño
@@ -68,7 +116,7 @@ class Enemigos(Criaturas):
                 self.velocidad= 0
                 if ahora - self.ultimo_ataque >= constantes.VELOCIDAD_ATAQUE_ZOMBIE:
                     self.ultimo_ataque = ahora
-                    #random.choice(self.impacto).play()
+                    self.reproductor_de_sonido.reproducir_sonido("zombie_masticar", -1, True)
                     if planta.recibir_daño(self.daño):
                         self.velocidad = constantes.VELOCIDAD_ZOMBIE
             
@@ -104,8 +152,8 @@ class Enemigos(Criaturas):
 
 class Plantas(Criaturas):
     plantas_id = 0
-    def __init__(self, x, y, imagen, vida, cooldown, costo, lista_entidades):
-        super().__init__(x, y, imagen, vida)
+    def __init__(self, x, y, imagen, vida, cooldown, costo, lista_entidades, reproductor_de_sonido):
+        super().__init__(x, y, imagen, vida, reproductor_de_sonido)
         self.cooldown = cooldown
         self.costo = costo
         self.pos_x = x
@@ -126,11 +174,13 @@ class Plantas(Criaturas):
         self.vida -= daño
         if self.vida <= 0:
             funciones.eliminar(self.lista_entidades, self.id)
+            self.reproductor_de_sonido.detener_reproduccion("zombie_masticar")
+            self.reproductor_de_sonido.reproducir_sonido("zombie_tragar")
             self.kill()
             return True
 
 class lanzaguisantes(Plantas):
-    def __init__(self, x, y, lista_entidades, vida=300, cooldown=7500, costo=100):
+    def __init__(self, x, y, lista_entidades, reproductor_de_sonido, vida=300, cooldown=7500, costo=100):
         self.frames = [pygame.image.load(f"assets\lanzaguisante\\frame_{i}.png").convert_alpha() for i in range(constantes.CANT_FRAMES_PLANTAS["lanzaguisante"])]
         self.indice_frames = 0
         self.image = self.frames[self.indice_frames]
@@ -145,7 +195,7 @@ class lanzaguisantes(Plantas):
         self.ultimo_frame = pygame.time.get_ticks()
         self.velocidad_animacion = 18  # milisegundos por frame
         self.rect = self.image.get_rect(midleft= (x,y))
-        Plantas.__init__(self, x, y, self.image, vida, cooldown, costo, lista_entidades)
+        Plantas.__init__(self, x, y, self.image, vida, cooldown, costo, lista_entidades, reproductor_de_sonido)
 
     def update(self):
         global grupo_zombies
@@ -168,12 +218,12 @@ class lanzaguisantes(Plantas):
 
         if hay_zombie_en_frente and ((ahora - self.ultimo_disparo) >= 1500):
             self.ultimo_disparo = ahora
-            guisante = Proyectil(r"assets\\proyectil\\guisante.png", self.hitbox.x + 60, self.hitbox.y, 20)
+            guisante = Proyectil(r"assets\\proyectil\\guisante.png", self.hitbox.x + 60, self.hitbox.y, 20, self.reproductor_de_sonido)
             grupo_proyectiles.add(guisante)
 
 
 class Girasol(Plantas):
-    def __init__(self, x, y, lista_entidades, vida=300, cooldown=7500, costo=50):
+    def __init__(self, x, y, lista_entidades, reproductor_de_sonido, vida=300, cooldown=7500, costo=50):
         self.x = x +12
         self.y = y +12
         self.vida = vida
@@ -185,7 +235,7 @@ class Girasol(Plantas):
         self.ultimo_frame = pygame.time.get_ticks()
         self.velocidad_animacion = 18
         self.rect = self.image.get_rect(midleft=(self.x, self.y))
-        super().__init__(self.x, self.y, self.image, vida, cooldown, costo, lista_entidades)
+        super().__init__(self.x, self.y, self.image, vida, cooldown, costo, lista_entidades, reproductor_de_sonido)
 
     def update(self):
         tiempo_frame= pygame.time.get_ticks()
@@ -196,7 +246,7 @@ class Girasol(Plantas):
             self.image = self.frames[self.indice_frames]
 
 class Nuez(Plantas):
-    def __init__(self, x, y, lista_entidades, vida=4000, cooldown=30000, costo=50):
+    def __init__(self, x, y, lista_entidades, reproductor_de_sonido, vida=4000, cooldown=30000, costo=50):
         self.x = x
         self.y = y
         self.vida = vida
@@ -208,7 +258,7 @@ class Nuez(Plantas):
         self.velocidad_animacion= 35
         self.image = self.frames[self.indice_frames]
         self.rect = self.image.get_rect(midleft=(self.x, self.y))
-        super().__init__(self.x + 17, self.y+ 17, self.image, vida, cooldown, costo, lista_entidades)
+        super().__init__(self.x + 17, self.y+ 17, self.image, vida, cooldown, costo, lista_entidades, reproductor_de_sonido)
 
     def update(self):
         tiempo_frame= pygame.time.get_ticks()
@@ -219,15 +269,61 @@ class Nuez(Plantas):
             self.image = self.frames[self.indice_frames]
 
 
+
+class Petacereza(pygame.sprite.Sprite):
+    petacerezas_id = 0
+    def __init__(self, x, y, administrador_de_sonido):
+        self.x = x
+        self.y = y
+        self.image = pygame.image.load(r"assets\petacereza\gif\frame_0.png")
+        self.administrador_de_sonido = administrador_de_sonido
+        self.frames = [pygame.image.load(f"assets\\petacereza\\gif\\frame_{i}.png").convert_alpha() for i in range(7)]
+        self.indice_frames = 0
+        self.ultimo_frame = pygame.time.get_ticks()
+        self.velocidad_animacion= 200
+        self.image = self.frames[self.indice_frames]
+        self.rect = self.image.get_rect(midleft=(x,y))
+        Petacereza.petacerezas_id += 1
+        self.id = Petacereza.petacerezas_id
+        self.contador_explosion = 0
+        self.hitbox_explosion = pygame.Rect(0, 0, constantes.CELDA_ANCHO * 3, constantes.CELDA_ALTO * 3)
+        self.hitbox_explosion.center = self.rect.center
+        self.alpha = 256
+        super().__init__()
+
+    def update(self, grilla_entidades):
+        tiempo_frame= pygame.time.get_ticks()
+
+        if tiempo_frame - self.ultimo_frame > self.velocidad_animacion:
+            self.ultimo_frame = tiempo_frame
+            self.indice_frames = (self.indice_frames + 1) % len(self.frames)
+            if self.contador_explosion < 6:
+                self.image = self.frames[self.indice_frames]
+            self.contador_explosion += 1
+        if self.contador_explosion == 6:
+            self.image = pygame.image.load(r"assets\petacereza\petacereza_explosion_imagen.png")
+            self.rect = self.image.get_rect(center = (self.x + constantes.CELDA_ANCHO / 2, self.y))
+            self.administrador_de_sonido.reproducir_sonido("petacereza_explosion", 0, True)
+            for zombie in grupo_zombies:
+                if self.hitbox_explosion.colliderect(zombie.hitbox):
+                    zombie.kill()          
+        if self.contador_explosion >= 6:
+            self.image.set_alpha(self.alpha)
+            self.alpha -= 3
+            if self.contador_explosion == 12:
+                funciones.eliminar(grilla_entidades, self.id)
+
+
+
 class Proyectil(pygame.sprite.Sprite):
 
-    def __init__(self,imagen,x,y,daño,impacto=[pygame.mixer.Sound(r"assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\Hit1.ogg"),pygame.mixer.Sound("assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\Hit2.mp3"),pygame.mixer.Sound("assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\Hit3.ogg")]):
+    def __init__(self,imagen,x,y,daño,administrador_de_sonido):
         super().__init__()
         self.x = x
         self.y = y
         self.image = pygame.image.load(imagen).convert_alpha()
         self.daño = daño
-        self.impacto = impacto
+        self.administrador_de_sonido = administrador_de_sonido
 
         # rect para posicionar y dibujar la imagen
         self.rect = self.image.get_rect(center=[x, y])
@@ -242,7 +338,7 @@ class Proyectil(pygame.sprite.Sprite):
 
         for zombie in grupo_zombies:
             if self.hitbox.colliderect(zombie.hitbox):
-                random.choice(self.impacto).play()
+                self.administrador_de_sonido.reproducir_sonido(random.choice(["hit1", "hit2", "hit3"]))
                 zombie.recibir_daño(self.daño)
                 self.kill()
                 break
@@ -258,7 +354,8 @@ class Semillas(pygame.sprite.Sprite):
         x,
         y,
         image,
-        item="lanzaguisantes",
+        reproductor_de_sonido,
+        item,
         valor=0,
         cooldown=0,
     ):
@@ -272,14 +369,13 @@ class Semillas(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
         self.clicked = False
+        self.reproductor_de_sonido = reproductor_de_sonido
 
     def update(self, evento):
         if evento.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(evento.pos):
                 self.clicked = True
-                pygame.mixer.Sound(
-                    "assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\semillas\semillas_seleccion.ogg"
-                ).play()
+                self.reproductor_de_sonido.reproducir_sonido("semilla_seleccionar")
             else:
                 self.clicked = False
 
@@ -287,7 +383,7 @@ class Semillas(pygame.sprite.Sprite):
 class Cortapasto(pygame.sprite.Sprite):
     cortapasto_id = 0
 
-    def __init__(self, x, y, lista):
+    def __init__(self, x, y, lista, reproductor_de_sonido):
         self.image = pygame.image.load("assets\cortapasto\cortapasto.png")
         self.rect = self.image.get_rect(topleft=[x, y])
         self.hitbox = pygame.Rect(0, 0, self.rect.width, self.rect.height - 60)
@@ -296,13 +392,14 @@ class Cortapasto(pygame.sprite.Sprite):
         Cortapasto.cortapasto_id += 1
         self.id = Cortapasto.cortapasto_id
         self.cortapastos_col = lista
+        self.reproductor_de_sonido = reproductor_de_sonido
         super().__init__()
 
     def update(self):
         for zombies in grupo_zombies:
             if self.moving == 0 and self.hitbox.colliderect(zombies.hitbox):
                 self.moving = True
-                pygame.mixer.Sound("assets\cortapasto\cortapastos_activa.ogg").play()
+                self.reproductor_de_sonido.reproducir_sonido("cortapastos_activar", 0, True)
             elif self.moving == 1 and self.hitbox.colliderect(zombies.hitbox):
                 zombies.kill()
         if self.moving == True:
@@ -316,23 +413,32 @@ class Cortapasto(pygame.sprite.Sprite):
 
 class Pala(pygame.sprite.Sprite):
 
-    def __init__(self):
+    def __init__(self, reproductor_de_sonido):
         self.image = pygame.image.load(r"assets\pala\pala_icono.jpg")
         self.x = 860
         self.y = 10
         self.rect = self.image.get_rect(topleft = [self.x, self.y])
         self.clicked = False
-        self.sonido = pygame.mixer.Sound(r"assets\pala\pala_sonido.mp3")
+        self.reproductor_de_sonido = reproductor_de_sonido
         self.cursor = pygame.image.load(r"assets\pala\pala_cursor.png")
         super().__init__()
 
     def update(self, evento):
         if self.rect.collidepoint(evento.pos):
             self.clicked = True
-            self.sonido.play()
+            self.reproductor_de_sonido.reproducir_sonido("pala_sonido")
         else:
             self.clicked = False
 
     def dibujar_cursor(self, x,y,screen):
         self.cursor_rect = self.cursor.get_rect(bottomleft = [x, y])
         screen.blit(self.cursor, self.cursor_rect)
+
+    def excavar(self,grilla_entidades:list, grilla_x:int, grilla_y:int, seleccion_planta: str):
+        if (isinstance(grilla_entidades[grilla_y][grilla_x], (Plantas, Petacereza))):
+            self.reproductor_de_sonido.reproducir_sonido("pala_sonido")
+            funciones.eliminar(grilla_entidades, grilla_entidades[grilla_y][grilla_x].id)
+            seleccion_planta = False
+        elif seleccion_planta == "pala":
+            seleccion_planta = False
+        return seleccion_planta
