@@ -9,14 +9,14 @@ def dibujar_grilla(screen, celdas_rects):
             pygame.draw.rect(screen, (255, 255, 255), rect, 1)  # color blanco, borde de 1 píxel
 
 
-def eliminar(lista:list, id_obj:int) -> None:
+def eliminar(lista:list, id_obj:int, clase) -> None:
     """
     Recibe la lista en la que está guardada el objeto y el id del objeto a eliminar para eliminarlo de la lista.
     """
     for filas in lista[:]:
         for objetos in filas[:]:
             if objetos != 0 and objetos != None:
-                if id_obj == objetos.id:
+                if id_obj == objetos.id and isinstance(objetos, clase):
                     fila_index = lista.index(filas)
                     columna_index = filas.index(objetos)
                     lista[fila_index][columna_index] = 0

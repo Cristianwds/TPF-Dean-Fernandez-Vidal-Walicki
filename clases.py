@@ -180,7 +180,7 @@ class Plantas(Criaturas):
     def recibir_daño(self, daño):
         self.vida -= daño
         if self.vida <= 0:
-            funciones.eliminar(self.lista_entidades, self.id)
+            funciones.eliminar(self.lista_entidades, self.id, Plantas)
             self.reproductor_de_sonido.detener_reproduccion("zombie_masticar")
             self.reproductor_de_sonido.reproducir_sonido("zombie_tragar")
             self.kill()
@@ -318,7 +318,7 @@ class Petacereza(pygame.sprite.Sprite):
             self.image.set_alpha(self.alpha)
             self.alpha -= 3
             if self.contador_explosion == 12:
-                funciones.eliminar(grilla_entidades, self.id)
+                funciones.eliminar(grilla_entidades, self.id, Petacereza)
 
 
 
@@ -413,7 +413,7 @@ class Cortapasto(pygame.sprite.Sprite):
             self.rect.x += 10
             self.hitbox.center = self.rect.center
         if self.rect.x >= constantes.FIN_PASTO_X:
-            funciones.eliminar(self.cortapastos_col, self.id)
+            funciones.eliminar(self.cortapastos_col, self.id, Cortapasto)
             self.kill()
 
 
@@ -444,7 +444,8 @@ class Pala(pygame.sprite.Sprite):
     def excavar(self,grilla_entidades:list, grilla_x:int, grilla_y:int, seleccion_planta: str):
         if (isinstance(grilla_entidades[grilla_y][grilla_x], (Plantas, Petacereza))):
             self.reproductor_de_sonido.reproducir_sonido("pala_sonido")
-            funciones.eliminar(grilla_entidades, grilla_entidades[grilla_y][grilla_x].id)
+            print(type(grilla_entidades[grilla_y][grilla_x]))
+            funciones.eliminar(grilla_entidades, grilla_entidades[grilla_y][grilla_x].id, type(grilla_entidades[grilla_y][grilla_x]))
             seleccion_planta = False
         elif seleccion_planta == "pala":
             seleccion_planta = False
