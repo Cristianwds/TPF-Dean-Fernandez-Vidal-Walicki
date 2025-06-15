@@ -116,10 +116,10 @@ s_girasol.add(grupo_semillas)
 s_nuez.add(grupo_semillas)
 s_petacereza.add(grupo_semillas)
 # Defino las cortapastos
-# cortapastos_col = []
-# cortapastos_col += [[Cortapasto(constantes.COMIENZO_PASTO_X - constantes.CELDA_ANCHO - 20,constantes.COMIENZO_PASTO_Y + constantes.CELDA_ALTO * fil,cortapastos_col, administrador_de_sonido)]for fil in range(5)]
-# for cortapasto_id in cortapastos_col:
-#     grupo_cortapastos.add(cortapasto_id)
+cortapastos_col = []
+cortapastos_col += [[Cortapasto(constantes.COMIENZO_PASTO_X - constantes.CELDA_ANCHO - 20,constantes.COMIENZO_PASTO_Y + constantes.CELDA_ALTO * fil,cortapastos_col, administrador_de_sonido)]for fil in range(5)]
+for cortapasto_id in cortapastos_col:
+    grupo_cortapastos.add(cortapasto_id)
 
 
 #defino la pala
