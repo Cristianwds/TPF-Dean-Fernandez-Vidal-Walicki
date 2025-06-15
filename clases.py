@@ -444,7 +444,6 @@ class Pala(pygame.sprite.Sprite):
     def excavar(self,grilla_entidades:list, grilla_x:int, grilla_y:int, seleccion_planta: str):
         if (isinstance(grilla_entidades[grilla_y][grilla_x], (Plantas, Petacereza))):
             self.reproductor_de_sonido.reproducir_sonido("pala_sonido")
-            print(type(grilla_entidades[grilla_y][grilla_x]))
             funciones.eliminar(grilla_entidades, grilla_entidades[grilla_y][grilla_x].id, type(grilla_entidades[grilla_y][grilla_x]))
             seleccion_planta = False
         elif seleccion_planta == "pala":
