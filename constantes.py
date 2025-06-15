@@ -29,7 +29,7 @@ VELOCIDAD_ATAQUE_ZOMBIE= 1000
 VIDA_ZOMBIES= {"normal": 181, "cono": 551, "balde": 1281}
 
 VEL_ANIM_ZOMBIE= 30
-VEL_ANIM_LG= 15
+VEL_ANIM_LG= {False: 17, True: 32}
 
 YMAX = 480
 XMAX = 946
@@ -41,4 +41,5 @@ Cant_frames= {"normal": [len(os.listdir(r"assets\zombies\normal\caminata")), len
 
 CANT_FRAMES_PLANTAS= {"girasol": len(os.listdir(r"assets\girasol")), 
                      "lanzaguisante": len(os.listdir(r"assets\lanzaguisante")), 
-                     "nuez": len(os.listdir(r"assets\nuez"))}
+                     "nuez": len(os.listdir(r"assets\nuez")),
+                     "hielaguisantes": len(os.listdir(r"assets\hielaguisante"))}

@@ -106,11 +106,13 @@ s_lanzaguisantes = Semillas(440, 10, r"assets//semillas//semillas_lanzaguisantes
 s_nuez = Semillas(500, 10, r"assets//semillas//semillas_nuez.png", administrador_de_sonido, "nuez")
 s_petacereza = Semillas(560,10,r"assets\semillas\semilla_petacereza.png",administrador_de_sonido,"petacereza",)
 s_papapum = Semillas(620, 10, r"assets\papapum\semilla_papapum_.png", administrador_de_sonido, "papapum")
+s_hielaguisantes = Semillas(680, 10, r"assets//semillas//semillas_hielaguisantes.png", administrador_de_sonido, "hielaguisantes",)
 s_lanzaguisantes.add(grupo_semillas)
 s_girasol.add(grupo_semillas)
 s_nuez.add(grupo_semillas)
 s_petacereza.add(grupo_semillas)
 s_papapum.add(grupo_semillas)
+s_hielaguisantes.add(grupo_semillas)
 # Defino las cortapastos
 cortapastos_col = []
 cortapastos_col += [[Cortapasto(constantes.COMIENZO_PASTO_X - constantes.CELDA_ANCHO - 20,constantes.COMIENZO_PASTO_Y + constantes.CELDA_ALTO * fil,cortapastos_col, administrador_de_sonido)]for fil in range(5)]
@@ -128,7 +130,8 @@ preview_dict = {
     "girasol": [pygame.image.load(r"assets\girasol\frame_1.png"),-3,-12],
     "nuez": [pygame.image.load(r"assets\nuez\frame_0.png"),1,-5],
     "petacereza": [pygame.image.load(r"assets\petacereza\gif\frame_1.png"), 0 , 0],
-    "papapum" : [pygame.image.load(r"assets\papapum\papapum_activado\frame_2.png"), -10, 0]
+    "papapum" : [pygame.image.load(r"assets\papapum\papapum_activado\frame_2.png"), -10, 0],
+    "hielaguisantes": [pygame.image.load(r"assets\hielaguisante\frame_0.png"),-68,-52]
 }
 for values in preview_dict.values():
     values[0].set_alpha(128)

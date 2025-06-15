@@ -82,7 +82,9 @@ class Enemigos(Criaturas):
         self.tipo = tipo
         self.frames_caminata = [pygame.image.load(f"assets/zombies/{self.tipo}/caminata/frame_{i}.png").convert_alpha() for i in range(constantes.Cant_frames[self.tipo][0])]
         self.frames_ataque = [pygame.image.load(f"assets/zombies/{self.tipo}/ataque/frame_{i}.png").convert_alpha() for i in range (constantes.Cant_frames[self.tipo][1])] # Por ahora tiene las mismas img de movimiento
-        
+        self.frames_caminatahielo = [pygame.image.load(f"assets/zombies/{self.tipo}/caminatahielo/frame_{i}.png").convert_alpha() for i in range(constantes.Cant_frames[self.tipo][0])]
+        self.frames_ataquehielo = [pygame.image.load(f"assets/zombies/{self.tipo}/ataquehielo/frame_{i}.png").convert_alpha() for i in range (constantes.Cant_frames[self.tipo][1])]
+
         self.estado= "caminar" # caminar o atacar
         self.frames= self.frames_caminata
         imagen_inicial = self.frames[0]
@@ -99,6 +101,9 @@ class Enemigos(Criaturas):
         self.ultimo_ataque = pygame.time.get_ticks()
         self.velocidad_animacion = constantes.VEL_ANIM_ZOMBIE
         #self.image = pygame.transform.scale(self.image, (120, 140))  # opcional
+
+        self.realentizado = False
+        self.tiemporealentizado = pygame.time.get_ticks()
 
         # Rect de dibujo
         self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y - 90))
@@ -121,19 +126,9 @@ class Enemigos(Criaturas):
                     if planta.recibir_daño(self.daño):
                         self.velocidad = constantes.VELOCIDAD_ZOMBIE
             
-        if atacando:
-            if self.estado != "atacar":
-                self.estado = "atacar"
-                self.frames = self.frames_ataque
-                self.indice_frame = 0
-        else:
-            if self.estado != "caminar":
-                self.estado = "caminar"
-                self.frames = self.frames_caminata
-                self.indice_frame = 0
-            self.pos_x -= self.velocidad
-            if self.pos_x <= 0:
-                self.kill()
+        if atacando == True and len(grupo_plantas) == 0:
+            atacando = False
+            self.velocidad = constantes.VELOCIDAD_ZOMBIE
 
         self.rect.x = round(self.pos_x)
         self.hitbox.center = self.rect.center
@@ -146,6 +141,44 @@ class Enemigos(Criaturas):
             self.indice_frame = (self.indice_frame + 1) % len(self.frames)  # Ciclar entre frames
             self.image = self.frames[self.indice_frame]  # Cambiar al siguiente frame
             self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y - 90))  # Actualizar el rect
+
+        if self.realentizado:
+            ahora = pygame.time.get_ticks()
+            self.velocidad = 0.08
+            self.velocidad_animacion = 45
+            if self.estado == "caminar":
+                self.frames = self.frames_caminatahielo
+            elif self.estado == "atacar":
+                self.frames = self.frames_ataquehielo
+            if ahora - self.tiemporealentizado > 3000:
+                self.realentizado = False
+                self.velocidad = constantes.VELOCIDAD_ZOMBIE
+                self.velocidad_animacion = constantes.VEL_ANIM_ZOMBIE
+                if self.estado == "caminar":
+                    self.frames = self.frames_caminata
+                elif self.estado == "atacar":
+                    self.frames = self.frames_ataque
+
+
+        if atacando:
+            if self.estado != "atacar":
+                self.estado = "atacar"
+                if not self.realentizado:
+                    self.frames = self.frames_ataque
+                else:
+                    self.frames = self.frames_ataquehielo
+                self.indice_frame = 0
+        else:
+            if self.estado != "caminar":
+                self.estado = "caminar"
+                if not self.realentizado:
+                    self.frames = self.frames_caminata
+                else:
+                    self.frames = self.frames_caminatahielo
+                self.indice_frame = 0
+            self.pos_x -= self.velocidad
+            if self.pos_x <= 0:
+                self.kill()
 
         # DEBUG: dibujar hitbox
         # pygame.draw.rect(screen, (255, 0, 0), self.hitbox, 1)
@@ -187,8 +220,12 @@ class Plantas(Criaturas):
             return True
 
 class lanzaguisantes(Plantas):
-    def __init__(self, x, y, lista_entidades, reproductor_de_sonido, vida=300, cooldown=7500, costo=100):
-        self.frames = [pygame.image.load(f"assets\lanzaguisante\\frame_{i}.png").convert_alpha() for i in range(constantes.CANT_FRAMES_PLANTAS["lanzaguisante"])]
+    def __init__(self, x, y, lista_entidades, reproductor_de_sonido, costo=100, hielo = False, vida=300, cooldown=7500):
+        if hielo == False:
+            self.frames = [pygame.image.load(f"assets\lanzaguisante\\frame_{i}.png").convert_alpha() for i in range(constantes.CANT_FRAMES_PLANTAS["lanzaguisante"])]
+        else:
+            self.frames = [pygame.image.load(f"assets\hielaguisante\\frame_{i}.png").convert_alpha() for i in range(constantes.CANT_FRAMES_PLANTAS["hielaguisantes"])]
+        self.hielo = hielo
         self.indice_frames = 0
         self.image = self.frames[self.indice_frames]
         self.costo = costo
@@ -200,7 +237,7 @@ class lanzaguisantes(Plantas):
         self.cool_time = pygame.time.get_ticks()
         self.ultimo_disparo = pygame.time.get_ticks()
         self.ultimo_frame = pygame.time.get_ticks()
-        self.velocidad_animacion = 18  # milisegundos por frame
+        self.velocidad_animacion = constantes.VEL_ANIM_LG[hielo]  # milisegundos por frame
         self.rect = self.image.get_rect(midleft= (x,y))
         Plantas.__init__(self, x, y, self.image, vida, cooldown, costo, lista_entidades, reproductor_de_sonido)
 
@@ -225,7 +262,10 @@ class lanzaguisantes(Plantas):
 
         if hay_zombie_en_frente and ((ahora - self.ultimo_disparo) >= 1500):
             self.ultimo_disparo = ahora
-            guisante = Proyectil(r"assets\\proyectil\\guisante.png", self.hitbox.x + 60, self.hitbox.y, 20, self.reproductor_de_sonido)
+            if self.hielo:
+                guisante = Proyectil(r"assets\\proyectil\\guisantehielo.png", self.hitbox.x + 110, self.hitbox.y + 18, 20, self.reproductor_de_sonido, True)
+            else:
+                guisante = Proyectil(r"assets\\proyectil\\guisante.png", self.hitbox.x + 60, self.hitbox.y, 20, self.reproductor_de_sonido)
             grupo_proyectiles.add(guisante)
 
 
@@ -435,12 +475,13 @@ class Petacereza(pygame.sprite.Sprite):
 
 class Proyectil(pygame.sprite.Sprite):
 
-    def __init__(self,imagen,x,y,daño,administrador_de_sonido):
+    def __init__(self,imagen,x,y,daño,administrador_de_sonido, hielo = False):
         super().__init__()
         self.x = x
         self.y = y
         self.image = pygame.image.load(imagen).convert_alpha()
         self.daño = daño
+        self.hielo = hielo
         self.administrador_de_sonido = administrador_de_sonido
 
         # rect para posicionar y dibujar la imagen
@@ -458,6 +499,9 @@ class Proyectil(pygame.sprite.Sprite):
             if self.hitbox.colliderect(zombie.hitbox):
                 self.administrador_de_sonido.reproducir_sonido(random.choice(["hit1", "hit2", "hit3"]))
                 zombie.recibir_daño(self.daño)
+                if self.hielo:
+                    zombie.realentizado = True
+                    zombie.tiemporealentizado = pygame.time.get_ticks()
                 self.kill()
                 break
 

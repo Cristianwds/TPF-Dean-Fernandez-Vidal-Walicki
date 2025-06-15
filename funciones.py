@@ -50,6 +50,8 @@ def plantar(grilla_entidades:list, seleccion_planta:str, grilla_x:int, grilla_y:
         nueva_planta = cl.Petacereza((grilla_x * constantes.CELDA_ANCHO)+ constantes.COMIENZO_PASTO_X- 15,(grilla_y * constantes.CELDA_ALTO)+ constantes.COMIENZO_PASTO_Y+ 20, reproductor_de_sonido)
     elif seleccion_planta == "papapum":
         nueva_planta = cl.Papapum((grilla_x * constantes.CELDA_ANCHO)+ constantes.COMIENZO_PASTO_X- 15,(grilla_y * constantes.CELDA_ALTO)+ constantes.COMIENZO_PASTO_Y+ 20,grilla_entidades, reproductor_de_sonido)
+    elif seleccion_planta == "hielaguisantes":
+        nueva_planta = cl.lanzaguisantes((grilla_x * constantes.CELDA_ANCHO) + constantes.COMIENZO_PASTO_X - 68,(grilla_y * constantes.CELDA_ALTO) + constantes.COMIENZO_PASTO_Y + 28, grilla_entidades, reproductor_de_sonido, 175, True)
     seleccion_planta = False
     grilla_entidades[grilla_y][grilla_x] = nueva_planta
     if isinstance(nueva_planta, cl.Plantas):
