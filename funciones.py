@@ -8,6 +8,84 @@ def dibujar_grilla(screen, celdas_rects):
         for rect in fila:
             pygame.draw.rect(screen, (255, 255, 255), rect, 1)  # color blanco, borde de 1 píxel
 
+def iniciar_administrador_sonido():
+    """
+    diccionario_sonidos = {"nombre_sonido": "ruta_sonido"}
+    """
+    administrador_de_sonido = cl.Administrador_de_sonido()
+    diccionario_sonidos = {
+        "musica_menu_principal": r"assets\Musica\[Main Menu].mp3",
+        "musica_nivel_dia": r"assets\Musica\[Day Stage].mp3",
+        "hit1": r"assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\Hit1.ogg",
+        "hit2": r"assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\Hit2.mp3",
+        "hit3": r"assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\Hit3.ogg",
+        "semilla_seleccionar": r"assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\semillas\semillas_seleccion.ogg",
+        "semilla_plantar": r"assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\semillas\semillas_plantar.ogg",
+        "zombie_masticar": r"assets\zombies\zombie_masticando.ogg",
+        "zombie_tragar": r"assets\zombies\zombie_tragando_planta.ogg",
+        "cortapastos_activar": r"assets\cortapasto\cortapastos_activa.ogg",
+        "pala_sonido": r"assets\pala\pala_sonido.mp3",
+        "petacereza_explosion": r"assets\petacereza\petacereza_explosion_sonido.ogg",
+        "perder": r"assets\Musica\[You Lost].mp3",
+        "botones": r"assets\boton_inicio.mp3"
+    }
+    for nombre_sonido, ruta_sonido in diccionario_sonidos.items():
+        administrador_de_sonido.cargar_sonido(ruta_sonido, nombre_sonido)
+
+    return administrador_de_sonido
+
+def definir_semillas(administrador_de_sonido):
+    s_girasol = cl.Semillas(380, 10, r"assets\semillas\semillas_girasol.png", administrador_de_sonido, "girasol")
+    s_lanzaguisantes = cl.Semillas(440, 10, r"assets//semillas//semillas_lanzaguisantes.png", administrador_de_sonido, "lanzaguisantes")
+    s_nuez = cl.Semillas(500, 10, r"assets//semillas//semillas_nuez.png", administrador_de_sonido, "nuez")
+    s_petacereza = cl.Semillas(560,10,r"assets\semillas\semilla_petacereza.png",administrador_de_sonido,"petacereza",)
+    s_papapum = cl.Semillas(620, 10, r"assets\papapum\semilla_papapum_.png", administrador_de_sonido, "papapum")
+    s_hielaguisantes = cl.Semillas(680, 10, r"assets//semillas//semillas_hielaguisantes.png", administrador_de_sonido, "hielaguisantes",)
+    s_lanzaguisantes.add(cl.grupo_semillas)
+    s_girasol.add(cl.grupo_semillas)
+    s_nuez.add(cl.grupo_semillas)
+    s_petacereza.add(cl.grupo_semillas)
+    s_papapum.add(cl.grupo_semillas)
+    s_hielaguisantes.add(cl.grupo_semillas)
+
+def definir_cortapastos(administrador_de_sonido):
+    cortapastos_col = []
+    cortapastos_col += [[cl.Cortapasto(constantes.COMIENZO_PASTO_X - constantes.CELDA_ANCHO - 20,constantes.COMIENZO_PASTO_Y + constantes.CELDA_ALTO * fil,cortapastos_col, administrador_de_sonido)]for fil in range(5)]
+    for cortapasto_id in cortapastos_col:
+        cl.grupo_cortapastos.add(cortapasto_id)
+    return cortapastos_col
+
+def updates_constantes(grilla_entidades:list):
+    cl.grupo_plantas.update()
+    cl.grupo_cortapastos.update()
+    cl.grupo_zombies.update()
+    cl.grupo_proyectiles.update()
+    cl.grupo_deplegables.update(grilla_entidades)
+    
+def dibujos_constantes(screen):
+    cl.grupo_plantas.draw(screen)
+    cl.grupo_cortapastos.draw(screen)
+    cl.grupo_zombies.draw(screen)
+    cl.grupo_proyectiles.draw(screen)
+    cl.grupo_semillas.draw(screen)
+    cl.grupo_pala.draw(screen)
+    cl.grupo_deplegables.draw(screen)
+
+
+def previsualizacion(x_pixels, y_pixels, preview_dict, seleccion_planta, grilla_entidades, screen, cuadpos, cuad):
+    if (constantes.COMIENZO_PASTO_X < x_pixels < constantes.FIN_PASTO_X and constantes.COMIENZO_PASTO_Y < y_pixels < constantes.FIN_PASTO_Y):
+            
+        x_grilla,y_grilla = de_pixeles_a_grilla(x_pixels,y_pixels)
+        cuadpos[0] = constantes.COMIENZO_PASTO_X + (x_grilla * constantes.CELDA_ANCHO)
+        cuadpos[1] = constantes.COMIENZO_PASTO_Y + (y_grilla * constantes.CELDA_ALTO)
+        
+        if seleccion_planta != False:
+            if seleccion_planta != "pala" and not (isinstance(grilla_entidades[y_grilla][x_grilla], (cl.Plantas, cl.Petacereza))):
+                screen.blit(preview_dict[seleccion_planta][0],(cuadpos[0] + preview_dict[seleccion_planta][1], cuadpos[1] + preview_dict[seleccion_planta][2]),)
+                screen.blit(cuad, cuadpos)
+            elif seleccion_planta == "pala":
+                screen.blit(cuad, cuadpos)
+
 
 def eliminar(lista:list, id_obj:int, clase) -> None:
     """
@@ -62,16 +140,6 @@ def plantar(grilla_entidades:list, seleccion_planta:str, grilla_x:int, grilla_y:
     return seleccion_planta
 
 
-def iniciar_administrador_sonido(diccionario_sonidos:dict):
-    """
-    diccionario_sonidos = {"nombre_sonido": "ruta_sonido"}
-    """
-    administrador_de_sonido = cl.Administrador_de_sonido()
-
-    for nombre_sonido, ruta_sonido in diccionario_sonidos.items():
-        administrador_de_sonido.cargar_sonido(ruta_sonido, nombre_sonido)
-
-    return administrador_de_sonido
 
 
 def perder(traslucido, grupo_zombies, screen, vivo, reproductor_de_sonido, contador):

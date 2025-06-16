@@ -7,24 +7,7 @@ from funciones import *
 
 pygame.init()
 contador_para_perder = 0
-administrador_de_sonido = iniciar_administrador_sonido(
-    {
-        "musica_menu_principal": r"assets\Musica\[Main Menu].mp3",
-        "musica_nivel_dia": r"assets\Musica\[Day Stage].mp3",
-        "hit1": r"assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\Hit1.ogg",
-        "hit2": r"assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\Hit2.mp3",
-        "hit3": r"assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\Hit3.ogg",
-        "semilla_seleccionar": r"assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\semillas\semillas_seleccion.ogg",
-        "semilla_plantar": r"assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\semillas\semillas_plantar.ogg",
-        "zombie_masticar": r"assets\zombies\zombie_masticando.ogg",
-        "zombie_tragar": r"assets\zombies\zombie_tragando_planta.ogg",
-        "cortapastos_activar": r"assets\cortapasto\cortapastos_activa.ogg",
-        "pala_sonido": r"assets\pala\pala_sonido.mp3",
-        "petacereza_explosion": r"assets\petacereza\petacereza_explosion_sonido.ogg",
-        "perder": r"assets\Musica\[You Lost].mp3",
-        "botones": r"assets\boton_inicio.mp3"
-    }
-)
+administrador_de_sonido = iniciar_administrador_sonido()
 
 
 reloj = pygame.time.Clock()
@@ -101,23 +84,9 @@ APARICION_OLEADA = pygame.USEREVENT + 1
 #pygame.time.set_timer(APARICION_SOLES, constantes.TIEMPO_APARICION_SOL)
 
 # Defino semillas
-s_girasol = Semillas(380, 10, r"assets\semillas\semillas_girasol.png", administrador_de_sonido, "girasol")
-s_lanzaguisantes = Semillas(440, 10, r"assets//semillas//semillas_lanzaguisantes.png", administrador_de_sonido, "lanzaguisantes")
-s_nuez = Semillas(500, 10, r"assets//semillas//semillas_nuez.png", administrador_de_sonido, "nuez")
-s_petacereza = Semillas(560,10,r"assets\semillas\semilla_petacereza.png",administrador_de_sonido,"petacereza",)
-s_papapum = Semillas(620, 10, r"assets\papapum\semilla_papapum_.png", administrador_de_sonido, "papapum")
-s_hielaguisantes = Semillas(680, 10, r"assets//semillas//semillas_hielaguisantes.png", administrador_de_sonido, "hielaguisantes",)
-s_lanzaguisantes.add(grupo_semillas)
-s_girasol.add(grupo_semillas)
-s_nuez.add(grupo_semillas)
-s_petacereza.add(grupo_semillas)
-s_papapum.add(grupo_semillas)
-s_hielaguisantes.add(grupo_semillas)
+definir_semillas(administrador_de_sonido)
 # Defino las cortapastos
-cortapastos_col = []
-cortapastos_col += [[Cortapasto(constantes.COMIENZO_PASTO_X - constantes.CELDA_ANCHO - 20,constantes.COMIENZO_PASTO_Y + constantes.CELDA_ALTO * fil,cortapastos_col, administrador_de_sonido)]for fil in range(5)]
-for cortapasto_id in cortapastos_col:
-    grupo_cortapastos.add(cortapasto_id)
+cortapastos_col = definir_cortapastos(administrador_de_sonido)
 
 
 #defino la pala
@@ -169,21 +138,11 @@ while run:
         screen.blit(background, (0, 0))  # Fondo
         # dibujar_grilla(screen, grilla_rects) #Esta funcion dibuja la grilla, comentar para que no se dibuje
 
-        grupo_plantas.update()
-        grupo_plantas.draw(screen)
-        grupo_cortapastos.draw(screen)
-        grupo_cortapastos.update()
-        grupo_zombies.update()
-        grupo_zombies.draw(screen)
-        grupo_proyectiles.update()
-        grupo_proyectiles.draw(screen)
+        updates_constantes(grilla_entidades)
         screen.blit(barra, (300, 0))
-        grupo_semillas.draw(screen)
-        grupo_pala.draw(screen)
-        grupo_deplegables.draw(screen)
-        grupo_deplegables.update(grilla_entidades)
+        dibujos_constantes(screen)
         
-# CAMBIAR ESTA PARTE PORQUE HAY UN ERROR DE QUE SE VA DE LA GRILLA"""""
+
         if cuadpos[0] <= constantes.COMIENZO_PASTO_X:
             cuadpos[0], columna = constantes.COMIENZO_PASTO_X, 0
         if cuadpos[1] <= constantes.COMIENZO_PASTO_Y:
@@ -201,18 +160,8 @@ while run:
 
         if seleccion_planta == "pala":
             pala.dibujar_cursor(x, y, screen)
-        if (constantes.COMIENZO_PASTO_X < x < constantes.FIN_PASTO_X and constantes.COMIENZO_PASTO_Y < y < constantes.FIN_PASTO_Y):
-            
-            x,y = de_pixeles_a_grilla(x,y)
-            cuadpos[0] = constantes.COMIENZO_PASTO_X + (x * constantes.CELDA_ANCHO)
-            cuadpos[1] = constantes.COMIENZO_PASTO_Y + (y * constantes.CELDA_ALTO)
-            
-            if seleccion_planta != False:
-                if seleccion_planta != "pala" and not (isinstance(grilla_entidades[y][x], (Plantas, Petacereza))):
-                    screen.blit(preview_dict[seleccion_planta][0],(cuadpos[0] + preview_dict[seleccion_planta][1], cuadpos[1] + preview_dict[seleccion_planta][2]),)
-                    screen.blit(cuad, cuadpos)
-                elif seleccion_planta == "pala":
-                    screen.blit(cuad, cuadpos)
+
+        previsualizacion(x,y,preview_dict,seleccion_planta,grilla_entidades,screen,cuadpos,cuad)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
