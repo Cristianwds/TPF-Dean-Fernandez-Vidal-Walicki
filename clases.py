@@ -285,6 +285,10 @@ class Girasol(Plantas):
         self.velocidad_animacion = 18
         self.rect = self.image.get_rect(midleft=(self.x, self.y))
         super().__init__(self.x, self.y, self.image, vida, cooldown, costo, lista_entidades, reproductor_de_sonido)
+        self.creacion = pygame.time.get_ticks()
+        self.contador = 0
+        self.tiempo_ultimo_sol = pygame.time.get_ticks()
+        self.intervalo_soles = 23000  # 23 segundos en milisegundos
 
     def update(self):
         tiempo_frame= pygame.time.get_ticks()
@@ -293,6 +297,13 @@ class Girasol(Plantas):
             self.ultimo_frame = tiempo_frame
             self.indice_frames = (self.indice_frames + 1) % len(self.frames)
             self.image = self.frames[self.indice_frames]
+        ahora = pygame.time.get_ticks()
+        if ahora - self.tiempo_ultimo_sol > self.intervalo_soles:
+            self.tiempo_ultimo_sol = ahora
+            nuevo_sol = Sol(self.rect.x + 20, self.rect.y, self.rect.y)
+            return nuevo_sol
+        return None
+
 
 class Nuez(Plantas):
     def __init__(self, x, y, lista_entidades, reproductor_de_sonido, vida=4000, cooldown=30000, costo=50):
@@ -432,7 +443,8 @@ class Papapum(Plantas):
 
 class Petacereza(pygame.sprite.Sprite):
     petacerezas_id = 0
-    def __init__(self, x, y, administrador_de_sonido):
+    def __init__(self, x, y, administrador_de_sonido, costo = 150):
+        self.costo = costo
         self.x = x
         self.y = y
         self.image = pygame.image.load(r"assets\petacereza\gif\frame_0.png")
@@ -535,9 +547,9 @@ class Semillas(pygame.sprite.Sprite):
         self.clicked = False
         self.reproductor_de_sonido = reproductor_de_sonido
 
-    def update(self, evento):
+    def update(self, evento, contador):
         if evento.type == pygame.MOUSEBUTTONDOWN:
-            if self.rect.collidepoint(evento.pos):
+            if self.rect.collidepoint(evento.pos) and contador[0] >= self.valor:
                 self.clicked = True
                 self.reproductor_de_sonido.reproducir_sonido("semilla_seleccionar")
             else:

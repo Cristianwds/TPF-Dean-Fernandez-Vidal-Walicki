@@ -6,9 +6,10 @@ from clases import *
 from funciones import *
 
 pygame.init()
+
+contador_soles = [50]
 contador_para_perder = 0
 administrador_de_sonido = iniciar_administrador_sonido()
-
 
 reloj = pygame.time.Clock()
 
@@ -26,6 +27,12 @@ pygame.display.set_icon(icono)
 fondo_interfaz = pygame.image.load(r'assets\interfaz.play.png')
 fondo_interfaz = pygame.transform.scale(fondo_interfaz, (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA))
 
+fondo_interfaz_play = pygame.image.load(r'assets\Fondo_color.jpg')
+fondo_interfaz_play = pygame.transform.scale(fondo_interfaz_play, (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA))
+
+fondo_interfaz_exit = pygame.image.load(r'assets\Fondo_colorexit.jpg')
+fondo_interfaz_exit = pygame.transform.scale(fondo_interfaz_exit, (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA))
+
 boton_jugar = pygame.Rect(constantes.ANCHO_VENTANA / 2 + 25, constantes.ALTO_VENTANA/ 2 - 210, 300, 100)
 boton_salir = pygame.Rect(constantes.ANCHO_VENTANA / 2 + 25, constantes.ALTO_VENTANA/ 2 - 85, 300, 110)
 
@@ -41,7 +48,13 @@ def dibujar_texto(texto, fuente, color, x, y):
     screen.blit(superficie_texto, (x, y))
 
 def pantalla_inicio():
-    screen.blit(fondo_interfaz, (0,0))
+    pos_mouse = pygame.mouse.get_pos()
+    if boton_jugar.collidepoint(pos_mouse):
+        screen.blit(fondo_interfaz_play, (0,0))
+    elif boton_salir.collidepoint(pos_mouse):
+        screen.blit(fondo_interfaz_exit, (0,0))
+    else:
+        screen.blit(fondo_interfaz, (0,0))
     #dibujar_texto(' Plantas vs zombies', font_titulo, (255,255,255), constantes.ANCHO_VENTANA / 2 - 280 , constantes.ALTO_VENTANA / 2 - 200)
     #pygame.draw.rect(screen, (0,0,0,0), boton_jugar)
     #pygame.draw.rect(screen, (0,0,0,0), boton_salir)
@@ -53,8 +66,6 @@ def pantalla_inicio():
 # Fondo de pantalla del juego
 background = pygame.image.load(r"assets//map.jpeg").convert()
 background = pygame.transform.scale(background, (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA))
-barra = pygame.image.load(r"assets/barra.png")
-barra = pygame.transform.scale(barra, (constantes.LARGO_BARRA, constantes.ALTO_BARRA))
 
 perdiste = pygame.image.load(r"assets/ZombiesWon.png")
 perdiste = pygame.transform.scale(perdiste, (925,770))
@@ -79,15 +90,18 @@ delay_spawn_zombie= 0
 zombies_a_spawnear = []
 APARICION_OLEADA = pygame.USEREVENT + 1
 
-##Evento de aparicion de soles
-#APARICION_SOLES = pygame.USEREVENT
-#pygame.time.set_timer(APARICION_SOLES, constantes.TIEMPO_APARICION_SOL)
+#Evento de aparicion de soles
+APARICION_SOLES = pygame.USEREVENT + 2
+pygame.time.set_timer(APARICION_SOLES, constantes.TIEMPO_APARICION_SOL)
+
+APARICION_SOLESGIRASOL = pygame.USEREVENT + 3
+pygame.time.set_timer(APARICION_SOLESGIRASOL, 23000)
+
 
 # Defino semillas
 definir_semillas(administrador_de_sonido)
 # Defino las cortapastos
 cortapastos_col = definir_cortapastos(administrador_de_sonido)
-
 
 #defino la pala
 pala = Pala(administrador_de_sonido)
@@ -138,8 +152,13 @@ while run:
         screen.blit(background, (0, 0))  # Fondo
         # dibujar_grilla(screen, grilla_rects) #Esta funcion dibuja la grilla, comentar para que no se dibuje
 
+        for planta in grupo_plantas:
+            if isinstance(planta, Girasol):
+                nuevo_sol = planta.update()
+                if nuevo_sol: # Verifica si el girasol devolvió un nuevo sol para generar.
+                    grupo_sol.add(nuevo_sol)
+
         updates_constantes(grilla_entidades)
-        screen.blit(barra, (300, 0))
         dibujos_constantes(screen)
         
 
@@ -152,9 +171,7 @@ while run:
         if cuadpos[1] >= constantes.YMAX:
             cuadpos[1], fila = constantes.YMAX, 4
 
-
 # Esta parte del code muestra la planta previsualizada en la grilla, el rect de previsualización en la grilla y llama a la función para dibujar la pala.
-        
         
         x, y = pygame.mouse.get_pos()
 
@@ -174,22 +191,32 @@ while run:
                     cuadpos[0] = constantes.COMIENZO_PASTO_X + (x * constantes.CELDA_ANCHO)
                     cuadpos[1] = constantes.COMIENZO_PASTO_Y + (y * constantes.CELDA_ALTO)
                     if grilla_entidades[y][x] == 0 and seleccion_planta != False and seleccion_planta != "pala":
-                        seleccion_planta = plantar(grilla_entidades, seleccion_planta, x, y, administrador_de_sonido)
+                        seleccion_planta = plantar(grilla_entidades, seleccion_planta, x, y, administrador_de_sonido, contador_soles)
                     elif (seleccion_planta == "pala"):
                         seleccion_planta = pala.excavar(grilla_entidades, x, y, seleccion_planta)
                 #Funcionamiento de la seleccion de semillas
                 elif (370 < x < 841 and 10 < y < 100):
-                    grupo_semillas.update(event)
+                    grupo_semillas.update(event, contador_soles)
                     for semillas in grupo_semillas:
                         if semillas.clicked:
                             seleccion_planta = semillas.item
+                    
                 #Seleccion de pala
                 elif 860 < x < 931 and 10 < y < 81:
                     grupo_pala.update(event)
                     if pala.clicked:
                         seleccion_planta = "pala"
 
-
+                for sol in grupo_sol:
+                    if sol.rect.collidepoint(event.pos): # Verifica que el sol sea recogible y chequea si el click se hizo en la misma posicion del rect del sol
+                        contador_soles[0] += sol.recolectar() 
+                        print(f'{contador_soles}')
+                        
+            # Cada cierto tiempo spawnean soles
+            elif event.type == APARICION_SOLES:
+                nuevo_sol = Sol(random.randint(350, constantes.ANCHO_VENTANA - 100),-50, random.choice(constantes.ALTURAS))
+                nuevo_sol.add(grupo_sol)
+            
             # Cada cierto tiempo spawnean zombies
             elif event.type == APARICION_ZOMBIE:
                 
@@ -249,6 +276,8 @@ while run:
                         # nuevo_zombie.add(grupo_zombies)
                     constantes.OLEADA_CANT_ZB += 3
 
+
+
         if zombies_a_spawnear:
             tiempo_actual = pygame.time.get_ticks()
             if tiempo_actual - delay_spawn_zombie > 1750:
@@ -258,7 +287,7 @@ while run:
                 delay_spawn_zombie = tiempo_actual
 
         traslucido, vivo, contador_para_perder = perder(traslucido, grupo_zombies, screen, vivo, administrador_de_sonido, contador_para_perder)
-
+        
         pygame.display.update()
     reloj.tick(constantes.FPS)
 

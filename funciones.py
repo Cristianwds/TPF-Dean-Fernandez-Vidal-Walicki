@@ -35,12 +35,12 @@ def iniciar_administrador_sonido():
     return administrador_de_sonido
 
 def definir_semillas(administrador_de_sonido):
-    s_girasol = cl.Semillas(380, 10, r"assets\semillas\semillas_girasol.png", administrador_de_sonido, "girasol")
-    s_lanzaguisantes = cl.Semillas(440, 10, r"assets//semillas//semillas_lanzaguisantes.png", administrador_de_sonido, "lanzaguisantes")
-    s_nuez = cl.Semillas(500, 10, r"assets//semillas//semillas_nuez.png", administrador_de_sonido, "nuez")
-    s_petacereza = cl.Semillas(560,10,r"assets\semillas\semilla_petacereza.png",administrador_de_sonido,"petacereza",)
-    s_papapum = cl.Semillas(620, 10, r"assets\papapum\semilla_papapum_.png", administrador_de_sonido, "papapum")
-    s_hielaguisantes = cl.Semillas(680, 10, r"assets//semillas//semillas_hielaguisantes.png", administrador_de_sonido, "hielaguisantes",)
+    s_girasol = cl.Semillas(380, 10, r"assets\semillas\semillas_girasol.png", administrador_de_sonido, "girasol", 50)
+    s_lanzaguisantes = cl.Semillas(440, 10, r"assets//semillas//semillas_lanzaguisantes.png", administrador_de_sonido, "lanzaguisantes", 100)
+    s_nuez = cl.Semillas(500, 10, r"assets//semillas//semillas_nuez.png", administrador_de_sonido, "nuez", 50)
+    s_petacereza = cl.Semillas(560,10,r"assets\semillas\semilla_petacereza.png",administrador_de_sonido, "petacereza", 150)
+    s_papapum = cl.Semillas(620, 10, r"assets\papapum\semilla_papapum_.png", administrador_de_sonido, "papapum", 25)
+    s_hielaguisantes = cl.Semillas(680, 10, r"assets//semillas//semillas_hielaguisantes.png", administrador_de_sonido, "hielaguisantes", 175)
     s_lanzaguisantes.add(cl.grupo_semillas)
     s_girasol.add(cl.grupo_semillas)
     s_nuez.add(cl.grupo_semillas)
@@ -61,12 +61,17 @@ def updates_constantes(grilla_entidades:list):
     cl.grupo_zombies.update()
     cl.grupo_proyectiles.update()
     cl.grupo_deplegables.update(grilla_entidades)
+    cl.grupo_sol.update()
     
 def dibujos_constantes(screen):
+    barra = pygame.image.load(r"assets/barra.png")
+    barra = pygame.transform.scale(barra, (constantes.LARGO_BARRA, constantes.ALTO_BARRA))
     cl.grupo_plantas.draw(screen)
     cl.grupo_cortapastos.draw(screen)
     cl.grupo_zombies.draw(screen)
     cl.grupo_proyectiles.draw(screen)
+    cl.grupo_sol.draw(screen)
+    screen.blit(barra, (300, 0))
     cl.grupo_semillas.draw(screen)
     cl.grupo_pala.draw(screen)
     cl.grupo_deplegables.draw(screen)
@@ -117,7 +122,8 @@ def de_pixeles_a_grilla(pixeles_x:int, pixeles_y:int) -> tuple:
         raise(ValueError)
     
 
-def plantar(grilla_entidades:list, seleccion_planta:str, grilla_x:int, grilla_y:int, reproductor_de_sonido):
+def plantar(grilla_entidades:list, seleccion_planta:str, grilla_x:int, grilla_y:int, reproductor_de_sonido,contador):
+    global contador_soles
     if seleccion_planta == "lanzaguisantes":
         nueva_planta = cl.lanzaguisantes((grilla_x * constantes.CELDA_ANCHO) + constantes.COMIENZO_PASTO_X - 15,(grilla_y * constantes.CELDA_ALTO) + constantes.COMIENZO_PASTO_Y + 20, grilla_entidades, reproductor_de_sonido) #En la pos de la planta se pasa de numero de grilla a pixeles.
     elif seleccion_planta == "girasol":
@@ -131,15 +137,17 @@ def plantar(grilla_entidades:list, seleccion_planta:str, grilla_x:int, grilla_y:
     elif seleccion_planta == "hielaguisantes":
         nueva_planta = cl.lanzaguisantes((grilla_x * constantes.CELDA_ANCHO) + constantes.COMIENZO_PASTO_X - 68,(grilla_y * constantes.CELDA_ALTO) + constantes.COMIENZO_PASTO_Y + 28, grilla_entidades, reproductor_de_sonido, 175, True)
     seleccion_planta = False
-    grilla_entidades[grilla_y][grilla_x] = nueva_planta
-    if isinstance(nueva_planta, cl.Plantas):
-        cl.grupo_plantas.add(nueva_planta)
+    if contador[0] < nueva_planta.costo:
+        nueva_planta = 0
     else:
-        cl.grupo_deplegables.add(nueva_planta)
-    reproductor_de_sonido.reproducir_sonido("semilla_plantar")
+        contador[0] -= nueva_planta.costo
+        grilla_entidades[grilla_y][grilla_x] = nueva_planta
+        if isinstance(nueva_planta, cl.Plantas):
+            cl.grupo_plantas.add(nueva_planta)
+        else:
+            cl.grupo_deplegables.add(nueva_planta)
+        reproductor_de_sonido.reproducir_sonido("semilla_plantar")
     return seleccion_planta
-
-
 
 
 def perder(traslucido, grupo_zombies, screen, vivo, reproductor_de_sonido, contador):
