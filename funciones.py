@@ -35,12 +35,12 @@ def iniciar_administrador_sonido():
     return administrador_de_sonido
 
 def definir_semillas(administrador_de_sonido):
-    s_girasol = cl.Semillas(380, 10, r"assets\semillas\semillas_girasol.png", administrador_de_sonido, "girasol", 50)
-    s_lanzaguisantes = cl.Semillas(440, 10, r"assets//semillas//semillas_lanzaguisantes.png", administrador_de_sonido, "lanzaguisantes", 100)
-    s_nuez = cl.Semillas(500, 10, r"assets//semillas//semillas_nuez.png", administrador_de_sonido, "nuez", 50)
-    s_petacereza = cl.Semillas(560,10,r"assets\semillas\semilla_petacereza.png",administrador_de_sonido, "petacereza", 150)
-    s_papapum = cl.Semillas(620, 10, r"assets\papapum\semilla_papapum_.png", administrador_de_sonido, "papapum", 25)
-    s_hielaguisantes = cl.Semillas(680, 10, r"assets//semillas//semillas_hielaguisantes.png", administrador_de_sonido, "hielaguisantes", 175)
+    s_girasol = cl.Semillas(413, 10, r"assets\semillas\semillas_girasol.png", administrador_de_sonido, "girasol", 50)
+    s_lanzaguisantes = cl.Semillas(476, 10, r"assets//semillas//semillas_lanzaguisantes.png", administrador_de_sonido, "lanzaguisantes", 100)
+    s_nuez = cl.Semillas(539, 10, r"assets//semillas//semillas_nuez.png", administrador_de_sonido, "nuez", 50)
+    s_petacereza = cl.Semillas(602,10,r"assets\semillas\semilla_petacereza.png",administrador_de_sonido, "petacereza", 150)
+    s_papapum = cl.Semillas(665, 10, r"assets\papapum\semilla_papapum_.png", administrador_de_sonido, "papapum", 25)
+    s_hielaguisantes = cl.Semillas(728, 10, r"assets//semillas//semillas_hielaguisantes.png", administrador_de_sonido, "hielaguisantes", 175)
     s_lanzaguisantes.add(cl.grupo_semillas)
     s_girasol.add(cl.grupo_semillas)
     s_nuez.add(cl.grupo_semillas)
@@ -71,7 +71,7 @@ def dibujos_constantes(screen):
     cl.grupo_zombies.draw(screen)
     cl.grupo_proyectiles.draw(screen)
     cl.grupo_sol.draw(screen)
-    screen.blit(barra, (300, 0))
+    screen.blit(barra, (310, 0))
     cl.grupo_semillas.draw(screen)
     cl.grupo_pala.draw(screen)
     cl.grupo_deplegables.draw(screen)
