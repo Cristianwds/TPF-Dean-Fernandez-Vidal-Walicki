@@ -38,10 +38,11 @@ boton_salir = pygame.Rect(constantes.ANCHO_VENTANA / 2 + 25, constantes.ALTO_VEN
 
 # Botones para chequear (PLAY Y EXIT)
 
-# font_inicio = pygame.font.SysFont('arial',30 )
-# font_titulo = pygame.font.SysFont('arial', 75)
-# texto_boton_jugar = font_inicio.render('', True, (0,0,0))
-# texto_boton_salir = font_inicio.render('', True, (255,255,255))
+#font_inicio = pygame.font.SysFont('arial',30 )
+#font_titulo = pygame.font.SysFont('arial', 75)
+#texto_boton_jugar = font_inicio.render('', True, (0,0,0))
+#texto_boton_salir = font_inicio.render('', True, (255,255,255))
+
 
 def dibujar_texto(texto, fuente, color, x, y):
     superficie_texto = fuente.render(texto, True, color)
@@ -63,9 +64,12 @@ def pantalla_inicio():
     pygame.display.update()
 
 
+
 # Fondo de pantalla del juego
 background = pygame.image.load(r"assets//map.jpeg").convert()
 background = pygame.transform.scale(background, (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA))
+contador_soles2 = contador_soles[0]
+#boton_contadorsoles = contador_soles.render(int(contador_soles2), True, (255,255,255))
 
 perdiste = pygame.image.load(r"assets/ZombiesWon.png")
 perdiste = pygame.transform.scale(perdiste, (925,770))
@@ -143,6 +147,7 @@ while run:
                     administrador_de_sonido.reproducir_sonido("botones")
                     run = False 
     else:
+        #dibujar_texto(boton_contadorsoles, None, (255,255,255), constantes.ANCHO_VENTANA / 2 - 280 , constantes.ALTO_VENTANA / 2 - 200)
         # reloj.tick(constantes.FPS)
         # screen.fill(constantes.COLOR_BG) #VAMOS A LLNAR EL FONDO CON EL COLOR BG
 
