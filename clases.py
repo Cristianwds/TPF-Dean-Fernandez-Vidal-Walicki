@@ -625,7 +625,7 @@ class Pala(pygame.sprite.Sprite):
 class Sol(pygame.sprite.Sprite):
     def __init__(self, x, y, alturas_sol, velocidad = constantes.VELOCIDAD_SOL):#aparicion = constantes.TIEMPO_APARICION_SOL = 7500)
         pygame.sprite.Sprite.__init__(self) 
-        self.frames = [pygame.image.load(f"assets\\frames_solfinal\\sol_{i}.png").convert_alpha() for i in range(30)]
+        self.frames = [pygame.image.load(f"assets\\sol\\frame_{i}.png").convert_alpha() for i in range(30)]
         self.indice_frames = 0
         self.ultimo_frame = pygame.time.get_ticks()
         self.velocidad_animacion = 10

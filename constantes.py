@@ -49,3 +49,7 @@ CANT_FRAMES_PLANTAS= {"girasol": len(os.listdir(r"assets\girasol")),
                      "lanzaguisante": len(os.listdir(r"assets\lanzaguisante")), 
                      "nuez": len(os.listdir(r"assets\nuez")),
                      "hielaguisantes": len(os.listdir(r"assets\hielaguisante"))}
+
+NV_AUMENTO_SPAWN = 8
+NV_SPAWN_CONO = 10
+NV_SPAWN_BALDE = 20

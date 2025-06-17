@@ -223,20 +223,18 @@ while run:
                 pos_aleatoria = random.randint(0, 4)
                 tipo= random.choice(constantes.TIPOS_ZOMBIES)
 
-                if (nivel_dificultad % 8) == 0 and nivel_dificultad >= 8:
+                if (nivel_dificultad % constantes.NV_AUMENTO_SPAWN) == 0 and nivel_dificultad >= constantes.NV_AUMENTO_SPAWN:
                     constantes.CANT_APARICION += 1
 
-                if nivel_dificultad == 10:
-                    constantes.TIPOS_ZOMBIES.append("cono")
+                if nivel_dificultad == constantes.NV_SPAWN_CONO:
                     nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[pos_aleatoria], "cono", constantes.VIDA_ZOMBIES["cono"], administrador_de_sonido)
                     nuevo_zombie.add(grupo_zombies)
                 
-                if nivel_dificultad % 2 == 0 and nivel_dificultad >= 12 and nivel_dificultad <= 24:
-                    #Aumentamos la probabilidad de que aparezcan zombies cono
+                if nivel_dificultad % 2 == 0 and nivel_dificultad >= constantes.NV_SPAWN_CONO and nivel_dificultad <= constantes.NV_SPAWN_BALDE + 4:
+                    #Aumentamos gradualmente la probabilidad de aparición de los zombies cono
                     constantes.TIPOS_ZOMBIES.append("cono")
                     
-                if nivel_dificultad == 20:
-                    constantes.TIPOS_ZOMBIES.append("balde")
+                if nivel_dificultad == constantes.NV_SPAWN_BALDE:
                     lista_ubis = [0, 1, 2, 3, 4]
                     ubi1 = lista_ubis.pop(random.choice(lista_ubis))
                     ubi2 = lista_ubis.pop(random.choice(lista_ubis))
@@ -245,7 +243,7 @@ while run:
                     nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[ubi2], "balde", constantes.VIDA_ZOMBIES["balde"], administrador_de_sonido)
                     nuevo_zombie.add(grupo_zombies)
                 
-                if nivel_dificultad >= 21 and (nivel_dificultad % 2) != 0:
+                if nivel_dificultad >= constantes.NV_SPAWN_BALDE and (nivel_dificultad % 2) == 0:
                     constantes.TIPOS_ZOMBIES.append("balde")
 
                 for i in range(constantes.CANT_APARICION):
