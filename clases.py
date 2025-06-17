@@ -11,6 +11,7 @@ grupo_cortapastos = pygame.sprite.Group()
 grupo_semillas = pygame.sprite.Group()
 grupo_pala = pygame.sprite.Group()
 grupo_deplegables = pygame.sprite.Group()
+grupo_sol = pygame.sprite.Group()
 class Administrador_de_sonido():
 
     def __init__(self):
@@ -608,3 +609,39 @@ class Pala(pygame.sprite.Sprite):
         elif seleccion_planta == "pala":
             seleccion_planta = False
         return seleccion_planta
+    
+class Sol(pygame.sprite.Sprite):
+    def __init__(self, x, y, alturas_sol, velocidad = constantes.VELOCIDAD_SOL):#aparicion = constantes.TIEMPO_APARICION_SOL = 7500)
+        pygame.sprite.Sprite.__init__(self) 
+        self.frames = [pygame.image.load(f"assets\\frames_solfinal\\sol_{i}.png").convert_alpha() for i in range(30)]
+        self.indice_frames = 0
+        self.ultimo_frame = pygame.time.get_ticks()
+        self.velocidad_animacion = 10
+        self.image = self.frames[self.indice_frames]
+        self.velocidad = velocidad
+        self.pos_x = x
+        self.pos_y = y 
+        self.rect = self.image.get_rect()
+        self.rect.x = float(x)
+        self.rect.y = float(y)  
+        self.altura = alturas_sol
+        self.creacion = pygame.time.get_ticks() # Para evaluar el tiempo desde la creación
+
+    # Animacion
+    
+    def update(self):
+        if self.pos_y < self.altura:
+            self.pos_y += self.velocidad
+            self.rect.center = (self.pos_x, self.pos_y) # Para que se actualize la ubiacion del rectagnulo del sol
+        tiempo_frame= pygame.time.get_ticks()                   
+        if tiempo_frame - self.ultimo_frame > self.velocidad_animacion:
+            self.ultimo_frame = tiempo_frame
+            self.indice_frames = (self.indice_frames + 1) % len(self.frames)
+            self.image = self.frames[self.indice_frames]
+        tiempo_muerte = pygame.time.get_ticks() # Tiempo actual antes de ejecutarse la accion
+        if tiempo_muerte - self.creacion > 10000: 
+            self.kill()
+
+    def recolectar (self):
+        self.kill()    
+        return constantes.VALOR_SOL
