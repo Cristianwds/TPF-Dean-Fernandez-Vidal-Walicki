@@ -634,7 +634,7 @@ class Sol(pygame.sprite.Sprite):
             self.indice_frames = (self.indice_frames + 1) % len(self.frames)
             self.image = self.frames[self.indice_frames]
         tiempo_muerte = pygame.time.get_ticks() # Tiempo actual antes de ejecutarse la accion
-        if tiempo_muerte - self.creacion > 10000: 
+        if tiempo_muerte - self.creacion > 11000: 
             self.kill()
 
     def recolectar (self):
