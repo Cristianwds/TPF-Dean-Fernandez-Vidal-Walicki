@@ -252,6 +252,7 @@ def creacion_zombies(nivel_dificultad, zombies_a_spawnear, grupo_zombies, admini
     if nivel_dificultad == constantes.NV_SPAWN_CONO:
         nuevo_zombie = cl.Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[random.randint(0, 4)], "cono", constantes.VIDA_ZOMBIES["cono"], administrador_de_sonido)
         nuevo_zombie.add(grupo_zombies)
+        zombies_a_spawnear.append((random.randint(0, 4),))
 
     if nivel_dificultad % 2 == 0 and constantes.NV_SPAWN_CONO <= nivel_dificultad <= constantes.NV_SPAWN_BALDE + 4:
         #Aumentamos gradualmente la probabilidad de aparición de los zombies cono

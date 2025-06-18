@@ -203,7 +203,6 @@ while run:
                 for sol in grupo_sol:
                     if sol.rect.collidepoint(event.pos): # Verifica que el sol sea recogible y chequea si el click se hizo en la misma posicion del rect del sol
                         contador_soles[0] += sol.recolectar() 
-                        print(f'{contador_soles}')
                         
             # Cada cierto tiempo spawnean soles
             elif event.type == APARICION_SOLES:
