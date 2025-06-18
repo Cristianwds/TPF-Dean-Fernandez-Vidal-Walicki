@@ -64,7 +64,8 @@ def pantalla_inicio():
     pygame.display.update()
 
 # Impresion nivel dificultad
-fuente_numero = pygame.font.SysFont("arial", 40)
+fuente_numero = pygame.font.SysFont('ZombieControl.ttf', 95)
+imagen_nivel = pygame.image.load(r"assets\nivel.png")
 
 # Impresion cantidad de soles
 fuente_cantsol = pygame.font.SysFont("arial", 20)
@@ -298,8 +299,8 @@ while run:
 
         # Impresion de numeros
 
-        impresion_nivel = fuente_numero.render(str(nivel_dificultad), True, (255, 255, 255))
-        screen.blit(impresion_nivel, (72, 51))
+        impresion_nivel = fuente_numero.render(str(nivel_dificultad), True, (140, 255, 70))
+        screen.blit(impresion_nivel, (223, 40))
 
         if contador_soles[0] == 0:
             posicion_contadorsol = (353, 72)
@@ -310,7 +311,7 @@ while run:
         
         impresion_cantsol = fuente_cantsol.render(str(contador_soles[0]), True, (0, 0, 0))
         screen.blit(impresion_cantsol, posicion_contadorsol)
-
+        screen.blit(imagen_nivel, (20, 30))
         posicion = pygame.mouse.get_pos()
         print(posicion)
         pygame.display.update()
