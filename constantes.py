@@ -54,4 +54,4 @@ NV_AUMENTO_SPAWN = 8
 NV_SPAWN_CONO = 10
 NV_SPAWN_BALDE = 20
 
-COOLDOWN_PLANTAS = {"lanzaguisantes": 5000, "nuez": 7000, "girasol": 4000, "petacereza": 3000, "papapum": 2000, "hielaguisantes": 5000}
+COOLDOWN_PLANTAS = {"lanzaguisantes": 7500, "nuez": 30000, "girasol": 7500, "petacereza": 25000, "papapum": 10000, "hielaguisantes": 7500}

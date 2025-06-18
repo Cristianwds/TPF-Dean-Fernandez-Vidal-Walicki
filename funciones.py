@@ -35,18 +35,20 @@ def iniciar_administrador_sonido():
     return administrador_de_sonido
 
 def definir_semillas(administrador_de_sonido):
-    s_girasol = cl.Semillas(413, 10, r"assets\semillas\semillas_girasol.png", administrador_de_sonido, "girasol", 50)
-    s_lanzaguisantes = cl.Semillas(476, 10, r"assets//semillas//semillas_lanzaguisantes.png", administrador_de_sonido, "lanzaguisantes", 100)
-    s_nuez = cl.Semillas(539, 10, r"assets//semillas//semillas_nuez.png", administrador_de_sonido, "nuez", 50)
-    s_petacereza = cl.Semillas(602,10,r"assets\semillas\semilla_petacereza.png",administrador_de_sonido, "petacereza", 150)
-    s_papapum = cl.Semillas(665, 10, r"assets\papapum\semilla_papapum_.png", administrador_de_sonido, "papapum", 25)
-    s_hielaguisantes = cl.Semillas(728, 10, r"assets//semillas//semillas_hielaguisantes.png", administrador_de_sonido, "hielaguisantes", 175)
+    s_girasol = cl.Semillas(413, 10, r"assets\semillas\semillas_girasol.png", administrador_de_sonido, "girasol", 50, constantes.COOLDOWN_PLANTAS["girasol"])
+    s_lanzaguisantes = cl.Semillas(476, 10, r"assets//semillas//semillas_lanzaguisantes.png", administrador_de_sonido, "lanzaguisantes", 100, constantes.COOLDOWN_PLANTAS["lanzaguisantes"])
+    s_nuez = cl.Semillas(539, 10, r"assets//semillas//semillas_nuez.png", administrador_de_sonido, "nuez", 50, constantes.COOLDOWN_PLANTAS["nuez"])
+    s_petacereza = cl.Semillas(602,10,r"assets\semillas\semilla_petacereza.png",administrador_de_sonido, "petacereza", 150, constantes.COOLDOWN_PLANTAS["petacereza"])
+    s_papapum = cl.Semillas(665, 10, r"assets\papapum\semilla_papapum_.png", administrador_de_sonido, "papapum", 25, constantes.COOLDOWN_PLANTAS["papapum"])
+    s_hielaguisantes = cl.Semillas(728, 10, r"assets//semillas//semillas_hielaguisantes.png", administrador_de_sonido, "hielaguisantes", 175, constantes.COOLDOWN_PLANTAS["hielaguisantes"])
     s_lanzaguisantes.add(cl.grupo_semillas)
     s_girasol.add(cl.grupo_semillas)
     s_nuez.add(cl.grupo_semillas)
     s_petacereza.add(cl.grupo_semillas)
     s_papapum.add(cl.grupo_semillas)
     s_hielaguisantes.add(cl.grupo_semillas)
+    diccionario_semillas =  {"girasol": s_girasol, "lanzaguisantes": s_lanzaguisantes, "nuez": s_nuez, "petacereza": s_petacereza, "papapum": s_papapum, "hielaguisantes": s_lanzaguisantes}
+    return diccionario_semillas
 
 def definir_cortapastos(administrador_de_sonido):
     cortapastos_col = []
@@ -122,8 +124,7 @@ def de_pixeles_a_grilla(pixeles_x:int, pixeles_y:int) -> tuple:
         raise(ValueError)
     
 
-def plantar(grilla_entidades:list, seleccion_planta:str, grilla_x:int, grilla_y:int, reproductor_de_sonido,contador):
-    global contador_soles
+def plantar(grilla_entidades:list, seleccion_planta:str, grilla_x:int, grilla_y:int, reproductor_de_sonido,contador, gruposemillas):
     if seleccion_planta == "lanzaguisantes":
         nueva_planta = cl.lanzaguisantes((grilla_x * constantes.CELDA_ANCHO) + constantes.COMIENZO_PASTO_X - 15,(grilla_y * constantes.CELDA_ALTO) + constantes.COMIENZO_PASTO_Y + 20, grilla_entidades, reproductor_de_sonido) #En la pos de la planta se pasa de numero de grilla a pixeles.
     elif seleccion_planta == "girasol":
@@ -136,6 +137,7 @@ def plantar(grilla_entidades:list, seleccion_planta:str, grilla_x:int, grilla_y:
         nueva_planta = cl.Papapum((grilla_x * constantes.CELDA_ANCHO)+ constantes.COMIENZO_PASTO_X- 15,(grilla_y * constantes.CELDA_ALTO)+ constantes.COMIENZO_PASTO_Y+ 20,grilla_entidades, reproductor_de_sonido)
     elif seleccion_planta == "hielaguisantes":
         nueva_planta = cl.lanzaguisantes((grilla_x * constantes.CELDA_ANCHO) + constantes.COMIENZO_PASTO_X - 68,(grilla_y * constantes.CELDA_ALTO) + constantes.COMIENZO_PASTO_Y + 28, grilla_entidades, reproductor_de_sonido, 175, True)
+    gruposemillas[seleccion_planta].tiempo = pygame.time.get_ticks()
     seleccion_planta = False
     if contador[0] < nueva_planta.costo:
         nueva_planta = 0
