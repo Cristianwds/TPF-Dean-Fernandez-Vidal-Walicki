@@ -63,7 +63,11 @@ def pantalla_inicio():
     #screen.blit(texto_boton_salir, (boton_salir.x + 200, boton_salir.y - 90))
     pygame.display.update()
 
+# Impresion nivel dificultad
+fuente_numero = pygame.font.SysFont("arial", 40)
 
+# Impresion cantidad de soles
+fuente_cantsol = pygame.font.SysFont("arial", 20)
 
 # Fondo de pantalla del juego
 background = pygame.image.load(r"assets//map.jpeg").convert()
@@ -290,7 +294,25 @@ while run:
                 delay_spawn_zombie = tiempo_actual
 
         traslucido, vivo, contador_para_perder = perder(traslucido, grupo_zombies, screen, vivo, administrador_de_sonido, contador_para_perder)
+
+
+        # Impresion de numeros
+
+        impresion_nivel = fuente_numero.render(str(nivel_dificultad), True, (255, 255, 255))
+        screen.blit(impresion_nivel, (72, 51))
+
+        if contador_soles[0] == 0:
+            posicion_contadorsol = (353, 72)
+        elif contador_soles[0] < 100:
+            posicion_contadorsol = (347, 72)
+        elif contador_soles[0] >= 100:
+            posicion_contadorsol = (342, 72)
         
+        impresion_cantsol = fuente_cantsol.render(str(contador_soles[0]), True, (0, 0, 0))
+        screen.blit(impresion_cantsol, posicion_contadorsol)
+
+        posicion = pygame.mouse.get_pos()
+        print(posicion)
         pygame.display.update()
     reloj.tick(constantes.FPS)
 
