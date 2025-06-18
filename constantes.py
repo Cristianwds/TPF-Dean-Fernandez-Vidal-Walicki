@@ -53,5 +53,7 @@ CANT_FRAMES_PLANTAS= {"girasol": len(os.listdir(r"assets\girasol")),
 NV_AUMENTO_SPAWN = 8
 NV_SPAWN_CONO = 10
 NV_SPAWN_BALDE = 20
+NV_OLEADA = 10
 
 COOLDOWN_PLANTAS = {"lanzaguisantes": 7500, "nuez": 30000, "girasol": 7500, "petacereza": 25000, "papapum": 10000, "hielaguisantes": 7500}
+COOLDOWN_ZOMBIES = 2000

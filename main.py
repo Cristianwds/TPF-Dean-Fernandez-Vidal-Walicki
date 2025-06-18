@@ -44,25 +44,6 @@ boton_salir = pygame.Rect(constantes.ANCHO_VENTANA / 2 + 25, constantes.ALTO_VEN
 #texto_boton_salir = font_inicio.render('', True, (255,255,255))
 
 
-def dibujar_texto(texto, fuente, color, x, y):
-    superficie_texto = fuente.render(texto, True, color)
-    screen.blit(superficie_texto, (x, y))
-
-def pantalla_inicio():
-    pos_mouse = pygame.mouse.get_pos()
-    if boton_jugar.collidepoint(pos_mouse):
-        screen.blit(fondo_interfaz_play, (0,0))
-    elif boton_salir.collidepoint(pos_mouse):
-        screen.blit(fondo_interfaz_exit, (0,0))
-    else:
-        screen.blit(fondo_interfaz, (0,0))
-    #dibujar_texto(' Plantas vs zombies', font_titulo, (255,255,255), constantes.ANCHO_VENTANA / 2 - 280 , constantes.ALTO_VENTANA / 2 - 200)
-    #pygame.draw.rect(screen, (0,0,0,0), boton_jugar)
-    #pygame.draw.rect(screen, (0,0,0,0), boton_salir)
-    #screen.blit(texto_boton_jugar, (boton_jugar.x + 190, boton_jugar.y -120))
-    #screen.blit(texto_boton_salir, (boton_salir.x + 200, boton_salir.y - 90))
-    pygame.display.update()
-
 # Impresion nivel dificultad
 fuente_numero = pygame.font.SysFont('ZombieControl.ttf', 95)
 imagen_nivel = pygame.image.load(r"assets\nivel.png")
@@ -74,7 +55,6 @@ fuente_cantsol = pygame.font.SysFont("arial", 20)
 background = pygame.image.load(r"assets//map.jpeg").convert()
 background = pygame.transform.scale(background, (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA))
 contador_soles2 = contador_soles[0]
-#boton_contadorsoles = contador_soles.render(int(contador_soles2), True, (255,255,255))
 
 perdiste = pygame.image.load(r"assets/ZombiesWon.png")
 perdiste = pygame.transform.scale(perdiste, (925,770))
@@ -90,7 +70,7 @@ cuad.fill((255, 255, 255, 128))
 cuadpos = [constantes.COMIENZO_PASTO_X, constantes.COMIENZO_PASTO_Y]
 
 traslucido = 5
-vivo = False
+vivo = True
 # Evento aparicion de zombies
 APARICION_ZOMBIE = pygame.USEREVENT
 pygame.time.set_timer(APARICION_ZOMBIE, constantes.TIEMPO_APARICION)
@@ -116,7 +96,7 @@ cortapastos_col = definir_cortapastos(administrador_de_sonido)
 pala = Pala(administrador_de_sonido)
 grupo_pala.add(pala)
 
-#Este diccionario es para las previews, se puede llegar a cambiar por una alternativa mejor.
+
 preview_dict = {
     "lanzaguisantes": [pygame.image.load(r"assets\lanzaguisante\frame_0.png"),-15,-34],
     "girasol": [pygame.image.load(r"assets\girasol\frame_1.png"),-3,-12],
@@ -134,7 +114,7 @@ run = True
 mostrar_inicio = True 
 while run:
     if mostrar_inicio:
-        pantalla_inicio()
+        pantalla_inicio(screen, boton_jugar,boton_salir, fondo_interfaz_play, fondo_interfaz_exit, fondo_interfaz)
         administrador_de_sonido.reproducir_sonido("musica_menu_principal", -1, True)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -232,73 +212,12 @@ while run:
             
             # Cada cierto tiempo spawnean zombies
             elif event.type == APARICION_ZOMBIE:#
-
-                pos_aleatoria = random.randint(0, 4)
-                tipo= random.choice(constantes.TIPOS_ZOMBIES)
-
-                if (nivel_dificultad % constantes.NV_AUMENTO_SPAWN) == 0 and nivel_dificultad >= constantes.NV_AUMENTO_SPAWN:
-                    constantes.CANT_APARICION += 1
-
-                if nivel_dificultad == constantes.NV_SPAWN_CONO:
-                    nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[pos_aleatoria], "cono", constantes.VIDA_ZOMBIES["cono"], administrador_de_sonido)
-                    nuevo_zombie.add(grupo_zombies)
-                
-                if nivel_dificultad % 2 == 0 and nivel_dificultad >= constantes.NV_SPAWN_CONO and nivel_dificultad <= constantes.NV_SPAWN_BALDE + 4:
-                    #Aumentamos gradualmente la probabilidad de aparición de los zombies cono
-                    constantes.TIPOS_ZOMBIES.append("cono")
-                    
-                if nivel_dificultad == constantes.NV_SPAWN_BALDE:
-                    lista_ubis = [0, 1, 2, 3, 4]
-                    ubi1 = lista_ubis.pop(random.choice(lista_ubis))
-                    ubi2 = lista_ubis.pop(random.choice(lista_ubis))
-                    nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[ubi1], "cono", constantes.VIDA_ZOMBIES["cono"], Administrador_de_sonido)
-                    nuevo_zombie.add(grupo_zombies)
-                    nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[ubi2], "balde", constantes.VIDA_ZOMBIES["balde"], administrador_de_sonido)
-                    nuevo_zombie.add(grupo_zombies)
-                
-                if nivel_dificultad >= constantes.NV_SPAWN_BALDE and (nivel_dificultad % 2) == 0:
-                    constantes.TIPOS_ZOMBIES.append("balde")
-
-                for i in range(constantes.CANT_APARICION):
-                    pos_random = random.randint(0, 4)
-                    tipo_zb = random.choice(constantes.TIPOS_ZOMBIES)
-                    vida = constantes.VIDA_ZOMBIES[tipo_zb]
-                    zombies_a_spawnear.append((pos_random, tipo_zb, vida))
-
-                nivel_dificultad += 1
-
-                if constantes.TIEMPO_APARICION >= 6000:
-                    constantes.TIEMPO_APARICION -= 400
+                nivel_dificultad = creacion_zombies(nivel_dificultad, zombies_a_spawnear, grupo_zombies, administrador_de_sonido)
 
             elif event.type == APARICION_OLEADA:
-                def creacion_oleada(nivel_dificultad, zombies_a_spawnear):
-                    if nivel_dificultad % 10 == 0:
-                        for n in range(constantes.OLEADA_CANT_ZB):
-                            pos_random = random.randint(0, 4)
-                            tipo_zb = random.choice(constantes.TIPOS_ZOMBIES)
-                            vida = constantes.VIDA_ZOMBIES[tipo_zb]
-                            zombies_a_spawnear.append((pos_random, tipo_zb, vida))
-                        constantes.OLEADA_CANT_ZB += 3
                 creacion_oleada(nivel_dificultad, zombies_a_spawnear)
-
-                # if nivel_dificultad % 10 == 0:
-                #     for n in range(constantes.OLEADA_CANT_ZB):
-                #         pos_random = random.randint(0, 4)
-                #         tipo_zb = random.choice(constantes.TIPOS_ZOMBIES)
-                #         vida = constantes.VIDA_ZOMBIES[tipo_zb]
-                #         zombies_a_spawnear.append((pos_random, tipo_zb, vida))
-                #     constantes.OLEADA_CANT_ZB += 3
         
         #Funcion para spawnear a los zombies
-        def spawnear_zombies_pendientes(zombies_a_spawnear, delay_spawn_zombie, grupo_zombies, administrador_de_sonido):
-            tiempo_actual = pygame.time.get_ticks()
-            if zombies_a_spawnear and (tiempo_actual - delay_spawn_zombie > 1750):
-                fila, tipo, vida = zombies_a_spawnear.pop(0)
-                nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[fila], tipo, vida, administrador_de_sonido)
-                nuevo_zombie.add(grupo_zombies)
-                delay_spawn_zombie = tiempo_actual
-            return delay_spawn_zombie
-
         delay_spawn_zombie = spawnear_zombies_pendientes(zombies_a_spawnear, delay_spawn_zombie, grupo_zombies, administrador_de_sonido)
         
         # if zombies_a_spawnear:
