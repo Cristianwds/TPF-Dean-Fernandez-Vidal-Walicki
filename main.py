@@ -128,6 +128,7 @@ preview_dict = {
 for values in preview_dict.values():
     values[0].set_alpha(128)
 
+ultima_colocacion = {planta: 0 for planta in constantes.COOLDOWN_PLANTAS}
 
 seleccion_planta = False
 #  x, y, imagen, vida, velocidad
@@ -201,7 +202,12 @@ while run:
                     cuadpos[0] = constantes.COMIENZO_PASTO_X + (x * constantes.CELDA_ANCHO)
                     cuadpos[1] = constantes.COMIENZO_PASTO_Y + (y * constantes.CELDA_ALTO)
                     if grilla_entidades[y][x] == 0 and seleccion_planta != False and seleccion_planta != "pala":
-                        seleccion_planta = plantar(grilla_entidades, seleccion_planta, x, y, administrador_de_sonido, contador_soles)
+                        tiempo_colocacion = pygame.time.get_ticks()
+                        if seleccion_planta in constantes.COOLDOWN_PLANTAS:
+                            if tiempo_colocacion - ultima_colocacion[seleccion_planta] >= constantes.COOLDOWN_PLANTAS[seleccion_planta]:
+                                ultima_colocacion[seleccion_planta] = tiempo_colocacion
+                                print(f"Se aplico el cooldown para la planta {seleccion_planta}")
+                                seleccion_planta = plantar(grilla_entidades, seleccion_planta, x, y, administrador_de_sonido, contador_soles)
                     elif (seleccion_planta == "pala"):
                         seleccion_planta = pala.excavar(grilla_entidades, x, y, seleccion_planta)
                 #Funcionamiento de la seleccion de semillas
@@ -312,8 +318,11 @@ while run:
         impresion_cantsol = fuente_cantsol.render(str(contador_soles[0]), True, (0, 0, 0))
         screen.blit(impresion_cantsol, posicion_contadorsol)
         screen.blit(imagen_nivel, (20, 30))
-        posicion = pygame.mouse.get_pos()
-        print(posicion)
+
+        # Impresion de pos del mouse para futuras pruebas
+        # posicion = pygame.mouse.get_pos()
+        # print(posicion)
+
         pygame.display.update()
     reloj.tick(constantes.FPS)
 
