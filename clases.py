@@ -546,7 +546,7 @@ class Semillas(pygame.sprite.Sprite):
         self.rect.topleft = (x, y)
         self.clicked = False
         self.reproductor_de_sonido = reproductor_de_sonido
-        self.tiempo = -15000
+        self.tiempo = -30000
 
     def update(self, evento, contador):
         if evento.type == pygame.MOUSEBUTTONDOWN:
