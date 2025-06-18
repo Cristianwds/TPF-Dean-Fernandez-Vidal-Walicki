@@ -33,9 +33,9 @@ VEL_ANIM_LG= {False: 17, True: 32}
 VALOR_SOL = 25
 
 CONTADOR_SOLES = 50
-TIEMPO_APARICION_SOL = 2000 #Milisegundos
+TIEMPO_APARICION_SOL = 10000 #Milisegundos
 ALTURAS = [135, 165, 200, 230, 255, 300, 325, 345, 370, 400, 435]
-VELOCIDAD_SOL = 2
+VELOCIDAD_SOL = 1.5
 
 YMAX = 480
 XMAX = 946
@@ -53,5 +53,7 @@ CANT_FRAMES_PLANTAS= {"girasol": len(os.listdir(r"assets\girasol")),
 NV_AUMENTO_SPAWN = 8
 NV_SPAWN_CONO = 10
 NV_SPAWN_BALDE = 20
+NV_OLEADA = 10
 
 COOLDOWN_PLANTAS = {"lanzaguisantes": 7500, "nuez": 30000, "girasol": 7500, "petacereza": 25000, "papapum": 10000, "hielaguisantes": 7500}
+COOLDOWN_ZOMBIES = 2000

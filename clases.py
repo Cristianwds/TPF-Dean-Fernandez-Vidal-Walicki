@@ -437,14 +437,15 @@ class Petacereza(pygame.sprite.Sprite):
         if self.contador_explosion == 6:
             self.image = pygame.image.load(r"assets\petacereza\petacereza_explosion_imagen.png")
             self.rect = self.image.get_rect(center = (self.x + constantes.CELDA_ANCHO / 2, self.y))
-            self.administrador_de_sonido.reproducir_sonido("petacereza_explosion", 0)
+            self.administrador_de_sonido.reproducir_sonido("petacereza_explosion", 0, False)
             for zombie in grupo_zombies:
                 if self.hitbox_explosion.colliderect(zombie.hitbox):
-                    zombie.recibir_daño(10000)          
-        if self.contador_explosion >= 6:
+                    zombie.recibir_daño(10000)
+            self.contador_explosion += 1          
+        if self.contador_explosion >= 7:
             self.image.set_alpha(self.alpha)
             self.alpha -= 3
-            if self.contador_explosion == 12:
+            if self.contador_explosion == 13:
                 funciones.eliminar(grilla_entidades, self.id, Petacereza)
 
 
@@ -509,19 +510,33 @@ class Semillas(pygame.sprite.Sprite):
         self.clicked = False
         self.reproductor_de_sonido = reproductor_de_sonido
         self.tiempo = -30000
+        self.encooldown = False
 
     def update(self, evento, contador):
+    
         if evento.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(evento.pos) and contador[0] >= self.valor:
-                ahora = pygame.time.get_ticks()
-                if ahora - self.tiempo >= self.cooldown:
+                if not self.encooldown:
                     self.clicked = True
                     self.reproductor_de_sonido.reproducir_sonido("semilla_seleccionar")
                 else:
-                    pygame.draw.rect(screen, (255, 255, 255), rect, 1)
                     self.clicked = False
             else:
                 self.clicked = False
+
+    def dibujarcooldown(self,screen):
+        ahora = pygame.time.get_ticks()
+
+        if ahora - self.tiempo >= self.cooldown:
+            self.encooldown = False
+        else:
+            self.encooldown = True
+
+        if self.encooldown:
+            imagencooldown = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
+            imagencooldown.fill((125, 125, 125, 100))
+            screen.blit(imagencooldown, (self.rect.x, self.rect.y))
+
 
 
 class Cortapasto(pygame.sprite.Sprite):
@@ -619,7 +634,7 @@ class Sol(pygame.sprite.Sprite):
             self.indice_frames = (self.indice_frames + 1) % len(self.frames)
             self.image = self.frames[self.indice_frames]
         tiempo_muerte = pygame.time.get_ticks() # Tiempo actual antes de ejecutarse la accion
-        if tiempo_muerte - self.creacion > 10000: 
+        if tiempo_muerte - self.creacion > 11000: 
             self.kill()
 
     def recolectar (self):
