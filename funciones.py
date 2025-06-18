@@ -1,5 +1,6 @@
 import pygame
 import constantes
+import random
 from pygame import mixer
 import clases as cl
 
@@ -168,9 +169,45 @@ def perder(traslucido, grupo_zombies, screen, vivo, reproductor_de_sonido, conta
             reproductor_de_sonido.detener_reproduccion("musica_nivel_dia")
             reproductor_de_sonido.reproducir_sonido("perder", 0, True)
             contador += 1
+        if not(reproductor_de_sonido.canales_sonidos_ocupados["perder"].get_busy()):
+            reproductor_de_sonido.detener_todos()
         if ahora > 600 and traslucido < 254:
             traslucido += 1
             ahora = pygame.time.get_ticks()
             perdida.fill((0, 0, 0, traslucido))
     traslucidez = traslucido
     return traslucidez, vivo, contador
+
+def manejar_aparicion_zombie(nivel_dificultad, zombies_a_spawnear, grupo_zombies, administrador_de_sonido):
+    if (nivel_dificultad % constantes.NV_AUMENTO_SPAWN) == 0 and nivel_dificultad >= constantes.NV_AUMENTO_SPAWN:
+        constantes.CANT_APARICION += 1
+
+    if nivel_dificultad == constantes.NV_SPAWN_CONO:
+        nuevo_zombie = cl.Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[random.randint(0, 4)], "cono", constantes.VIDA_ZOMBIES["cono"], administrador_de_sonido)
+        nuevo_zombie.add(grupo_zombies)
+
+    if nivel_dificultad % 2 == 0 and constantes.NV_SPAWN_CONO <= nivel_dificultad <= constantes.NV_SPAWN_BALDE + 4:
+        constantes.TIPOS_ZOMBIES.append("cono")
+
+    if nivel_dificultad == constantes.NV_SPAWN_BALDE:
+        lista_ubis = [0, 1, 2, 3, 4]
+        ubi1 = lista_ubis.pop(random.choice(lista_ubis))
+        ubi2 = lista_ubis.pop(random.choice(lista_ubis))
+        nuevo_zombie1 = cl.Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[ubi1], "cono", constantes.VIDA_ZOMBIES["cono"], administrador_de_sonido)
+        nuevo_zombie1.add(grupo_zombies)
+        nuevo_zombie2 = cl.Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[ubi2], "balde", constantes.VIDA_ZOMBIES["balde"], administrador_de_sonido)
+        nuevo_zombie2.add(grupo_zombies)
+
+    if nivel_dificultad >= constantes.NV_SPAWN_BALDE and (nivel_dificultad % 2) == 0:
+        constantes.TIPOS_ZOMBIES.append("balde")
+
+    for i in range(constantes.CANT_APARICION):
+        pos_random = random.randint(0, 4)
+        tipo_zb = random.choice(constantes.TIPOS_ZOMBIES)
+        vida = constantes.VIDA_ZOMBIES[tipo_zb]
+        zombies_a_spawnear.append((pos_random, tipo_zb, vida))
+
+    if constantes.TIEMPO_APARICION >= 6000:
+        constantes.TIEMPO_APARICION -= 400
+    
+    return nivel_dificultad + 1

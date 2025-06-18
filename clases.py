@@ -357,7 +357,7 @@ class Papapum(Plantas):
         self.hitbox_explosion.center = self.rect.center
 
     def explotar(self):
-        self.reproductor_de_sonido.reproducir_sonido("petacereza_explosion", 0, -1)
+        self.reproductor_de_sonido.reproducir_sonido("petacereza_explosion", 0)
         for zombie in grupo_zombies:
             if self.hitbox_explosion.colliderect(zombie.hitbox):
                 zombie.recibir_daño(10000)
@@ -403,44 +403,6 @@ class Papapum(Plantas):
                     self.ultimo_frame = tiempo_frame
             if self.frame_explosion_contador >= 10:
                 funciones.eliminar(self.lista_entidades, self.id, Plantas)
-
-        # if self.exploto == False:    
-        #     if tiempo_frame - self.ultimo_frame > self.velocidad_animacion and self.contador_activacion <= 300:
-        #         self.contador_activacion += 1
-        #         if self.frame_desactivado_contador < 23:
-        #             self.frame_desactivado_contador += 1
-        #             self.ultimo_frame = tiempo_frame
-        #             self.indice_frames = (self.indice_frames + 1) % len(self.frames_desactivados)
-        #             self.image = self.frames_desactivados[self.indice_frames]
-        #     if self.contador_activacion > 300:
-        #         self.ultimo_frame = tiempo_frame
-        #         if self.contador_activacion == 300:
-        #             self.indice_frames =  0
-        #             self.activar_hitbox()
-        #         else:
-        #             self.indice_frames = (self.indice_frames + 1) % len(self.frames_activados)
-        #         for zombie in grupo_zombies:
-        #             if self.hitbox_activacion.colliderect(zombie.hitbox):
-        #                 self.explotar()
-        #         self.image = self.frames_activados[self.indice_frames]
-        # else:
-        #     self.ultimo_frame = tiempo_frame
-        #     self.indice_frames = (self.indice_frames + 1) % len(self.frames_desactivados)
-        #     self.image = self.frames_desactivados[self.indice_frames]
-
-                
-                
-        # if self.contador_activacion == 6:
-        #     self.indice_frames = 0
-        #     self.ultimo_frame = 0
-        #     tiempo_frame = 0
-        #     self.estado = "activado"
-            #     self.contador_activacion += 1
-            # if self.estado == "activado":
-            #     self.ultimo_frame = tiempo_frame
-            #     self.indice_frames = (self.indice_frames + 1) % len(self.frames_activados)
-            #     self.image = self.frames_activados[self.indice_frames]
-
 class Petacereza(pygame.sprite.Sprite):
     petacerezas_id = 0
     def __init__(self, x, y, administrador_de_sonido, costo = 150):
@@ -475,7 +437,7 @@ class Petacereza(pygame.sprite.Sprite):
         if self.contador_explosion == 6:
             self.image = pygame.image.load(r"assets\petacereza\petacereza_explosion_imagen.png")
             self.rect = self.image.get_rect(center = (self.x + constantes.CELDA_ANCHO / 2, self.y))
-            self.administrador_de_sonido.reproducir_sonido("petacereza_explosion", 0, True)
+            self.administrador_de_sonido.reproducir_sonido("petacereza_explosion", 0)
             for zombie in grupo_zombies:
                 if self.hitbox_explosion.colliderect(zombie.hitbox):
                     zombie.recibir_daño(10000)          
@@ -556,6 +518,7 @@ class Semillas(pygame.sprite.Sprite):
                     self.clicked = True
                     self.reproductor_de_sonido.reproducir_sonido("semilla_seleccionar")
                 else:
+                    pygame.draw.rect(screen, (255, 255, 255), rect, 1)
                     self.clicked = False
             else:
                 self.clicked = False
@@ -580,7 +543,7 @@ class Cortapasto(pygame.sprite.Sprite):
         for zombies in grupo_zombies:
             if self.moving == 0 and self.hitbox.colliderect(zombies.hitbox):
                 self.moving = True
-                self.reproductor_de_sonido.reproducir_sonido("cortapastos_activar", 0, True)
+                self.reproductor_de_sonido.reproducir_sonido("cortapastos_activar", 0)
             elif self.moving == 1 and self.hitbox.colliderect(zombies.hitbox):
                 zombies.recibir_daño(10000)
         if self.moving == True:

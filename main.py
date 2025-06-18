@@ -90,7 +90,7 @@ cuad.fill((255, 255, 255, 128))
 cuadpos = [constantes.COMIENZO_PASTO_X, constantes.COMIENZO_PASTO_Y]
 
 traslucido = 5
-vivo = True
+vivo = False
 # Evento aparicion de zombies
 APARICION_ZOMBIE = pygame.USEREVENT
 pygame.time.set_timer(APARICION_ZOMBIE, constantes.TIEMPO_APARICION)
@@ -143,8 +143,7 @@ while run:
                 if boton_jugar.collidepoint(event.pos):
                     mostrar_inicio  = False
                     administrador_de_sonido.detener_reproduccion(
-                        "musica_menu_principal"
-                    )
+                        "musica_menu_principal")
                     administrador_de_sonido.reproducir_sonido("botones")
                     administrador_de_sonido.reproducir_sonido("musica_nivel_dia", -1, True)
                 if boton_salir.collidepoint(event.pos):
@@ -232,8 +231,8 @@ while run:
                 nuevo_sol.add(grupo_sol)
             
             # Cada cierto tiempo spawnean zombies
-            elif event.type == APARICION_ZOMBIE:
-                
+            elif event.type == APARICION_ZOMBIE:#
+
                 pos_aleatoria = random.randint(0, 4)
                 tipo= random.choice(constantes.TIPOS_ZOMBIES)
 
@@ -270,35 +269,47 @@ while run:
 
                 if constantes.TIEMPO_APARICION >= 6000:
                     constantes.TIEMPO_APARICION -= 400
-            ## Cada cierto tiempo spawnean soles
-            #elif event.type == APARICION_SOLES:
-            #    caida_aleatoria = random.randint(0,8)
 
             elif event.type == APARICION_OLEADA:
+                def creacion_oleada(nivel_dificultad, zombies_a_spawnear):
+                    if nivel_dificultad % 10 == 0:
+                        for n in range(constantes.OLEADA_CANT_ZB):
+                            pos_random = random.randint(0, 4)
+                            tipo_zb = random.choice(constantes.TIPOS_ZOMBIES)
+                            vida = constantes.VIDA_ZOMBIES[tipo_zb]
+                            zombies_a_spawnear.append((pos_random, tipo_zb, vida))
+                        constantes.OLEADA_CANT_ZB += 3
+                creacion_oleada(nivel_dificultad, zombies_a_spawnear)
 
-                if nivel_dificultad % 10 == 0:
-                    for n in range(constantes.OLEADA_CANT_ZB):
-                        pos_random = random.randint(0, 4)
-                        tipo_zb = random.choice(constantes.TIPOS_ZOMBIES)
-                        vida = constantes.VIDA_ZOMBIES[tipo_zb]
-                        zombies_a_spawnear.append((pos_random, tipo_zb, vida))
-                        # pos_random = random.randint(0, 4)
-                        # tipo_zb = random.choice(constantes.TIPOS_ZOMBIES)
-                        # nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[pos_random], tipo, constantes.VIDA_ZOMBIES[tipo_zb])
-                        # nuevo_zombie.add(grupo_zombies)
-                    constantes.OLEADA_CANT_ZB += 3
-
-
-
-        if zombies_a_spawnear:
+                # if nivel_dificultad % 10 == 0:
+                #     for n in range(constantes.OLEADA_CANT_ZB):
+                #         pos_random = random.randint(0, 4)
+                #         tipo_zb = random.choice(constantes.TIPOS_ZOMBIES)
+                #         vida = constantes.VIDA_ZOMBIES[tipo_zb]
+                #         zombies_a_spawnear.append((pos_random, tipo_zb, vida))
+                #     constantes.OLEADA_CANT_ZB += 3
+        
+        #Funcion para spawnear a los zombies
+        def spawnear_zombies_pendientes(zombies_a_spawnear, delay_spawn_zombie, grupo_zombies, administrador_de_sonido):
             tiempo_actual = pygame.time.get_ticks()
-            if tiempo_actual - delay_spawn_zombie > 1750:
+            if zombies_a_spawnear and (tiempo_actual - delay_spawn_zombie > 1750):
                 fila, tipo, vida = zombies_a_spawnear.pop(0)
                 nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[fila], tipo, vida, administrador_de_sonido)
                 nuevo_zombie.add(grupo_zombies)
                 delay_spawn_zombie = tiempo_actual
+            return delay_spawn_zombie
 
-        traslucido, vivo, contador_para_perder = perder(traslucido, grupo_zombies, screen, vivo, administrador_de_sonido, contador_para_perder)
+        delay_spawn_zombie = spawnear_zombies_pendientes(zombies_a_spawnear, delay_spawn_zombie, grupo_zombies, administrador_de_sonido)
+        
+        # if zombies_a_spawnear:
+        #     tiempo_actual = pygame.time.get_ticks()
+        #     if tiempo_actual - delay_spawn_zombie > 1750:
+        #         fila, tipo, vida = zombies_a_spawnear.pop(0)
+        #         nuevo_zombie = Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[fila], tipo, vida, administrador_de_sonido)
+        #         nuevo_zombie.add(grupo_zombies)
+        #         delay_spawn_zombie = tiempo_actual
+
+        
 
 
         # Impresion de numeros
@@ -316,7 +327,7 @@ while run:
         impresion_cantsol = fuente_cantsol.render(str(contador_soles[0]), True, (0, 0, 0))
         screen.blit(impresion_cantsol, posicion_contadorsol)
         screen.blit(imagen_nivel, (20, 30))
-
+        traslucido, vivo, contador_para_perder = perder(traslucido, grupo_zombies, screen, vivo, administrador_de_sonido, contador_para_perder)
         # Impresion de pos del mouse para futuras pruebas
         # posicion = pygame.mouse.get_pos()
         # print(posicion)
