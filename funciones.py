@@ -35,7 +35,9 @@ def iniciar_administrador_sonido():
         "pala_sonido": r"assets\pala\pala_sonido.mp3",
         "petacereza_explosion": r"assets\petacereza\petacereza_explosion_sonido.ogg",
         "perder": r"assets\Musica\[You Lost].mp3",
-        "botones": r"assets\boton_inicio.mp3"
+        "botones": r"assets\boton_inicio.mp3",
+        "recoger_sol": r"assets\Sonidos_Plantas\sol_recoleccion.mp3",
+        "zombies_coming": r"assets\zombies\The Zombies Are coming Sound Effect.mp3"
     }
     for nombre_sonido, ruta_sonido in diccionario_sonidos.items():
         administrador_de_sonido.cargar_sonido(ruta_sonido, nombre_sonido)
@@ -246,6 +248,10 @@ def perder(traslucido, grupo_zombies, screen, vivo, reproductor_de_sonido, conta
     return traslucidez, vivo, contador
 
 def creacion_zombies(nivel_dificultad, zombies_a_spawnear, grupo_zombies, administrador_de_sonido):
+    
+    if constantes.SONIDO_INICIO:
+        administrador_de_sonido.reproducir_sonido("zombies_coming")
+        constantes.SONIDO_INICIO = False
     if (nivel_dificultad % constantes.NV_AUMENTO_SPAWN) == 0 and nivel_dificultad >= constantes.NV_AUMENTO_SPAWN:
         constantes.CANT_APARICION += 1
 

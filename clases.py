@@ -300,7 +300,7 @@ class Girasol(Plantas):
         ahora = pygame.time.get_ticks()
         if ahora - self.tiempo_ultimo_sol > self.intervalo_soles:
             self.tiempo_ultimo_sol = ahora
-            nuevo_sol = Sol(self.rect.x + 20, self.rect.y, self.rect.y)
+            nuevo_sol = Sol(self.rect.x + 20, self.rect.y, self.rect.y, self.reproductor_de_sonido)
             return nuevo_sol
         return None
 
@@ -606,7 +606,7 @@ class Pala(pygame.sprite.Sprite):
         return seleccion_planta
     
 class Sol(pygame.sprite.Sprite):
-    def __init__(self, x, y, alturas_sol, velocidad = constantes.VELOCIDAD_SOL):#aparicion = constantes.TIEMPO_APARICION_SOL = 7500)
+    def __init__(self, x, y, alturas_sol,administrador_de_sonido, velocidad = constantes.VELOCIDAD_SOL):#aparicion = constantes.TIEMPO_APARICION_SOL = 7500)
         pygame.sprite.Sprite.__init__(self) 
         self.frames = [pygame.image.load(f"assets\\sol\\frame_{i}.png").convert_alpha() for i in range(30)]
         self.indice_frames = 0
@@ -621,6 +621,7 @@ class Sol(pygame.sprite.Sprite):
         self.rect.y = float(y)  
         self.altura = alturas_sol
         self.creacion = pygame.time.get_ticks() # Para evaluar el tiempo desde la creación
+        self.administrador_de_sonido = administrador_de_sonido
 
     # Animacion
     
@@ -638,5 +639,6 @@ class Sol(pygame.sprite.Sprite):
             self.kill()
 
     def recolectar (self):
+        self.administrador_de_sonido.reproducir_sonido("recoger_sol")
         self.kill()    
         return constantes.VALOR_SOL

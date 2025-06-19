@@ -57,3 +57,5 @@ NV_OLEADA = 10
 
 COOLDOWN_PLANTAS = {"lanzaguisantes": 7500, "nuez": 30000, "girasol": 7500, "petacereza": 25000, "papapum": 10000, "hielaguisantes": 7500}
 COOLDOWN_ZOMBIES = 2000
+
+SONIDO_INICIO = True
