@@ -322,3 +322,7 @@ def pantalla_inicio(screen, boton_jugar, boton_salir, fondo_interfaz_play, fondo
     else:
         screen.blit(fondo_interfaz, (0,0))
     pygame.display.update()
+
+def dave(screen, fondodave):
+    screen.blit(fondodave,(0,0))
+    pygame.display.update()

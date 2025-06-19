@@ -33,6 +33,10 @@ fondo_interfaz_play = pygame.transform.scale(fondo_interfaz_play, (constantes.AN
 fondo_interfaz_exit = pygame.image.load(r'assets\Fondo_colorexit.jpg')
 fondo_interfaz_exit = pygame.transform.scale(fondo_interfaz_exit, (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA))
 
+fondo_crazydave = pygame.image.load(r'assets\Crazydave.jpg')
+fondo_crazydave = pygame.transform.scale(fondo_crazydave, (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA))
+boton_fondodave = pygame.Rect(constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA, 1000, 1000)
+
 boton_jugar = pygame.Rect(constantes.ANCHO_VENTANA / 2 + 25, constantes.ALTO_VENTANA/ 2 - 210, 300, 100)
 boton_salir = pygame.Rect(constantes.ANCHO_VENTANA / 2 + 25, constantes.ALTO_VENTANA/ 2 - 85, 300, 110)
 
@@ -112,6 +116,7 @@ seleccion_planta = False
 #  x, y, imagen, vida, velocidad
 run = True
 mostrar_inicio = True 
+mostrar_dave = False
 while run:
     if mostrar_inicio:
         pantalla_inicio(screen, boton_jugar,boton_salir, fondo_interfaz_play, fondo_interfaz_exit, fondo_interfaz)
@@ -122,6 +127,7 @@ while run:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if boton_jugar.collidepoint(event.pos):
                     mostrar_inicio  = False
+                    mostrar_dave = True
                     administrador_de_sonido.detener_reproduccion(
                         "musica_menu_principal")
                     administrador_de_sonido.reproducir_sonido("botones")
@@ -129,6 +135,14 @@ while run:
                 if boton_salir.collidepoint(event.pos):
                     administrador_de_sonido.reproducir_sonido("botones")
                     run = False 
+    elif mostrar_dave:
+        dave(screen,fondo_crazydave)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+            if event.type == pygame.MOUSEBUTTONDOWN:  
+                mostrar_dave = False
+
     else:
         #dibujar_texto(boton_contadorsoles, None, (255,255,255), constantes.ANCHO_VENTANA / 2 - 280 , constantes.ALTO_VENTANA / 2 - 200)
         # reloj.tick(constantes.FPS)
