@@ -173,40 +173,43 @@ while run:
                 run = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = event.pos
-                # Poner plantas con el click
-                if (constantes.COMIENZO_PASTO_X < x < constantes.FIN_PASTO_X and constantes.COMIENZO_PASTO_Y < y < constantes.FIN_PASTO_Y):
-                    x,y = de_pixeles_a_grilla(x,y)
-                    cuadpos[0] = constantes.COMIENZO_PASTO_X + (x * constantes.CELDA_ANCHO)
-                    cuadpos[1] = constantes.COMIENZO_PASTO_Y + (y * constantes.CELDA_ALTO)
-                    if grilla_entidades[y][x] == 0 and seleccion_planta != False and seleccion_planta != "pala":
-                        # tiempo_colocacion = pygame.time.get_ticks()
-                        # if seleccion_planta in constantes.COOLDOWN_PLANTAS:
-                        #     if tiempo_colocacion - ultima_colocacion[seleccion_planta] >= constantes.COOLDOWN_PLANTAS[seleccion_planta]:
-                        #         ultima_colocacion[seleccion_planta] = tiempo_colocacion
-                                # print(f"Se aplico el cooldown para la planta {seleccion_planta}")
-                        seleccion_planta = plantar(grilla_entidades, seleccion_planta, x, y, administrador_de_sonido, contador_soles, dic_semillas)
-                    elif (seleccion_planta == "pala"):
-                        seleccion_planta = pala.excavar(grilla_entidades, x, y, seleccion_planta)
-                #Funcionamiento de la seleccion de semillas
-                elif (370 < x < 841 and 10 < y < 100):
-                    grupo_semillas.update(event, contador_soles)
-                    for semillas in grupo_semillas:
-                        if semillas.clicked:
-                            seleccion_planta = semillas.item
-                    
-                #Seleccion de pala
-                elif 860 < x < 931 and 10 < y < 81:
-                    grupo_pala.update(event)
-                    if pala.clicked:
-                        seleccion_planta = "pala"
+                if event.button == 1:
+                    # Poner plantas con el click
+                    if (constantes.COMIENZO_PASTO_X < x < constantes.FIN_PASTO_X and constantes.COMIENZO_PASTO_Y < y < constantes.FIN_PASTO_Y):
+                        x,y = de_pixeles_a_grilla(x,y)
+                        cuadpos[0] = constantes.COMIENZO_PASTO_X + (x * constantes.CELDA_ANCHO)
+                        cuadpos[1] = constantes.COMIENZO_PASTO_Y + (y * constantes.CELDA_ALTO)
+                        if grilla_entidades[y][x] == 0 and seleccion_planta != False and seleccion_planta != "pala":
+                            # tiempo_colocacion = pygame.time.get_ticks()
+                            # if seleccion_planta in constantes.COOLDOWN_PLANTAS:
+                            #     if tiempo_colocacion - ultima_colocacion[seleccion_planta] >= constantes.COOLDOWN_PLANTAS[seleccion_planta]:
+                            #         ultima_colocacion[seleccion_planta] = tiempo_colocacion
+                                    # print(f"Se aplico el cooldown para la planta {seleccion_planta}")
+                            seleccion_planta = plantar(grilla_entidades, seleccion_planta, x, y, administrador_de_sonido, contador_soles, dic_semillas)
+                        elif (seleccion_planta == "pala"):
+                            seleccion_planta = pala.excavar(grilla_entidades, x, y, seleccion_planta)
+                    #Funcionamiento de la seleccion de semillas
+                    elif (370 < x < 841 and 10 < y < 100):
+                        grupo_semillas.update(event, contador_soles)
+                        for semillas in grupo_semillas:
+                            if semillas.clicked:
+                                seleccion_planta = semillas.item
+                        
+                    #Seleccion de pala
+                    elif 860 < x < 931 and 10 < y < 81:
+                        grupo_pala.update(event)
+                        if pala.clicked:
+                            seleccion_planta = "pala"
 
-                for sol in grupo_sol:
-                    if sol.rect.collidepoint(event.pos): # Verifica que el sol sea recogible y chequea si el click se hizo en la misma posicion del rect del sol
-                        contador_soles[0] += sol.recolectar() 
+                    for sol in grupo_sol:
+                        if sol.rect.collidepoint(event.pos): # Verifica que el sol sea recogible y chequea si el click se hizo en la misma posicion del rect del sol
+                            contador_soles[0] += sol.recolectar() 
+                elif event.button == 3:
+                    seleccion_planta = False
                         
             # Cada cierto tiempo spawnean soles
             elif event.type == APARICION_SOLES:
-                nuevo_sol = Sol(random.randint(350, constantes.ANCHO_VENTANA - 100),-50, random.choice(constantes.ALTURAS))
+                nuevo_sol = Sol(random.randint(350, constantes.ANCHO_VENTANA - 100),-50, random.choice(constantes.ALTURAS), administrador_de_sonido)
                 nuevo_sol.add(grupo_sol)
             
             # Cada cierto tiempo spawnean zombies
