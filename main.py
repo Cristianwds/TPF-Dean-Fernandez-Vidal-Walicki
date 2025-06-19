@@ -131,7 +131,6 @@ while run:
                     administrador_de_sonido.detener_reproduccion(
                         "musica_menu_principal")
                     administrador_de_sonido.reproducir_sonido("botones")
-                    administrador_de_sonido.reproducir_sonido("musica_nivel_dia", -1, True)
                 if boton_salir.collidepoint(event.pos):
                     administrador_de_sonido.reproducir_sonido("botones")
                     run = False 
@@ -142,8 +141,9 @@ while run:
                 run = False
             if event.type == pygame.MOUSEBUTTONDOWN:  
                 mostrar_dave = False
+                administrador_de_sonido.reproducir_sonido("musica_nivel_dia", -1, True)
 
-    else:
+    elif not mostrar_inicio and not mostrar_dave:
         #dibujar_texto(boton_contadorsoles, None, (255,255,255), constantes.ANCHO_VENTANA / 2 - 280 , constantes.ALTO_VENTANA / 2 - 200)
         # reloj.tick(constantes.FPS)
         # screen.fill(constantes.COLOR_BG) #VAMOS A LLNAR EL FONDO CON EL COLOR BG
