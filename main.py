@@ -117,6 +117,7 @@ seleccion_planta = False
 run = True
 mostrar_inicio = True 
 mostrar_dave = False
+discurso_inspirador_de_dave = False
 while run:
     if mostrar_inicio:
         pantalla_inicio(screen, boton_jugar,boton_salir, fondo_interfaz_play, fondo_interfaz_exit, fondo_interfaz)
@@ -135,11 +136,13 @@ while run:
                     administrador_de_sonido.reproducir_sonido("botones")
                     run = False 
     elif mostrar_dave:
-        dave(screen,fondo_crazydave)
+        discurso_inspirador_de_dave = dave(screen,fondo_crazydave, administrador_de_sonido, discurso_inspirador_de_dave)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
             if event.type == pygame.MOUSEBUTTONDOWN:  
+                administrador_de_sonido.detener_reproduccion(discurso_inspirador_de_dave)
+                administrador_de_sonido.reproducir_sonido("webiwabo")
                 mostrar_dave = False
                 administrador_de_sonido.reproducir_sonido("musica_nivel_dia", -1, True)
 

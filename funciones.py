@@ -4,10 +4,14 @@ import random
 from pygame import mixer
 import clases as cl
 
+
 def dibujar_grilla(screen, celdas_rects):
     for fila in celdas_rects:
         for rect in fila:
-            pygame.draw.rect(screen, (255, 255, 255), rect, 1)  # color blanco, borde de 1 píxel
+            pygame.draw.rect(
+                screen, (255, 255, 255), rect, 1
+            )  # color blanco, borde de 1 píxel
+
 
 def iniciar_administrador_sonido():
     """
@@ -37,12 +41,17 @@ def iniciar_administrador_sonido():
         "perder": r"assets\Musica\[You Lost].mp3",
         "botones": r"assets\boton_inicio.mp3",
         "recoger_sol": r"assets\Sonidos_Plantas\sol_recoleccion.mp3",
-        "zombies_coming": r"assets\zombies\The Zombies Are coming Sound Effect.mp3"
+        "zombies_coming": r"assets\zombies\The Zombies Are coming Sound Effect.mp3",
+        "webiwabo": r"assets\dave_el_hermoso\webiwabo.ogg",
+        "ovawabodabawabaobadabowadaba": r"assets\dave_el_hermoso\ovawabodabawabaobadabowadaba.ogg",
+        "bwadawbabadfbaw": r"assets\dave_el_hermoso\bwadawbabadfbaw.ogg",
+        "budubuwedivadibo": r"assets\dave_el_hermoso\budubuwedivadibo.ogg",
     }
     for nombre_sonido, ruta_sonido in diccionario_sonidos.items():
         administrador_de_sonido.cargar_sonido(ruta_sonido, nombre_sonido)
 
     return administrador_de_sonido
+
 
 def definir_semillas(administrador_de_sonido):
     """
@@ -53,25 +62,81 @@ def definir_semillas(administrador_de_sonido):
     administrador_de_sonido: una variable de clase Administrador_de_sonido la cual posteriormente se almacena en cada variable clase Semillas.
 
 
-    Returns:                                                                    
+    Returns:
     ------
     diccionario_semillas: un diccionario {"item": semilla}. Se usa en varias funciones para comparar la clave del diccionario y ver que planta esta seleccionada.
     """
-    
-    s_girasol = cl.Semillas(413, 10, r"assets\semillas\semillas_girasol.png", administrador_de_sonido, "girasol", 50, constantes.COOLDOWN_PLANTAS["girasol"])
-    s_lanzaguisantes = cl.Semillas(476, 10, r"assets//semillas//semillas_lanzaguisantes.png", administrador_de_sonido, "lanzaguisantes", 100, constantes.COOLDOWN_PLANTAS["lanzaguisantes"])
-    s_nuez = cl.Semillas(539, 10, r"assets//semillas//semillas_nuez.png", administrador_de_sonido, "nuez", 50, constantes.COOLDOWN_PLANTAS["nuez"])
-    s_petacereza = cl.Semillas(602,10,r"assets\semillas\semilla_petacereza.png",administrador_de_sonido, "petacereza", 150, constantes.COOLDOWN_PLANTAS["petacereza"])
-    s_papapum = cl.Semillas(665, 10, r"assets\papapum\semilla_papapum_.png", administrador_de_sonido, "papapum", 25, constantes.COOLDOWN_PLANTAS["papapum"])
-    s_hielaguisantes = cl.Semillas(728, 10, r"assets//semillas//semillas_hielaguisantes.png", administrador_de_sonido, "hielaguisantes", 175, constantes.COOLDOWN_PLANTAS["hielaguisantes"])
+
+    s_girasol = cl.Semillas(
+        413,
+        10,
+        r"assets\semillas\semillas_girasol.png",
+        administrador_de_sonido,
+        "girasol",
+        50,
+        constantes.COOLDOWN_PLANTAS["girasol"],
+    )
+    s_lanzaguisantes = cl.Semillas(
+        476,
+        10,
+        r"assets//semillas//semillas_lanzaguisantes.png",
+        administrador_de_sonido,
+        "lanzaguisantes",
+        100,
+        constantes.COOLDOWN_PLANTAS["lanzaguisantes"],
+    )
+    s_nuez = cl.Semillas(
+        539,
+        10,
+        r"assets//semillas//semillas_nuez.png",
+        administrador_de_sonido,
+        "nuez",
+        50,
+        constantes.COOLDOWN_PLANTAS["nuez"],
+    )
+    s_petacereza = cl.Semillas(
+        602,
+        10,
+        r"assets\semillas\semilla_petacereza.png",
+        administrador_de_sonido,
+        "petacereza",
+        150,
+        constantes.COOLDOWN_PLANTAS["petacereza"],
+    )
+    s_papapum = cl.Semillas(
+        665,
+        10,
+        r"assets\papapum\semilla_papapum_.png",
+        administrador_de_sonido,
+        "papapum",
+        25,
+        constantes.COOLDOWN_PLANTAS["papapum"],
+    )
+    s_hielaguisantes = cl.Semillas(
+        728,
+        10,
+        r"assets//semillas//semillas_hielaguisantes.png",
+        administrador_de_sonido,
+        "hielaguisantes",
+        175,
+        constantes.COOLDOWN_PLANTAS["hielaguisantes"],
+    )
     s_lanzaguisantes.add(cl.grupo_semillas)
     s_girasol.add(cl.grupo_semillas)
     s_nuez.add(cl.grupo_semillas)
     s_petacereza.add(cl.grupo_semillas)
     s_papapum.add(cl.grupo_semillas)
     s_hielaguisantes.add(cl.grupo_semillas)
-    diccionario_semillas =  {"girasol": s_girasol, "lanzaguisantes": s_lanzaguisantes, "nuez": s_nuez, "petacereza": s_petacereza, "papapum": s_papapum, "hielaguisantes": s_hielaguisantes}
+    diccionario_semillas = {
+        "girasol": s_girasol,
+        "lanzaguisantes": s_lanzaguisantes,
+        "nuez": s_nuez,
+        "petacereza": s_petacereza,
+        "papapum": s_papapum,
+        "hielaguisantes": s_hielaguisantes,
+    }
     return diccionario_semillas
+
 
 def definir_cortapastos(administrador_de_sonido):
     """
@@ -87,18 +152,29 @@ def definir_cortapastos(administrador_de_sonido):
     cortapastos_col[Filas][Columnas]: Una lista con todas las cortapastos almacenadas.
     """
     cortapastos_col = []
-    cortapastos_col += [[cl.Cortapasto(constantes.COMIENZO_PASTO_X - constantes.CELDA_ANCHO - 20,constantes.COMIENZO_PASTO_Y + constantes.CELDA_ALTO * fil,cortapastos_col, administrador_de_sonido)]for fil in range(5)]
+    cortapastos_col += [
+        [
+            cl.Cortapasto(
+                constantes.COMIENZO_PASTO_X - constantes.CELDA_ANCHO - 20,
+                constantes.COMIENZO_PASTO_Y + constantes.CELDA_ALTO * fil,
+                cortapastos_col,
+                administrador_de_sonido,
+            )
+        ]
+        for fil in range(5)
+    ]
     for cortapasto_id in cortapastos_col:
         cl.grupo_cortapastos.add(cortapasto_id)
     return cortapastos_col
 
-def updates_constantes(grilla_entidades:list) -> None:
+
+def updates_constantes(grilla_entidades: list) -> None:
     """
     Esta funcion se ejecuta constantemente en el while principal del main. Se encarga de actualizar todas las clases.
 
     Inputs:
     ------
-    grilla_entidades[filas][columnas]: es la lista, definida en main, donde estan todas las plantas. 
+    grilla_entidades[filas][columnas]: es la lista, definida en main, donde estan todas las plantas.
     """
     cl.grupo_plantas.update()
     cl.grupo_cortapastos.update()
@@ -106,7 +182,8 @@ def updates_constantes(grilla_entidades:list) -> None:
     cl.grupo_proyectiles.update()
     cl.grupo_deplegables.update(grilla_entidades)
     cl.grupo_sol.update()
-    
+
+
 def dibujos_constantes(screen):
     """
     Esta funcion se encarga de dibujar todos los assets en pantalla. Se ejecuta constantemente en el while principal en main.
@@ -116,7 +193,9 @@ def dibujos_constantes(screen):
     screen: la variable pygame.display principal, utilizada como pantalla.
     """
     barra = pygame.image.load(r"assets/barra.png")
-    barra = pygame.transform.scale(barra, (constantes.LARGO_BARRA, constantes.ALTO_BARRA))
+    barra = pygame.transform.scale(
+        barra, (constantes.LARGO_BARRA, constantes.ALTO_BARRA)
+    )
     cl.grupo_plantas.draw(screen)
     cl.grupo_cortapastos.draw(screen)
     cl.grupo_zombies.draw(screen)
@@ -130,7 +209,16 @@ def dibujos_constantes(screen):
     cl.grupo_deplegables.draw(screen)
 
 
-def previsualizacion(x_pixels, y_pixels, preview_dict, seleccion_planta, grilla_entidades, screen, cuadpos, cuad):
+def previsualizacion(
+    x_pixels,
+    y_pixels,
+    preview_dict,
+    seleccion_planta,
+    grilla_entidades,
+    screen,
+    cuadpos,
+    cuad,
+):
     """
     Se encarga de la previsualizacion cuando una planta esta seleccionada y se pasas el mouse por algun espacio del pasto.
 
@@ -145,28 +233,41 @@ def previsualizacion(x_pixels, y_pixels, preview_dict, seleccion_planta, grilla_
     cuadpos: la posicion del pygame.rect gris
     cuad: un pygame.rect gris con el tamaño de cada celda y una opacidad baja
     """
-    if (constantes.COMIENZO_PASTO_X < x_pixels < constantes.FIN_PASTO_X and constantes.COMIENZO_PASTO_Y < y_pixels < constantes.FIN_PASTO_Y):
-            
-        x_grilla,y_grilla = de_pixeles_a_grilla(x_pixels,y_pixels)
+    if (
+        constantes.COMIENZO_PASTO_X < x_pixels < constantes.FIN_PASTO_X
+        and constantes.COMIENZO_PASTO_Y < y_pixels < constantes.FIN_PASTO_Y
+    ):
+
+        x_grilla, y_grilla = de_pixeles_a_grilla(x_pixels, y_pixels)
         cuadpos[0] = constantes.COMIENZO_PASTO_X + (x_grilla * constantes.CELDA_ANCHO)
         cuadpos[1] = constantes.COMIENZO_PASTO_Y + (y_grilla * constantes.CELDA_ALTO)
-        
+
         if seleccion_planta != False:
-            if seleccion_planta != "pala" and not (isinstance(grilla_entidades[y_grilla][x_grilla], (cl.Plantas, cl.Petacereza))):
-                screen.blit(preview_dict[seleccion_planta][0],(cuadpos[0] + preview_dict[seleccion_planta][1], cuadpos[1] + preview_dict[seleccion_planta][2]),)
+            if seleccion_planta != "pala" and not (
+                isinstance(
+                    grilla_entidades[y_grilla][x_grilla], (cl.Plantas, cl.Petacereza)
+                )
+            ):
+                screen.blit(
+                    preview_dict[seleccion_planta][0],
+                    (
+                        cuadpos[0] + preview_dict[seleccion_planta][1],
+                        cuadpos[1] + preview_dict[seleccion_planta][2],
+                    ),
+                )
                 screen.blit(cuad, cuadpos)
             elif seleccion_planta == "pala":
                 screen.blit(cuad, cuadpos)
 
 
-def eliminar(lista:list, id_obj:int, clase) -> None:
+def eliminar(lista: list, id_obj: int, clase) -> None:
     """
     Recibe la lista en la que está guardada el objeto y el id del objeto a eliminar para eliminarlo de la lista de entidades y matarlo del grupo en el que esta almacenado.
 
     inputs:
     ------
     lista: es la lista de entidades de donde se desea eliminar la entidad.
-    id_obj: es el id del objeto que se 
+    id_obj: es el id del objeto que se
     """
     for filas in lista[:]:
         for objetos in filas[:]:
@@ -178,35 +279,99 @@ def eliminar(lista:list, id_obj:int, clase) -> None:
                     objetos.kill()
 
 
-def de_pixeles_a_grilla(pixeles_x:int, pixeles_y:int) -> tuple:
+def de_pixeles_a_grilla(pixeles_x: int, pixeles_y: int) -> tuple:
     """
     Recibe x,y en pixeles y retorna su posición en la grilla de pasto (5x9). Es necesario que el valor ingresado este entre las dimensiones de la grilla en pixeles
-    
+
+    returns:
+    -----
+    columnas: la coordenada sobre la grilla de las columnas (x)
+    filas: la coordenada sobre la grilla de las filas (y)
+
     raises:
     ------
     ValueError si el valor se va de los límites en pixeles de la grilla.
     """
-    if constantes.COMIENZO_PASTO_X<pixeles_x<constantes.FIN_PASTO_X and constantes.COMIENZO_PASTO_Y<pixeles_y<constantes.FIN_PASTO_Y:
+    if (
+        constantes.COMIENZO_PASTO_X < pixeles_x < constantes.FIN_PASTO_X
+        and constantes.COMIENZO_PASTO_Y < pixeles_y < constantes.FIN_PASTO_Y
+    ):
         columnas = (pixeles_x - constantes.COMIENZO_PASTO_X) // constantes.CELDA_ANCHO
         filas = (pixeles_y - constantes.COMIENZO_PASTO_Y) // constantes.CELDA_ALTO
         return columnas, filas
     else:
-        raise(ValueError)
-    
+        raise (ValueError)
 
-def plantar(grilla_entidades:list, seleccion_planta:str, grilla_x:int, grilla_y:int, reproductor_de_sonido,contador, gruposemillas):
+
+def plantar(
+    grilla_entidades: list,
+    seleccion_planta: str,
+    grilla_x: int,
+    grilla_y: int,
+    reproductor_de_sonido,
+    contador,
+    gruposemillas,
+) -> False:
+    """
+    La funcion encarnada de plantar las plantas sobre el pasto.
+
+    inputs:
+    ------
+    grilla_entidades: la grilla sobre la que están colocadas las plantas.
+    seleccion_planta: el item de la planta seleccionada ("lanzaguisantes", "girasol", "nuez", "petacereza", "papapum" o "hielaguisantes")
+    grilla_x: la columna sobre la que se posicionará la planta.
+    grilla_y: la fila sobre la que se posicionará la planta.
+    reproductor_de_sonido: variable de clase Administrador_de_sonido donde se reproducirán los sonidos de plantar.
+    gruposemoillas: el grupo de pygame.Sprites destinado a esta clase.
+
+    returns:
+    ------
+    seleccion_planta: devuelve un False en la planta seleccionada para deseleccionar la planta.
+
+    """
     if seleccion_planta == "lanzaguisantes":
-        nueva_planta = cl.lanzaguisantes((grilla_x * constantes.CELDA_ANCHO) + constantes.COMIENZO_PASTO_X - 15,(grilla_y * constantes.CELDA_ALTO) + constantes.COMIENZO_PASTO_Y + 20, grilla_entidades, reproductor_de_sonido) #En la pos de la planta se pasa de numero de grilla a pixeles.
+        nueva_planta = cl.lanzaguisantes(
+            (grilla_x * constantes.CELDA_ANCHO) + constantes.COMIENZO_PASTO_X - 15,
+            (grilla_y * constantes.CELDA_ALTO) + constantes.COMIENZO_PASTO_Y + 20,
+            grilla_entidades,
+            reproductor_de_sonido,
+        )  # En la pos de la planta se pasa de numero de grilla a pixeles.
     elif seleccion_planta == "girasol":
-        nueva_planta = cl.Girasol((grilla_x * constantes.CELDA_ANCHO)+ constantes.COMIENZO_PASTO_X- 15,(grilla_y * constantes.CELDA_ALTO)+ constantes.COMIENZO_PASTO_Y+ 20, grilla_entidades, reproductor_de_sonido)
+        nueva_planta = cl.Girasol(
+            (grilla_x * constantes.CELDA_ANCHO) + constantes.COMIENZO_PASTO_X - 15,
+            (grilla_y * constantes.CELDA_ALTO) + constantes.COMIENZO_PASTO_Y + 20,
+            grilla_entidades,
+            reproductor_de_sonido,
+        )
     elif seleccion_planta == "nuez":
-        nueva_planta = cl.Nuez((grilla_x * constantes.CELDA_ANCHO)+ constantes.COMIENZO_PASTO_X- 15,(grilla_y * constantes.CELDA_ALTO)+ constantes.COMIENZO_PASTO_Y+ 20, grilla_entidades, reproductor_de_sonido)
+        nueva_planta = cl.Nuez(
+            (grilla_x * constantes.CELDA_ANCHO) + constantes.COMIENZO_PASTO_X - 15,
+            (grilla_y * constantes.CELDA_ALTO) + constantes.COMIENZO_PASTO_Y + 20,
+            grilla_entidades,
+            reproductor_de_sonido,
+        )
     elif seleccion_planta == "petacereza":
-        nueva_planta = cl.Petacereza((grilla_x * constantes.CELDA_ANCHO)+ constantes.COMIENZO_PASTO_X- 15,(grilla_y * constantes.CELDA_ALTO)+ constantes.COMIENZO_PASTO_Y+ 20, reproductor_de_sonido)
+        nueva_planta = cl.Petacereza(
+            (grilla_x * constantes.CELDA_ANCHO) + constantes.COMIENZO_PASTO_X - 15,
+            (grilla_y * constantes.CELDA_ALTO) + constantes.COMIENZO_PASTO_Y + 20,
+            reproductor_de_sonido,
+        )
     elif seleccion_planta == "papapum":
-        nueva_planta = cl.Papapum((grilla_x * constantes.CELDA_ANCHO)+ constantes.COMIENZO_PASTO_X- 15,(grilla_y * constantes.CELDA_ALTO)+ constantes.COMIENZO_PASTO_Y+ 20,grilla_entidades, reproductor_de_sonido)
+        nueva_planta = cl.Papapum(
+            (grilla_x * constantes.CELDA_ANCHO) + constantes.COMIENZO_PASTO_X - 15,
+            (grilla_y * constantes.CELDA_ALTO) + constantes.COMIENZO_PASTO_Y + 20,
+            grilla_entidades,
+            reproductor_de_sonido,
+        )
     elif seleccion_planta == "hielaguisantes":
-        nueva_planta = cl.lanzaguisantes((grilla_x * constantes.CELDA_ANCHO) + constantes.COMIENZO_PASTO_X - 68,(grilla_y * constantes.CELDA_ALTO) + constantes.COMIENZO_PASTO_Y + 28, grilla_entidades, reproductor_de_sonido, 175, True)
+        nueva_planta = cl.lanzaguisantes(
+            (grilla_x * constantes.CELDA_ANCHO) + constantes.COMIENZO_PASTO_X - 68,
+            (grilla_y * constantes.CELDA_ALTO) + constantes.COMIENZO_PASTO_Y + 28,
+            grilla_entidades,
+            reproductor_de_sonido,
+            175,
+            True,
+        )
     gruposemillas[seleccion_planta].tiempo = pygame.time.get_ticks()
     seleccion_planta = False
     if contador[0] < nueva_planta.costo:
@@ -228,17 +393,17 @@ def perder(traslucido, grupo_zombies, screen, vivo, reproductor_de_sonido, conta
             vivo = False
     if vivo == False:
         perdiste = pygame.image.load(r"assets/ZombiesWon.png")
-        perdiste = pygame.transform.scale(perdiste, (740,616))
+        perdiste = pygame.transform.scale(perdiste, (740, 616))
         perdida = pygame.Surface((1040, 650), pygame.SRCALPHA)
         perdida.fill((0, 0, 0, traslucido))
         ahora = pygame.time.get_ticks()
-        screen.blit(perdida, (0,0))
-        screen.blit(perdiste, (190,28))
+        screen.blit(perdida, (0, 0))
+        screen.blit(perdiste, (190, 28))
         if contador == 0:
             reproductor_de_sonido.detener_reproduccion("musica_nivel_dia")
             reproductor_de_sonido.reproducir_sonido("perder", 0, True)
             contador += 1
-        if not(reproductor_de_sonido.canales_sonidos_ocupados["perder"].get_busy()):
+        if not (reproductor_de_sonido.canales_sonidos_ocupados["perder"].get_busy()):
             reproductor_de_sonido.detener_todos()
         if ahora > 600 and traslucido < 254:
             traslucido += 1
@@ -247,21 +412,33 @@ def perder(traslucido, grupo_zombies, screen, vivo, reproductor_de_sonido, conta
     traslucidez = traslucido
     return traslucidez, vivo, contador
 
-def creacion_zombies(nivel_dificultad, zombies_a_spawnear, grupo_zombies, administrador_de_sonido):
-    
+
+def creacion_zombies(
+    nivel_dificultad, zombies_a_spawnear, grupo_zombies, administrador_de_sonido
+):
+
     if constantes.SONIDO_INICIO:
         administrador_de_sonido.reproducir_sonido("zombies_coming")
         constantes.SONIDO_INICIO = False
-    if (nivel_dificultad % constantes.NV_AUMENTO_SPAWN) == 0 and nivel_dificultad >= constantes.NV_AUMENTO_SPAWN:
+    if (
+        nivel_dificultad % constantes.NV_AUMENTO_SPAWN
+    ) == 0 and nivel_dificultad >= constantes.NV_AUMENTO_SPAWN:
         constantes.CANT_APARICION += 1
 
     if nivel_dificultad == constantes.NV_SPAWN_CONO:
         # nuevo_zombie = cl.Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[random.randint(0, 4)], "cono", constantes.VIDA_ZOMBIES["cono"], administrador_de_sonido)
         # nuevo_zombie.add(grupo_zombies)
-        zombies_a_spawnear.append((random.randint(0, 4), "cono", constantes.VIDA_ZOMBIES["cono"]))
+        zombies_a_spawnear.append(
+            (random.randint(0, 4), "cono", constantes.VIDA_ZOMBIES["cono"])
+        )
 
-    if nivel_dificultad % 2 == 0 and constantes.NV_SPAWN_CONO <= nivel_dificultad <= constantes.NV_SPAWN_BALDE + 4:
-        #Aumentamos gradualmente la probabilidad de aparición de los zombies cono
+    if (
+        nivel_dificultad % 2 == 0
+        and constantes.NV_SPAWN_CONO
+        <= nivel_dificultad
+        <= constantes.NV_SPAWN_BALDE + 4
+    ):
+        # Aumentamos gradualmente la probabilidad de aparición de los zombies cono
         constantes.TIPOS_ZOMBIES.append("cono")
 
     if nivel_dificultad == constantes.NV_SPAWN_BALDE:
@@ -289,6 +466,7 @@ def creacion_zombies(nivel_dificultad, zombies_a_spawnear, grupo_zombies, admini
     nivel_dificultad += 1
     return nivel_dificultad
 
+
 def creacion_oleada(nivel_dificultad, zombies_a_spawnear):
     if nivel_dificultad % constantes.NV_OLEADA == 0:
         for n in range(constantes.OLEADA_CANT_ZB):
@@ -298,31 +476,53 @@ def creacion_oleada(nivel_dificultad, zombies_a_spawnear):
             zombies_a_spawnear.append((pos_random, tipo_zb, vida))
         constantes.OLEADA_CANT_ZB += 3
 
-def spawnear_zombies_pendientes(zombies_a_spawnear, delay_spawn_zombie, grupo_zombies, administrador_de_sonido):
+
+def spawnear_zombies_pendientes(
+    zombies_a_spawnear, delay_spawn_zombie, grupo_zombies, administrador_de_sonido
+):
     tiempo_actual = pygame.time.get_ticks()
-    if zombies_a_spawnear and (tiempo_actual - delay_spawn_zombie > constantes.COOLDOWN_ZOMBIES):
+    if zombies_a_spawnear and (
+        tiempo_actual - delay_spawn_zombie > constantes.COOLDOWN_ZOMBIES
+    ):
         fila, tipo, vida = zombies_a_spawnear.pop(0)
-        nuevo_zombie = cl.Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[fila], tipo, vida, administrador_de_sonido)
+        nuevo_zombie = cl.Enemigos(
+            constantes.ANCHO_VENTANA,
+            constantes.COLUMNAS_ZOMBIE[fila],
+            tipo,
+            vida,
+            administrador_de_sonido,
+        )
         nuevo_zombie.add(grupo_zombies)
         delay_spawn_zombie = tiempo_actual
     return delay_spawn_zombie
 
-def pantalla_inicio(screen, boton_jugar, boton_salir, fondo_interfaz_play, fondo_interfaz_exit, fondo_interfaz):
-    '''
-    
-    
-    '''   
 
-    
+def pantalla_inicio(
+    screen,
+    boton_jugar,
+    boton_salir,
+    fondo_interfaz_play,
+    fondo_interfaz_exit,
+    fondo_interfaz,
+):
+    """ """
+
     pos_mouse = pygame.mouse.get_pos()
     if boton_jugar.collidepoint(pos_mouse):
-        screen.blit(fondo_interfaz_play, (0,0))
+        screen.blit(fondo_interfaz_play, (0, 0))
     elif boton_salir.collidepoint(pos_mouse):
-        screen.blit(fondo_interfaz_exit, (0,0))
+        screen.blit(fondo_interfaz_exit, (0, 0))
     else:
-        screen.blit(fondo_interfaz, (0,0))
+        screen.blit(fondo_interfaz, (0, 0))
     pygame.display.update()
 
-def dave(screen, fondodave):
-    screen.blit(fondodave,(0,0))
+
+def dave(screen, fondodave, administrador_de_sonido, discurso_inspirador_de_dave):
+    if not (discurso_inspirador_de_dave):
+        discurso_inspirador_de_dave = random.choice(
+            ["ovawabodabawabaobadabowadaba", "bwadawbabadfbaw", "budubuwedivadibo"]
+        )
+        administrador_de_sonido.reproducir_sonido(discurso_inspirador_de_dave, 0, -1)
+    screen.blit(fondodave, (0, 0))
     pygame.display.update()
+    return discurso_inspirador_de_dave
