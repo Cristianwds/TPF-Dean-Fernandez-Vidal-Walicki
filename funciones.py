@@ -315,7 +315,7 @@ def plantar(
     """
     La funcion encarnada de plantar las plantas sobre el pasto.
 
-    inputs:
+    Inputs:
     ------
     grilla_entidades: la grilla sobre la que están colocadas las plantas.
     seleccion_planta: el item de la planta seleccionada ("lanzaguisantes", "girasol", "nuez", "petacereza", "papapum" o "hielaguisantes")
@@ -324,7 +324,7 @@ def plantar(
     reproductor_de_sonido: variable de clase Administrador_de_sonido donde se reproducirán los sonidos de plantar.
     gruposemoillas: el grupo de pygame.Sprites destinado a esta clase.
 
-    returns:
+    Returns:
     ------
     seleccion_planta: devuelve un False en la planta seleccionada para deseleccionar la planta.
 
@@ -412,10 +412,20 @@ def perder(traslucido, grupo_zombies, screen, vivo, reproductor_de_sonido, conta
     traslucidez = traslucido
     return traslucidez, vivo, contador
 
-
 def creacion_zombies(
-    nivel_dificultad, zombies_a_spawnear, grupo_zombies, administrador_de_sonido
-):
+    nivel_dificultad: int, zombies_a_spawnear: list[tuple], administrador_de_sonido) -> int:
+    """Genera zombies para spawnear en funcion del nivel de dificultad y el tiempo de aparicion
+    
+    Inputs: 
+    ------
+    Nivel_dificultad (int): nivel de dificultad del juego
+    zombies_a_spawnear (list): lista que acumula los zombies ya creados en espera para spawnear
+    administrador_de_sonido: administrador que maneja la reproduccion de efectos de sonido
+    
+    Return: 
+    ------
+    nivel_dificultad (int): el nivel de dificultad incrementado en 1 luego de crear los nuevos zombies
+    """
 
     if constantes.SONIDO_INICIO:
         administrador_de_sonido.reproducir_sonido("zombies_coming")
@@ -426,8 +436,6 @@ def creacion_zombies(
         constantes.CANT_APARICION += 1
 
     if nivel_dificultad == constantes.NV_SPAWN_CONO:
-        # nuevo_zombie = cl.Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[random.randint(0, 4)], "cono", constantes.VIDA_ZOMBIES["cono"], administrador_de_sonido)
-        # nuevo_zombie.add(grupo_zombies)
         zombies_a_spawnear.append(
             (random.randint(0, 4), "cono", constantes.VIDA_ZOMBIES["cono"])
         )
@@ -445,10 +453,6 @@ def creacion_zombies(
         lista_ubis = [0, 1, 2, 3, 4]
         ubi1 = lista_ubis.pop(random.choice(lista_ubis))
         ubi2 = lista_ubis.pop(random.choice(lista_ubis))
-        # nuevo_zombie1 = cl.Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[ubi1], "cono", constantes.VIDA_ZOMBIES["cono"], administrador_de_sonido)
-        # nuevo_zombie1.add(grupo_zombies)
-        # nuevo_zombie2 = cl.Enemigos(constantes.ANCHO_VENTANA, constantes.COLUMNAS_ZOMBIE[ubi2], "balde", constantes.VIDA_ZOMBIES["balde"], administrador_de_sonido)
-        # nuevo_zombie2.add(grupo_zombies)
         zombies_a_spawnear.append((ubi1, "cono", constantes.VIDA_ZOMBIES["cono"]))
         zombies_a_spawnear.append((ubi2, "balde", constantes.VIDA_ZOMBIES["balde"]))
 
@@ -461,13 +465,24 @@ def creacion_zombies(
         vida = constantes.VIDA_ZOMBIES[tipo_zb]
         zombies_a_spawnear.append((pos_random, tipo_zb, vida))
 
-    if constantes.TIEMPO_APARICION >= 6000:
+    if constantes.TIEMPO_APARICION == constantes.ESPERA_INICIAL:
+        constantes.TIEMPO_APARICION = constantes.TIEMPO_GENERACION_ZOMBIE
+    elif constantes.TIEMPO_APARICION >= 6000:
         constantes.TIEMPO_APARICION -= 400
     nivel_dificultad += 1
     return nivel_dificultad
 
 
-def creacion_oleada(nivel_dificultad, zombies_a_spawnear):
+def creacion_oleada(nivel_dificultad: int, zombies_a_spawnear: list[tuple]) -> None:
+    """Genera una oleada extra de zombies cuando el nivel es multiplo de NV_OLEADA. Ademas, incrementa
+    el numero de zombies que se generaran en la proxima oleada
+    
+    Inputs:
+    ------
+    nivel_dificultad (int): nivel actual del juego.
+    zombies_a_spawnear (list): lista que acumula los zombies creados pero no colocados.
+
+    """
     if nivel_dificultad % constantes.NV_OLEADA == 0:
         for n in range(constantes.OLEADA_CANT_ZB):
             pos_random = random.randint(0, 4)
@@ -477,21 +492,32 @@ def creacion_oleada(nivel_dificultad, zombies_a_spawnear):
         constantes.OLEADA_CANT_ZB += 3
 
 
-def spawnear_zombies_pendientes(
-    zombies_a_spawnear, delay_spawn_zombie, grupo_zombies, administrador_de_sonido
-):
+def spawnear_zombies_pendientes(zombies_a_spawnear:list[tuple], delay_spawn_zombie: int, grupo_zombies: "pygame.sprite.Group", administrador_de_sonido) -> int:
+    """Spawnea el siguiente zombie en cola cuando ha pasado suficiente tiempo desde el último spawn.
+
+    Verifica si hay zombies pendientes y si ya transcurrió el tiempo de espera entre spawns (COOLDOWN_ZOMBIES), extrae un zombie de la 
+    lista, crea su instancia y lo agrega al grupo de zombies que se dibujan y actualizan en pantalla.
+
+    Inputs:
+    ------
+    zombies_a_spawnear (list): lista que acumula los zombies pendientes por spawnear.
+    delay_spawn_zombie (int): último tiempo en milisegundos en que se spawneó un zombie.
+    grupo_zombies (pygame.sprite.Group): grupo al que se añaden los nuevos zombies.
+    administrador_de_sonido: administrador que maneja los efectos de sonido.
+
+    Returns:
+        int: tiempo actual en milisegundos que servirá como nuevo delay para el próximo spawn.
+    """
+    
     tiempo_actual = pygame.time.get_ticks()
-    if zombies_a_spawnear and (
-        tiempo_actual - delay_spawn_zombie > constantes.COOLDOWN_ZOMBIES
-    ):
+    if zombies_a_spawnear and (tiempo_actual - delay_spawn_zombie > constantes.COOLDOWN_ZOMBIES):
         fila, tipo, vida = zombies_a_spawnear.pop(0)
         nuevo_zombie = cl.Enemigos(
             constantes.ANCHO_VENTANA,
             constantes.COLUMNAS_ZOMBIE[fila],
             tipo,
             vida,
-            administrador_de_sonido,
-        )
+            administrador_de_sonido,)
         nuevo_zombie.add(grupo_zombies)
         delay_spawn_zombie = tiempo_actual
     return delay_spawn_zombie

@@ -1,10 +1,13 @@
 import os
+import copy
 
 ANCHO_VENTANA = 1040
 ALTO_VENTANA = 650
 VELOCIDAD_PROYECTIL = 10
 BLANCO_TRANSLUCIDO = (255, 255, 255, 255)
-TIEMPO_APARICION = 15000  # Milisegundos
+ESPERA_INICIAL = 27000
+TIEMPO_APARICION = copy.deepcopy(ESPERA_INICIAL)
+TIEMPO_GENERACION_ZOMBIE = 17000
 CANT_APARICION = 1
 OLEADA_CANT_ZB= 3
 # Para la grilla
@@ -29,6 +32,7 @@ VELOCIDAD_ATAQUE_ZOMBIE= 1000
 VIDA_ZOMBIES= {"normal": 181, "cono": 551, "balde": 1281}
 
 VEL_ANIM_ZOMBIE= 30
+VEL_ANIM_ATQ_CONO = 120
 VEL_ANIM_LG= {False: 17, True: 32}
 VALOR_SOL = 25
 
@@ -51,9 +55,9 @@ CANT_FRAMES_PLANTAS= {"girasol": len(os.listdir(r"assets\girasol")),
                      "hielaguisantes": len(os.listdir(r"assets\hielaguisante"))}
 
 NV_AUMENTO_SPAWN = 8
-NV_SPAWN_CONO = 10
-NV_SPAWN_BALDE = 20
-NV_OLEADA = 10
+NV_SPAWN_CONO = 1
+NV_SPAWN_BALDE = 15
+NV_OLEADA = 9
 
 COOLDOWN_PLANTAS = {"lanzaguisantes": 7500, "nuez": 30000, "girasol": 7500, "petacereza": 25000, "papapum": 10000, "hielaguisantes": 7500}
 COOLDOWN_ZOMBIES = 2000

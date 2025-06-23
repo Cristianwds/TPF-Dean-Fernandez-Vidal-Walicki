@@ -166,6 +166,8 @@ class Enemigos(Criaturas):
                 self.estado = "atacar"
                 if not self.realentizado:
                     self.frames = self.frames_ataque
+                    if self.tipo == "cono":
+                        self.velocidad_animacion = constantes.VEL_ANIM_ATQ_CONO
                 else:
                     self.frames = self.frames_ataquehielo
                 self.indice_frame = 0
@@ -174,6 +176,7 @@ class Enemigos(Criaturas):
                 self.estado = "caminar"
                 if not self.realentizado:
                     self.frames = self.frames_caminata
+                    self.velocidad_animacion = constantes.VEL_ANIM_ZOMBIE
                 else:
                     self.frames = self.frames_caminatahielo
                 self.indice_frame = 0

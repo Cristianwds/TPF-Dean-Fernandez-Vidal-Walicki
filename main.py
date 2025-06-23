@@ -229,9 +229,11 @@ while run:
                 nuevo_sol = Sol(random.randint(350, constantes.ANCHO_VENTANA - 100),-50, random.choice(constantes.ALTURAS), administrador_de_sonido)
                 nuevo_sol.add(grupo_sol)
             
-            # Cada cierto tiempo spawnean zombies
+            # Cada cierto tiempo se generan zombies
             elif event.type == APARICION_ZOMBIE:#
-                nivel_dificultad = creacion_zombies(nivel_dificultad, zombies_a_spawnear, grupo_zombies, administrador_de_sonido)
+                nivel_dificultad = creacion_zombies(nivel_dificultad, zombies_a_spawnear, administrador_de_sonido)
+                # Modifico el tiempo de retraso del evento
+                pygame.time.set_timer(APARICION_ZOMBIE, constantes.TIEMPO_APARICION)
 
             elif event.type == APARICION_OLEADA:
                 creacion_oleada(nivel_dificultad, zombies_a_spawnear)
