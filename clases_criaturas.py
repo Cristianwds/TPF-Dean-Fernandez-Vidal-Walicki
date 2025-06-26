@@ -3,61 +3,11 @@ import constantes
 import random
 from pygame import mixer
 import funciones
+import sonido
 
 grupo_plantas = pygame.sprite.Group()
 grupo_proyectiles = pygame.sprite.Group()
 grupo_zombies = pygame.sprite.Group()
-grupo_cortapastos = pygame.sprite.Group()
-grupo_semillas = pygame.sprite.Group()
-grupo_pala = pygame.sprite.Group()
-grupo_deplegables = pygame.sprite.Group()
-grupo_sol = pygame.sprite.Group()
-class Administrador_de_sonido():
-
-    def __init__(self):
-        pygame.mixer.init()
-        pygame.mixer.set_num_channels(32)
-        self.sonidos = {}
-        self.canales_sonidos_ocupados = {}#Aca se guarda el nombre del sonido y su canal nada mas cuando se ejecuta reproducir_sonido con evitar_superposicion = True
-    
-    def cargar_sonido(self, ruta_sonido:str, nombre_sonido:str):
-        try:
-            sonido = pygame.mixer.Sound(ruta_sonido)
-            self.sonidos[nombre_sonido] = sonido
-        except pygame.error as error:
-            print(f"Error al cargar el sonido {nombre_sonido}\nRuta: {ruta_sonido}\nError: {error}")
-
-
-    def reproducir_sonido(self, nombre_sonido:str, loop = 0, evitar_superposicion = False):
-
-        if nombre_sonido in self.sonidos:
-            if evitar_superposicion:
-                if nombre_sonido in self.canales_sonidos_ocupados:
-                    #Si el canal que se le asigno al sonido está reproduciendo, el método finaliza.
-                    canal = self.canales_sonidos_ocupados[nombre_sonido]
-                    if canal.get_busy():
-                        return
-                    #Si no está asignado a un canal, se le asigna uno.
-                else:
-                    canal = pygame.mixer.find_channel()
-                    self.canales_sonidos_ocupados[nombre_sonido] = canal
-                if canal:
-                    canal.play(self.sonidos[nombre_sonido], loops = loop)
-            else:
-                self.sonidos[nombre_sonido].play(loops = loop)
-        else:
-            print(f"Sonido {nombre_sonido} no encontrado.")
-
-
-    def detener_reproduccion(self, nombre_sonido:str):
-        if nombre_sonido in self.canales_sonidos_ocupados:
-            self.canales_sonidos_ocupados[nombre_sonido].stop()
-            del self.canales_sonidos_ocupados[nombre_sonido]
-        elif nombre_sonido in self.sonidos:
-            self.sonidos[nombre_sonido].stop()
-
-    def detener_todos(self):
-        pygame.mixer.stop()
 
         
 class Criaturas(pygame.sprite.Sprite):
@@ -334,6 +284,12 @@ class Nuez(Plantas):
 
 class Papapum(Plantas):
     def __init__(self, x, y,lista_entidades, reproductor_de_sonido, vida= 300, cooldown = 8000, costo = 25):
+        """
+        El papapum tiene tres estados:
+        desactivado: por 600 ticks el papapum esta desactivado y puede ser comido por el zombie.
+        activado: el papapum esta activado, se le activa su hitbox de explosion y si colisiona contra un zombie explota.
+        explosion: una vez el zombie colisiono con el papapum se les inflinge daño a los zombies en la hitbox, se cambia de animacion y se elimina el papapum.
+        """
         self.x = x
         self.y = y
         self.vida = vida
@@ -354,18 +310,27 @@ class Papapum(Plantas):
         super().__init__(x, y, self.image, vida, cooldown, costo, lista_entidades, reproductor_de_sonido)
 
     def activar_hitbox(self):
+        """
+        Activa una hitbox que si colisiona contra un zombie el papapum cambia de estado y explota
+        """
         self.hitbox_activacion = pygame.Rect(0, 0, constantes.CELDA_ANCHO // 2, constantes.CELDA_ALTO // 2)
         self.hitbox_explosion = pygame.Rect(0, 0, constantes.CELDA_ANCHO, constantes.CELDA_ALTO)
         self.hitbox_activacion.center = self.rect.center
         self.hitbox_explosion.center = self.rect.center
 
     def explotar(self):
+        """
+        Reproduce el sonido de explosion y les inflinge el daño a los zombies.
+        """
         self.reproductor_de_sonido.reproducir_sonido("petacereza_explosion", 0)
         for zombie in grupo_zombies:
             if self.hitbox_explosion.colliderect(zombie.hitbox):
                 zombie.recibir_daño(10000)
         
     def cambiar_animacion(self, animacion):
+        """
+        Cambia entre estados del papapum
+        """
         if animacion == "activado":
             self.activar_hitbox()
             self.estado = "activado"
@@ -374,38 +339,47 @@ class Papapum(Plantas):
             self.explotar()
 
     def update(self):
+        """
+        El papapum aparece en estado desactivado, despues de un tiempo cambia de estado a activado y en este estado se verificia que si hay una colision con un zombie explote.
+        """
         tiempo_frame= pygame.time.get_ticks()
-        if self.estado == "desactivado":
+        if self.estado == "desactivado": #Cuando esta desactivado
             if tiempo_frame - self.ultimo_frame > self.velocidad_animacion:
-                self.contador_activacion += 1
-                if self.frame_desactivado_contador < 23:
+                self.contador_activacion += 1 #Contador para el tiempo que pasa desactivado.
+                if self.frame_desactivado_contador < 23: #Contador para que la animacion de spawn del papapum se reproduzca una sola vez
                     self.frame_desactivado_contador += 1
+                    #Animacion:
                     self.ultimo_frame = tiempo_frame
                     self.indice_frames = (self.indice_frames + 1) % len(self.frames_desactivados)
                     self.image = self.frames_desactivados[self.indice_frames]
                     self.rect = self.image.get_rect(center = (self.x + constantes.CELDA_ANCHO / 2 + 10, self.y))
                 if self.contador_activacion == 600:
                     self.cambiar_animacion("activado")
-        elif self.estado == "activado":
-            for zombie in grupo_zombies:
+        elif self.estado == "activado": #Cuando esta activado
+            for zombie in grupo_zombies:#Si colisiona con un zombie explota
                 if self.hitbox_activacion.colliderect(zombie.hitbox):
                     self.cambiar_animacion("explosion")
+                    #Animacion:
             if tiempo_frame - self.ultimo_frame > self.velocidad_animacion * 1.7:
                 self.indice_frames = (self.indice_frames + 1) % len(self.frames_activados)
                 self.image = self.frames_activados[self.indice_frames]
                 self.ultimo_frame = tiempo_frame
                 self.rect = self.image.get_rect(center = (self.x  + constantes.CELDA_ANCHO / 1.5,self.y + constantes.CELDA_ALTO / 4))
         else:
+            #Cuando explotó
             self.indice_frames = 0 if self.frame_explosion_contador == 0 else tiempo_frame
+            #Animacion
             if tiempo_frame - self.ultimo_frame > 80:
                 if self.frame_explosion_contador < 10:
-                    self.frame_explosion_contador += 1
+                    self.frame_explosion_contador += 1#Contador que se usa para cuando termina la animacion eliminar el papapum
                     self.indice_frames = (self.indice_frames + 1) % len(self.frames_explosion)
                     self.image  = self.frames_explosion[self.indice_frames]
                     self.rect = self.image.get_rect(center = (self.x + constantes.CELDA_ANCHO / 1.5, self.y ))
                     self.ultimo_frame = tiempo_frame
-            if self.frame_explosion_contador >= 10:
+            if self.frame_explosion_contador >= 10: #Se elimina el papapum
                 funciones.eliminar(self.lista_entidades, self.id, Plantas)
+
+
 class Petacereza(pygame.sprite.Sprite):
     petacerezas_id = 0
     def __init__(self, x, y, administrador_de_sonido, costo = 150):
@@ -432,11 +406,12 @@ class Petacereza(pygame.sprite.Sprite):
         tiempo_frame= pygame.time.get_ticks()
 
         if tiempo_frame - self.ultimo_frame > self.velocidad_animacion:
+            #Animacion:
             self.ultimo_frame = tiempo_frame
             self.indice_frames = (self.indice_frames + 1) % len(self.frames)
             if self.contador_explosion < 6:
                 self.image = self.frames[self.indice_frames]
-            self.contador_explosion += 1
+            self.contador_explosion += 1 #Contador que se utiliza para verificar cuando tiene que explotar la petacereza.
         if self.contador_explosion == 6:
             self.image = pygame.image.load(r"assets\petacereza\petacereza_explosion_imagen.png")
             self.rect = self.image.get_rect(center = (self.x + constantes.CELDA_ANCHO / 2, self.y))
@@ -445,13 +420,11 @@ class Petacereza(pygame.sprite.Sprite):
                 if self.hitbox_explosion.colliderect(zombie.hitbox):
                     zombie.recibir_daño(10000)
             self.contador_explosion += 1          
-        if self.contador_explosion >= 7:
+        if self.contador_explosion >= 7: #La imagen de explosion se va desvaneciendo
             self.image.set_alpha(self.alpha)
             self.alpha -= 3
             if self.contador_explosion == 13:
                 funciones.eliminar(grilla_entidades, self.id, Petacereza)
-
-
 
 class Proyectil(pygame.sprite.Sprite):
 
@@ -488,126 +461,6 @@ class Proyectil(pygame.sprite.Sprite):
         if self.rect.right > constantes.ANCHO_VENTANA:
             self.kill()
 
-
-class Semillas(pygame.sprite.Sprite):
-
-    def __init__(
-        self,
-        x,
-        y,
-        image,
-        reproductor_de_sonido,
-        item,
-        valor=0,
-        cooldown=0,
-    ):
-        super().__init__()
-        self.x = x
-        self.y = y
-        self.image = pygame.image.load(image)
-        self.valor = valor
-        self.cooldown = cooldown
-        self.item = item
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (x, y)
-        self.clicked = False
-        self.reproductor_de_sonido = reproductor_de_sonido
-        self.tiempo = -30000
-        self.encooldown = False
-
-    def update(self, evento, contador):
-    
-        if evento.type == pygame.MOUSEBUTTONDOWN:
-            if self.rect.collidepoint(evento.pos) and contador[0] >= self.valor:
-                if not self.encooldown:
-                    self.clicked = True
-                    self.reproductor_de_sonido.reproducir_sonido("semilla_seleccionar")
-                else:
-                    self.clicked = False
-            else:
-                self.clicked = False
-
-    def dibujarcooldown(self,screen):
-        ahora = pygame.time.get_ticks()
-
-        if ahora - self.tiempo >= self.cooldown:
-            self.encooldown = False
-        else:
-            self.encooldown = True
-
-        if self.encooldown:
-            imagencooldown = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
-            imagencooldown.fill((125, 125, 125, 100))
-            screen.blit(imagencooldown, (self.rect.x, self.rect.y))
-
-
-
-class Cortapasto(pygame.sprite.Sprite):
-    cortapasto_id = 0
-
-    def __init__(self, x, y, lista, reproductor_de_sonido):
-        self.image = pygame.image.load("assets\cortapasto\cortapasto.png")
-        self.rect = self.image.get_rect(topleft=[x, y])
-        self.hitbox = pygame.Rect(0, 0, self.rect.width, self.rect.height - 60)
-        self.hitbox.center = self.rect.center
-        self.moving = False
-        Cortapasto.cortapasto_id += 1
-        self.id = Cortapasto.cortapasto_id
-        self.cortapastos_col = lista
-        self.reproductor_de_sonido = reproductor_de_sonido
-        super().__init__()
-
-    def update(self):
-        for zombies in grupo_zombies:
-            if self.moving == 0 and self.hitbox.colliderect(zombies.hitbox):
-                self.moving = True
-                self.reproductor_de_sonido.reproducir_sonido("cortapastos_activar", 0)
-            elif self.moving == 1 and self.hitbox.colliderect(zombies.hitbox):
-                zombies.recibir_daño(10000)
-        if self.moving == True:
-            self.rect.x += 10
-            self.hitbox.center = self.rect.center
-        if self.rect.x >= constantes.FIN_PASTO_X:
-            funciones.eliminar(self.cortapastos_col, self.id, Cortapasto)
-            self.kill()
-
-
-
-class Pala(pygame.sprite.Sprite):
-
-    def __init__(self, reproductor_de_sonido):
-        self.image = pygame.image.load(r"assets\pala\pala_icono.jpg")
-        self.x = 860
-        self.y = 10
-        self.rect = self.image.get_rect(topleft = [self.x, self.y])
-        self.clicked = False
-        self.reproductor_de_sonido = reproductor_de_sonido
-        self.cursor = pygame.image.load(r"assets\pala\pala_cursor.png")
-        super().__init__()
-
-    def update(self, evento):
-        if self.rect.collidepoint(evento.pos):
-            self.clicked = True
-            self.reproductor_de_sonido.reproducir_sonido("pala_sonido")
-        else:
-            self.clicked = False
-
-    def dibujar_cursor(self, x,y,screen):
-        self.cursor_rect = self.cursor.get_rect(bottomleft = [x, y])
-        screen.blit(self.cursor, self.cursor_rect)
-
-    def excavar(self,grilla_entidades:list, grilla_x:int, grilla_y:int, seleccion_planta: str):
-        if (isinstance(grilla_entidades[grilla_y][grilla_x], (Plantas, Petacereza))):
-            self.reproductor_de_sonido.reproducir_sonido("pala_sonido")
-            for zombie in grupo_zombies:
-                if grilla_entidades[grilla_y][grilla_x].hitbox.colliderect(zombie.hitbox):
-                    self.reproductor_de_sonido.detener_reproduccion("zombie_masticar")
-            funciones.eliminar(grilla_entidades, grilla_entidades[grilla_y][grilla_x].id, type(grilla_entidades[grilla_y][grilla_x]))
-            seleccion_planta = False
-        elif seleccion_planta == "pala":
-            seleccion_planta = False
-        return seleccion_planta
-    
 class Sol(pygame.sprite.Sprite):
     def __init__(self, x, y, alturas_sol,administrador_de_sonido, velocidad = constantes.VELOCIDAD_SOL):#aparicion = constantes.TIEMPO_APARICION_SOL = 7500)
         pygame.sprite.Sprite.__init__(self) 
