@@ -7,7 +7,7 @@ VELOCIDAD_PROYECTIL = 10
 BLANCO_TRANSLUCIDO = (255, 255, 255, 255)
 ESPERA_INICIAL = 27000
 TIEMPO_APARICION = copy.deepcopy(ESPERA_INICIAL)
-TIEMPO_GENERACION_ZOMBIE = 17000
+TIEMPO_GENERACION_ZOMBIE = 18000
 CANT_APARICION = 1
 OLEADA_CANT_ZB= 3
 # Para la grilla
@@ -54,10 +54,10 @@ CANT_FRAMES_PLANTAS= {"girasol": len(os.listdir(r"assets\girasol")),
                      "nuez": len(os.listdir(r"assets\nuez")),
                      "hielaguisantes": len(os.listdir(r"assets\hielaguisante"))}
 
-NV_AUMENTO_SPAWN = 8
-NV_SPAWN_CONO = 1
-NV_SPAWN_BALDE = 15
-NV_OLEADA = 9
+NV_AUMENTO_SPAWN = 6
+NV_SPAWN_CONO = 5
+NV_SPAWN_BALDE = 12
+NV_OLEADA = 8
 
 COOLDOWN_PLANTAS = {"lanzaguisantes": 7500, "nuez": 30000, "girasol": 7500, "petacereza": 25000, "papapum": 10000, "hielaguisantes": 7500}
 COOLDOWN_ZOMBIES = 2000
