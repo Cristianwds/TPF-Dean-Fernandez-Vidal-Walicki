@@ -5,7 +5,7 @@ import random
 from clases import *
 from funciones import *
 
-pygame.init()
+screen = inicializar_juego()
 
 contador_soles = [50]
 contador_para_perder = 0
@@ -13,32 +13,9 @@ administrador_de_sonido = iniciar_administrador_sonido()
 
 reloj = pygame.time.Clock()
 
-
-# Definicion de pantalla
-screen = pygame.display.set_mode((constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA))
-
-# Titulo e Ícono
-pygame.display.set_caption("Plants vs. Zombies")
-icono = pygame.image.load(r"assets//icon.png")
-pygame.display.set_icon(icono)
-
-# Interfaz del juego
-
-fondo_interfaz = pygame.image.load(r'assets\interfaz.play.png')
-fondo_interfaz = pygame.transform.scale(fondo_interfaz, (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA))
-
-fondo_interfaz_play = pygame.image.load(r'assets\Fondo_color.jpg')
-fondo_interfaz_play = pygame.transform.scale(fondo_interfaz_play, (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA))
-
-fondo_interfaz_exit = pygame.image.load(r'assets\Fondo_colorexit.jpg')
-fondo_interfaz_exit = pygame.transform.scale(fondo_interfaz_exit, (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA))
-
-fondo_crazydave = pygame.image.load(r'assets\Crazydave.jpg')
-fondo_crazydave = pygame.transform.scale(fondo_crazydave, (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA))
-boton_fondodave = pygame.Rect(constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA, 1000, 1000)
-
-boton_jugar = pygame.Rect(constantes.ANCHO_VENTANA / 2 + 25, constantes.ALTO_VENTANA/ 2 - 210, 300, 100)
-boton_salir = pygame.Rect(constantes.ANCHO_VENTANA / 2 + 25, constantes.ALTO_VENTANA/ 2 - 85, 300, 110)
+fondo = cargar_fondos()
+botones = crear_botones()
+fuentes = cargar_fuentes()
 
 # Botones para chequear (PLAY Y EXIT)
 
@@ -49,19 +26,10 @@ boton_salir = pygame.Rect(constantes.ANCHO_VENTANA / 2 + 25, constantes.ALTO_VEN
 
 
 # Impresion nivel dificultad
-fuente_numero = pygame.font.SysFont('ZombieControl.ttf', 95)
 imagen_nivel = pygame.image.load(r"assets\nivel.png")
 
-# Impresion cantidad de soles
-fuente_cantsol = pygame.font.SysFont("arial", 20)
-
 # Fondo de pantalla del juego
-background = pygame.image.load(r"assets//map.jpeg").convert()
-background = pygame.transform.scale(background, (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA))
 contador_soles2 = contador_soles[0]
-
-perdiste = pygame.image.load(r"assets/ZombiesWon.png")
-perdiste = pygame.transform.scale(perdiste, (925,770))
 
 # Grilla de entidades y grilla de rects.
 grilla_rects = [[pygame.Rect(constantes.COMIENZO_PASTO_X + col * constantes.CELDA_ANCHO,constantes.COMIENZO_PASTO_Y + fil * constantes.CELDA_ALTO,constantes.CELDA_ANCHO,constantes.CELDA_ALTO,)for col in range(9)]for fil in range(5)]  # Grilla[fila][columna]
@@ -120,23 +88,23 @@ mostrar_dave = False
 discurso_inspirador_de_dave = False
 while run:
     if mostrar_inicio:
-        pantalla_inicio(screen, boton_jugar,boton_salir, fondo_interfaz_play, fondo_interfaz_exit, fondo_interfaz)
+        pantalla_inicio(screen, botones["jugar"], botones["salir"], fondo["play"], fondo["exit"], fondo["interfaz"])
         administrador_de_sonido.reproducir_sonido("musica_menu_principal", -1, True)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if boton_jugar.collidepoint(event.pos):
+                if botones["jugar"].collidepoint(event.pos):
                     mostrar_inicio  = False
                     mostrar_dave = True
                     administrador_de_sonido.detener_reproduccion(
                         "musica_menu_principal")
                     administrador_de_sonido.reproducir_sonido("botones")
-                if boton_salir.collidepoint(event.pos):
+                if botones["salir"].collidepoint(event.pos):
                     administrador_de_sonido.reproducir_sonido("botones")
                     run = False 
     elif mostrar_dave:
-        discurso_inspirador_de_dave = dave(screen,fondo_crazydave, administrador_de_sonido, discurso_inspirador_de_dave)
+        discurso_inspirador_de_dave = dave(screen,fondo["dave"], administrador_de_sonido, discurso_inspirador_de_dave)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -154,7 +122,7 @@ while run:
         # Dibujar fondo con imagen de grilla
         # screen.blit(background, (0,0))
 
-        screen.blit(background, (0, 0))  # Fondo
+        screen.blit(fondo["background"], (0, 0))  # Fondo
         # dibujar_grilla(screen, grilla_rects) #Esta funcion dibuja la grilla, comentar para que no se dibuje
 
         for planta in grupo_plantas:
@@ -254,7 +222,7 @@ while run:
 
         # Impresion de numeros
 
-        impresion_nivel = fuente_numero.render(str(nivel_dificultad), True, (140, 255, 70))
+        impresion_nivel = fuentes["numero"].render(str(nivel_dificultad), True, (140, 255, 70))
         screen.blit(impresion_nivel, (223, 40))
 
         if contador_soles[0] == 0:
@@ -264,7 +232,7 @@ while run:
         elif contador_soles[0] >= 100:
             posicion_contadorsol = (342, 72)
         
-        impresion_cantsol = fuente_cantsol.render(str(contador_soles[0]), True, (0, 0, 0))
+        impresion_cantsol = fuentes["sol"].render(str(contador_soles[0]), True, (0, 0, 0))
         screen.blit(impresion_cantsol, posicion_contadorsol)
         screen.blit(imagen_nivel, (20, 30))
         traslucido, vivo, contador_para_perder = perder(traslucido, grupo_zombies, screen, vivo, administrador_de_sonido, contador_para_perder)

@@ -552,3 +552,34 @@ def dave(screen, fondodave, administrador_de_sonido, discurso_inspirador_de_dave
     screen.blit(fondodave, (0, 0))
     pygame.display.update()
     return discurso_inspirador_de_dave
+
+def inicializar_juego():
+    pygame.init()
+    screen = pygame.display.set_mode((constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA))
+    pygame.display.set_caption("Plants vs. Zombies")
+    icono = pygame.image.load(r"assets//icon.png")
+    pygame.display.set_icon(icono)
+    return screen
+
+def cargar_fondos():
+    return {
+        "interfaz": pygame.transform.scale(pygame.image.load(r'assets\interfaz.play.png'), (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA)),
+        "play": pygame.transform.scale(pygame.image.load(r'assets\Fondo_color.jpg'), (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA)),
+        "exit": pygame.transform.scale(pygame.image.load(r'assets\Fondo_colorexit.jpg'), (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA)),
+        "dave": pygame.transform.scale(pygame.image.load(r'assets\Crazydave.jpg'), (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA)),
+        "background": pygame.transform.scale(pygame.image.load(r"assets//map.jpeg").convert(), (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA)),
+        "perdiste": pygame.transform.scale(pygame.image.load(r"assets/ZombiesWon.png"), (925, 770))
+    }
+
+def crear_botones():
+    return {
+        "jugar": pygame.Rect(constantes.ANCHO_VENTANA / 2 + 25, constantes.ALTO_VENTANA/ 2 - 210, 300, 100),
+        "salir": pygame.Rect(constantes.ANCHO_VENTANA / 2 + 25, constantes.ALTO_VENTANA/ 2 - 85, 300, 110),
+        "dave": pygame.Rect(constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA, 1000, 1000)
+    }
+
+def cargar_fuentes():
+    return {
+        "numero": pygame.font.SysFont('ZombieControl.ttf', 95),
+        "sol": pygame.font.SysFont("arial", 20)
+    }
