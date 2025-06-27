@@ -11,7 +11,18 @@ grupo_zombies = pygame.sprite.Group()
 
         
 class Criaturas(pygame.sprite.Sprite):
+
     def __init__(self, x, y, imagen, vida, reproductor_de_sonido):
+        """
+            Clase base para todas las criaturas del juego (plantas y zombies).
+
+            Inputs:
+            -------
+            x, y: coordenadas iniciales
+            imagen: imagen inicial de la criatura
+            vida: vida inicial
+            reproductor_de_sonido: instancia de Administrador_de_sonido
+        """
         super().__init__()
         self.pos_x = x
         self.pos_y = y
@@ -21,6 +32,17 @@ class Criaturas(pygame.sprite.Sprite):
         self.reproductor_de_sonido = reproductor_de_sonido
         
     def recibir_daño(self, daño):
+        """
+        Resta vida a la criatura y la elimina si su vida llega a 0.
+
+        Inputs:
+        -------
+        daño: cantidad de daño recibido
+
+        Returns:
+        -------
+        bool: True si murió, False si sobrevivió
+        """
         self.vida -= daño
         if self.vida <= 0:
             self.kill()
@@ -28,7 +50,18 @@ class Criaturas(pygame.sprite.Sprite):
 
 class Enemigos(Criaturas):
     def __init__(self, x, y, tipo, vida, reproductor_de_sonido, daño= constantes.DAÑO_ZOMBIE, velocidad= constantes.VELOCIDAD_ZOMBIE):
-        
+        """
+        Clase para los enemigos del juego (zombies).
+
+        Inputs:
+        -------
+        x, y: coordenadas iniciales
+        tipo: tipo de zombie (normal, cono, balde)
+        vida: vida inicial
+        reproductor_de_sonido: instancia de Administrador_de_sonido
+        daño: daño que inflige al atacar
+        velocidad: velocidad de movimiento
+        """
         # Se cargan los frames
         self.tipo = tipo
         self.frames_caminata = [pygame.image.load(f"assets/zombies/{self.tipo}/caminata/frame_{i}.png").convert_alpha() for i in range(constantes.Cant_frames[self.tipo][0])]
@@ -64,6 +97,9 @@ class Enemigos(Criaturas):
         self.hitbox.center = self.rect.center
         
     def update(self):
+        """
+        Actualiza el estado del zombie: animación, ataque, movimiento y efectos de ralentización.
+        """
         atacando = False
 
         for planta in grupo_plantas:
@@ -94,14 +130,14 @@ class Enemigos(Criaturas):
             self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y - 90))  # Actualizar el rect
 
         if self.realentizado:
-            ahora = pygame.time.get_ticks()
-            self.velocidad = 0.08
-            self.velocidad_animacion = 45
+            ahora2 = pygame.time.get_ticks()
+            self.velocidad = 0.05
+            self.velocidad_animacion = 55
             if self.estado == "caminar":
                 self.frames = self.frames_caminatahielo
             elif self.estado == "atacar":
                 self.frames = self.frames_ataquehielo
-            if ahora - self.tiemporealentizado > 3000:
+            if ahora2 - self.tiemporealentizado > 3000:
                 self.realentizado = False
                 self.velocidad = constantes.VELOCIDAD_ZOMBIE
                 self.velocidad_animacion = constantes.VEL_ANIM_ZOMBIE
@@ -135,9 +171,15 @@ class Enemigos(Criaturas):
             if self.pos_x <= 0:
                 self.kill()
 
-        # DEBUG: dibujar hitbox
-        # pygame.draw.rect(screen, (255, 0, 0), self.hitbox, 1)
     def recibir_daño(self, daño):
+        """
+        Recibe daño y elimina al zombie si su vida llega a 0.
+        Si estaba atacando, detiene el sonido de masticar.
+
+        Inputs:
+        -------
+        daño: cantidad de daño recibido
+        """
         self.vida -= daño
         if self.vida <= 0:
             if self.estado == "atacar":

@@ -54,3 +54,29 @@ def ejecutar_pantalla_dave(screen, fondo_dave, administrador_de_sonido, discurso
             return "juego", discurso
     return "dave", discurso
 
+
+def perder(traslucido, grupo_zombies, screen, vivo, reproductor_de_sonido, contador):
+    for zombie in grupo_zombies:
+        if zombie.hitbox.x <= 260:
+            vivo = False
+    if vivo == False:
+        perdiste = pygame.image.load(r"assets/ZombiesWon.png")
+        perdiste = pygame.transform.scale(perdiste, (740, 616))
+        perdida = pygame.Surface((1040, 650), pygame.SRCALPHA)
+        perdida.fill((0, 0, 0, traslucido))
+        ahora = pygame.time.get_ticks()
+        screen.blit(perdida, (0, 0))
+        screen.blit(perdiste, (190, 28))
+        if contador == 0:
+            reproductor_de_sonido.detener_reproduccion("musica_nivel_dia")
+            reproductor_de_sonido.reproducir_sonido("perder", 0, True)
+            contador += 1
+        if not (reproductor_de_sonido.canales_sonidos_ocupados["perder"].get_busy()):
+            reproductor_de_sonido.detener_todos()
+        if ahora > 600 and traslucido < 254:
+            traslucido += 1
+            ahora = pygame.time.get_ticks()
+            perdida.fill((0, 0, 0, traslucido))
+    traslucidez = traslucido
+    return traslucidez, vivo, contador
+
