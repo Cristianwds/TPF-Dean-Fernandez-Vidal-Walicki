@@ -93,11 +93,15 @@ plantas con habilidades únicas. Deberá colocar estratégicamente sus plantas e
    ## Estructura del codigo:
   El proyecto está organizado de forma modular para entender su comprensión, a continuación se detallará la función de los archivos y directorios principales:
   
-  ##  `main.py`
+  ###  `main.py`:
+   Es el punto de entrada principal del juego. Contiene el bucle principal de la ejecución, gestiona los eventos del juego y coordina la interacción entre los diferentes archivos.
    
+  ### `funciones.py`:
+  Funciones útiles para las partes del código. Se encuentra la actualización de todas las clases, el dibujo de todos los assets, la previsualización de plantas cuando estan seleccionadas con el mouse y, otras funciones relacionadas a plantar, eliminar el objeto con la pala y la implementación del loco dave. Esta sección fue dividida en 2 partes, a continuación le sigue `funciones_jugabilidad.py`
+  
+  ### `funciones_jugabilidad.py`:
+   Se encuentran las funciones que actúan en la lógica/funcionamiento del videojuego 
+
+
+
    
-
-
-    
-
-
