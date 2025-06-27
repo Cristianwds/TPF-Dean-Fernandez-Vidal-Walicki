@@ -11,7 +11,7 @@ El siguiente proyecto se basa en la recreación del juego conocido como Plantas 
 ###   -Agradecimientos
 ###   -Coders
 
-## Descripción general
+## **Descripción general**
 
 -El programa se basa en Plantas-vs-Zombies. Es un juego de estrategia tipo tower defense donde el objetivo principal del jugador es defender su casa de una incesante horda de zombis utilizando un arsenal de
 plantas con habilidades únicas. Deberá colocar estratégicamente sus plantas en el jardín para detener el avance de los zombis antes de que lleguen a su hogar y...  ¡se coman su cerebro! 
@@ -57,13 +57,14 @@ plantas con habilidades únicas. Deberá colocar estratégicamente sus plantas e
   ### Condiciones de victoria/derrota:
   El juego termina si un zombie llega a tu casa luego de haber pasado por las cortapastos. Y en cuanto al la victoria...! Nunca termina ! Mientras más niveles de dificultad subas, más crack serás!!
 
-## Cómo jugar
+  ## Cómo jugar
   ¡Prepararse para la batalla es sencillo! Sigue los siguientes pasos para disfrutar del juego!
 
   ### Requisitos y configuracion inicial
   Antes de empezar, verifica que tienes instalado una versión de python versión 3.10.0 o superior. Si aún no lo tienes, puedes descargarlo desde la web oficial de python
 
   - Nuestro juego utiliza la librería Pygame, si no la tienes instalada, abre la terminal (o linea de comandos) y ejecuta el siguiente comando: pip install pygame
+    
      
  # IMPORTACION COMPLETAR
 
@@ -89,11 +90,18 @@ plantas con habilidades únicas. Deberá colocar estratégicamente sus plantas e
    #### Objetivo del juego:
    El objetivo es evitar que los zombis lleguen al lado izquierdo de la pantalla, donde se encuentra tu casa. Si un zombi la alcanza, ¡habrás perdido la batalla! Sobrevive a los niveles que más puedas!
    
+   ## Estructura del codigo:
+  El proyecto está organizado de forma modular para entender su comprensión, a continuación se detallará la función de los archivos y directorios principales:
+  
+  ###  `main.py`:
+   Es el punto de entrada principal del juego. Contiene el bucle principal de la ejecución, gestiona los eventos del juego y coordina la interacción entre los diferentes archivos.
    
+  ### `funciones.py`:
+  Funciones útiles para las partes del código. Se encuentra la actualización de todas las clases, el dibujo de todos los assets, la previsualización de plantas cuando estan seleccionadas con el mouse y, otras funciones relacionadas a plantar, eliminar el objeto con la pala y la implementación del loco dave. Esta sección fue dividida en 2 partes, a continuación le sigue `funciones_jugabilidad.py`
+  
+  ### `funciones_jugabilidad.py`:
+   Se encuentran las funciones que actúan en la lógica/funcionamiento del videojuego 
+
+
+
    
-   
-
-
-    
-
-
