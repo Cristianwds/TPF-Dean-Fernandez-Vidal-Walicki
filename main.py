@@ -138,7 +138,7 @@ while run:
 
         impresion_nivel = fuentes["numero"].render(str(nivel_dificultad), True, (140, 255, 70))
         screen.blit(impresion_nivel, (223, 40))
-
+        # Correcta visualizacion del contador de soles, sin importar la cantidad de digitos
         if contador_soles[0] == 0:
             posicion_contadorsol = (353, 72)
         elif contador_soles[0] < 100:

@@ -101,12 +101,12 @@ class Enemigos(Criaturas):
         Actualiza el estado del zombie: animación, ataque, movimiento y efectos de ralentización.
         """
         atacando = False
-
+        # Chequea colision con plantas
         for planta in grupo_plantas:
             ahora = pygame.time.get_ticks()
             if self.hitbox.colliderect(planta.hitbox):
                 atacando = True
-                self.velocidad= 0
+                self.velocidad= 0 # Zombie estatico
                 if ahora - self.ultimo_ataque >= constantes.VELOCIDAD_ATAQUE_ZOMBIE:
                     self.ultimo_ataque = ahora
                     self.reproductor_de_sonido.reproducir_sonido("zombie_masticar", -1, True)
@@ -153,6 +153,7 @@ class Enemigos(Criaturas):
                 if not self.realentizado:
                     self.frames = self.frames_ataque
                     if self.tipo == "cono":
+                        # Si es un zombie cono le baja la velocidad de animacion por la cantidad de frames
                         self.velocidad_animacion = constantes.VEL_ANIM_ATQ_CONO
                 else:
                     self.frames = self.frames_ataquehielo
