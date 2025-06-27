@@ -98,11 +98,22 @@ def previsualizacion(
                 screen.blit(cuad, cuadpos)
 
 
-
-
-
-
 def dave(screen, fondodave, administrador_de_sonido, discurso_inspirador_de_dave):
+    """
+    Muestra la escena de introducción con Dave y reproduce un sonido aleatorio.
+
+    Parámetros:
+    -----------
+    screen : Pantalla principal.
+    fondodave : Imagen de fondo con Dave.
+    administrador_de_sonido : Objeto para controlar los efectos de sonido.
+    discurso_inspirador_de_dave : Sonido actual del discurso o None para uno aleatorio.
+
+    Retorna:
+    --------
+    str
+        Nombre del discurso reproducido.
+    """
     if not (discurso_inspirador_de_dave):
         discurso_inspirador_de_dave = random.choice(
             ["ovawabodabawabaobadabowadaba", "bwadawbabadfbaw", "budubuwedivadibo"]
