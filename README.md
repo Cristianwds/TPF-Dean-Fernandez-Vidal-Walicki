@@ -57,13 +57,14 @@ plantas con habilidades únicas. Deberá colocar estratégicamente sus plantas e
   ### Condiciones de victoria/derrota:
   El juego termina si un zombie llega a tu casa luego de haber pasado por las cortapastos. Y en cuanto al la victoria...! Nunca termina ! Mientras más niveles de dificultad subas, más crack serás!!
 
-## Cómo jugar
+  ## Cómo jugar
   ¡Prepararse para la batalla es sencillo! Sigue los siguientes pasos para disfrutar del juego!
 
   ### Requisitos y configuracion inicial
   Antes de empezar, verifica que tienes instalado una versión de python versión 3.10.0 o superior. Si aún no lo tienes, puedes descargarlo desde la web oficial de python
 
   - Nuestro juego utiliza la librería Pygame, si no la tienes instalada, abre la terminal (o linea de comandos) y ejecuta el siguiente comando: pip install pygame
+    
      
  # IMPORTACION COMPLETAR
 
@@ -89,7 +90,10 @@ plantas con habilidades únicas. Deberá colocar estratégicamente sus plantas e
    #### Objetivo del juego:
    El objetivo es evitar que los zombis lleguen al lado izquierdo de la pantalla, donde se encuentra tu casa. Si un zombi la alcanza, ¡habrás perdido la batalla! Sobrevive a los niveles que más puedas!
    
-   
+   ## Estructura del codigo:
+  El proyecto está organizado de forma modular para entender su comprensión, a continuación se detallará la función de los archivos y directorios principales:
+  
+  ##  `main.py`
    
    
 
