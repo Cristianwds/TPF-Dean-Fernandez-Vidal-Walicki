@@ -11,7 +11,7 @@ El siguiente proyecto se basa en la recreación del juego conocido como Plantas 
 ###   -Agradecimientos
 ###   -Coders
 
-## Descripción general
+## **Descripción general**
 
 -El programa se basa en Plantas-vs-Zombies. Es un juego de estrategia tipo tower defense donde el objetivo principal del jugador es defender su casa de una incesante horda de zombis utilizando un arsenal de
 plantas con habilidades únicas. Deberá colocar estratégicamente sus plantas en el jardín para detener el avance de los zombis antes de que lleguen a su hogar y...  ¡se coman su cerebro! 
