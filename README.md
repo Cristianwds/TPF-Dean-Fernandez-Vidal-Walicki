@@ -66,7 +66,7 @@ El siguiente proyecto se basa en la recreación del juego conocido como Plantas 
 
   - Nuestro juego utiliza la librería Pygame, si no la tienes instalada, abre la terminal (o linea de comandos) y ejecuta el siguiente comando: pip install pygame
          
-  # IMPORTACION COMPLETAR
+  - Luego, copia el link del repositorio, diríjete a python y en la terminal escribe git clone y el link del archivo
 
   ### Controles y Mecánicas básicas
   Al iniciar el juego, te encotrarás con la interfaz, clickea el botón de PLAY y dile al loco Dave que puedes salvar el jardím! Luego, te encontrarás el jardín listo para empezar a plantar y armar tu defensa!
@@ -102,13 +102,13 @@ El siguiente proyecto se basa en la recreación del juego conocido como Plantas 
    ### `funciones_pantallas.py`:
    Se encuentran las funciones que manejan las diferentes pantallas del juego. Pantalla de inicio, pantalla del loco Dave y pantalla de game over.
 
-   ### `inicializacion.py`
+   ### `inicializacion.py`:
    En este módulo se sitúa la preparación y configuración inicial de todo el entorno del juego. Se encarga de tareas como la configuración y visualización de las ventanas, la configuración de para el orden de       los eventos y la creación de las semillas (las plantas), entre otros.
 
-   ### `sonido.py`
+   ### `sonido.py`:
    En este archivo se concentra el sistema de audio del juego. Contiene la clase Administrador_de_sonido que se encarga de cargar, reproducir y gestionar todos los efectos de sonido y la música de fondo.
 
-   ### `constantes.py`
+   ### `constantes.py`:
    Almacena las variables globales utilizadas a lo largo del juego. Facilita configuraciones.
 
    ### `clases_objetos.py`:
