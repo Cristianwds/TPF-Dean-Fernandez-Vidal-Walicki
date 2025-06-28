@@ -28,17 +28,17 @@ El siguiente proyecto se basa en la recreación del juego conocido como Plantas 
   
 ### Diversidad de plantas:
   
-   #### Girasoles: 
+   #### - Girasoles: 
    Producen soles adicionales cada cierto tiempo, es recomendable jugar con estas plantas para acelerar tu economía
-   #### Lanzaguisantes:
+   #### - Lanzaguisantes:
    Son de las principales defensas del juego, disparan guisantes que producen daño a los zombies
-   #### Huielaguizantes:
+   #### - Huielaguizantes:
    Una variante del Lanzaguisantes que dispara guisantes congelados. Además de infligir daño, ralentiza significativamente el movimiento de los zombis, dándote más tiempo para reaccionar y atacar.
-   #### Petacereza:
+   #### - Petacereza:
    Una planta explosiva de un solo uso que detona en un área pequeña, eliminando instantáneamente a múltiples zombis. Ideal para situaciones de emergencia o grupos densos de enemigos.
-   #### Papapum:
+   #### - Papapum:
    Una mina terrestre que requiere un tiempo para armarse bajo tierra. Una vez lista, explota al contacto con el primer zombi que la pisa, causando un gran daño en un área reducida. Útil para emboscadas             tempranas.
-   #### Nuez:
+   #### - Nuez:
    Una planta defensiva con una alta resistencia. Sirve como una barrera impenetrable para los zombis, absorbiendo una gran cantidad de daño y protegiendo a tus plantas de ataque detrás de ella.
 
   ### Variedad de zombies - Prepárate para enfrentar diferentes tipos de zombis, cada uno con sus propias características de resistencia:
