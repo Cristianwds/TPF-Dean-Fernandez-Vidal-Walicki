@@ -5,6 +5,13 @@ from clases_objetos import *
 from clases_criaturas import *
 
 def inicializar_todo():
+    """
+    Inicializa todos los elementos fundamentales del juego: pantalla, reloj, fondos, botones, fuentes, sonidos y fondo del nivel.
+
+    Returns:
+    -------
+    tuple: contiene screen, reloj, fondo, botones, fuentes, administrador_de_sonido, imagen_nivel
+    """
     screen = inicializar_juego()
     reloj = pygame.time.Clock()
     fondo = cargar_fondos()
@@ -15,6 +22,13 @@ def inicializar_todo():
     return screen, reloj, fondo, botones, fuentes, administrador_de_sonido, imagen_nivel
 
 def configurar_eventos():
+    """
+    Configura los eventos temporizados del juego, como la aparición de zombies y soles.
+
+    Returns:
+    -------
+    tuple: constantes que representan los identificadores de eventos personalizados (USEREVENT + n)
+    """
     APARICION_ZOMBIE = pygame.USEREVENT
     APARICION_OLEADA = pygame.USEREVENT + 1
     APARICION_SOLES = pygame.USEREVENT + 2
@@ -28,6 +42,13 @@ def configurar_eventos():
     return APARICION_ZOMBIE, APARICION_OLEADA, APARICION_SOLES, APARICION_SOLESGIRASOL
 
 def inicializar_juego():
+    """
+    Inicializa el entorno de pygame, la ventana principal y el ícono del juego.
+
+    Returns:
+    -------
+    pygame.Surface: pantalla principal del juego.
+    """
     pygame.init()
     screen = pygame.display.set_mode((constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA))
     pygame.display.set_caption("Plants vs. Zombies")
@@ -36,6 +57,13 @@ def inicializar_juego():
     return screen
 
 def cargar_fondos():
+    """
+    Carga y escala los distintos fondos usados en el juego.
+
+    Returns:
+    -------
+    dict: contiene imágenes escaladas para interfaz, menú de inicio, menú de salida, fondo de Crazy Dave, fondo del mapa, y pantalla de derrota.
+    """
     return {
         "interfaz": pygame.transform.scale(pygame.image.load(r'assets\interfaz.play.png'), (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA)),
         "play": pygame.transform.scale(pygame.image.load(r'assets\Fondo_color.jpg'), (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA)),
@@ -46,6 +74,13 @@ def cargar_fondos():
     }
 
 def crear_botones():
+    """
+    Crea los rectángulos interactivos usados como botones en el menú.
+
+    Returns:
+    -------
+    dict: contiene pygame.Rect para los botones de jugar, salir y avanzar diálogo con Dave.
+    """
     return {
         "jugar": pygame.Rect(constantes.ANCHO_VENTANA / 2 + 25, constantes.ALTO_VENTANA/ 2 - 210, 300, 100),
         "salir": pygame.Rect(constantes.ANCHO_VENTANA / 2 + 25, constantes.ALTO_VENTANA/ 2 - 85, 300, 110),
@@ -53,12 +88,26 @@ def crear_botones():
     }
 
 def cargar_fuentes():
+    """
+    Carga las fuentes tipográficas usadas en el HUD del juego.
+
+    Returns:
+    -------
+    dict: contiene fuentes pygame con nombres clave "numero" y "sol"
+    """
     return {
         "numero": pygame.font.SysFont('ZombieControl.ttf', 95),
         "sol": pygame.font.SysFont("arial", 20)
     }
 
 def definir_preview():
+    """
+    Define un diccionario con imágenes semitransparentes usadas para previsualizar plantas antes de colocarlas.
+
+    Returns:
+    -------
+    dict: contiene claves con el nombre de la planta y valores con una lista [imagen, offset_x, offset_y]
+    """
     preview_dict = {
     "lanzaguisantes": [pygame.image.load(r"assets\lanzaguisante\frame_0.png"),-15,-34],
     "girasol": [pygame.image.load(r"assets\girasol\frame_1.png"),-3,-12],

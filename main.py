@@ -6,26 +6,27 @@ from funciones import *
 from sonido import *
 from clases_criaturas import *
 from clases_objetos import *
-from funciones_jugabilidad import *
+from funciones_pantalla import *
 from inicializacion import *
 
 screen, reloj, fondo, botones, fuentes, administrador_de_sonido, imagen_nivel = inicializar_todo()
 
-contador_soles = [50]
-contador_para_perder = 0
+contador_soles = [50]   # Contador de soles recolectados (lista para modificar sin return)
+contador_para_perder = 0 # Control de condición de derrota
 
-# Grilla de entidades y grilla de rects.
+# Grilla visual y lógica para ubicar plantas y entidades
 grilla_rects = [[pygame.Rect(constantes.COMIENZO_PASTO_X + col * constantes.CELDA_ANCHO,constantes.COMIENZO_PASTO_Y + fil * constantes.CELDA_ALTO,constantes.CELDA_ANCHO,constantes.CELDA_ALTO,)for col in range(9)]for fil in range(5)]  # Grilla[fila][columna]
 grilla_entidades = [[0 for x in range(9)] for y in range(5)]
 fila, columna = 0, 0  # indices para moverse por la matriz
 
-cuad = pygame.Surface((80, 90), pygame.SRCALPHA)
+cuad = pygame.Surface((80, 90), pygame.SRCALPHA)  # Superficie semitransparente para previsualización
 cuad.fill((255, 255, 255, 128))
-cuadpos = [constantes.COMIENZO_PASTO_X, constantes.COMIENZO_PASTO_Y]
+cuadpos = [constantes.COMIENZO_PASTO_X, constantes.COMIENZO_PASTO_Y]  # Posición del cuadro preview
 
 traslucido = 5
 vivo = True
 
+# Inicializa los eventos temporizados para spawn de zombies y soles
 APARICION_ZOMBIE, APARICION_OLEADA, APARICION_SOLES, APARICION_SOLESGIRASOL = configurar_eventos()
 nivel_dificultad = 0
 delay_spawn_zombie= 0
@@ -36,20 +37,26 @@ dic_semillas = definir_semillas(administrador_de_sonido)
 # Defino las cortapastos
 cortapastos_col = definir_cortapastos(administrador_de_sonido)
 
-#defino la pala
+# Defino la pala
 pala = Pala(administrador_de_sonido)
 grupo_pala.add(pala)
 
-
+# Diccionario para previsualizacion de las plantas
 preview_dict = definir_preview()
 
 seleccion_planta = False
-#  x, y, imagen, vida, velocidad
+
+# Estado general del juego y control de flujo
 run = True
 discurso_dave = False
 estado_juego = "inicio"
 
 while run:
+    # Bucle principal del juego, que cambia entre las pantallas:
+    # - inicio
+    # - diálogo de Dave
+    # - juego en sí
+    # - salida
     if estado_juego == "inicio":
         estado_juego = ejecutar_pantalla_inicio(screen, botones, fondo, administrador_de_sonido)
 
@@ -64,7 +71,7 @@ while run:
         screen.blit(fondo["background"], (0, 0))  # Fondo
 
         for planta in grupo_plantas:
-            if isinstance(planta, Girasol):
+            if isinstance(planta, Girasol): # Lógica de generación de soles desde girasoles
                 nuevo_sol = planta.update()
                 if nuevo_sol: # Verifica si el girasol devolvió un nuevo sol para generar.
                     grupo_sol.add(nuevo_sol)
@@ -72,8 +79,9 @@ while run:
         updates_constantes(grilla_entidades)
         dibujos_constantes(screen)
 
-        
-        x, y = pygame.mouse.get_pos()
+        # Manejo de input del mouse para plantar, seleccionar semillas, usar la pala y recolectar soles
+        x, y = pygame.mouse.get_pos() 
+
         #Pala que acompaña el mouse si esta seleccionada.
         if seleccion_planta == "pala":
             pala.dibujar_cursor(x, y, screen)
@@ -136,8 +144,10 @@ while run:
 
         # Impresion de numeros
 
+        # Actualización de HUD (nivel y contador de soles)
         impresion_nivel = fuentes["numero"].render(str(nivel_dificultad), True, (140, 255, 70))
         screen.blit(impresion_nivel, (223, 40))
+
         # Correcta visualizacion del contador de soles, sin importar la cantidad de digitos
         if contador_soles[0] == 0:
             posicion_contadorsol = (353, 72)
@@ -149,6 +159,8 @@ while run:
         impresion_cantsol = fuentes["sol"].render(str(contador_soles[0]), True, (0, 0, 0))
         screen.blit(impresion_cantsol, posicion_contadorsol)
         screen.blit(imagen_nivel, (20, 30))
+
+        # Condición de derrota (verifica si zombies cruzaron la defensa)
         traslucido, vivo, contador_para_perder = perder(traslucido, grupo_zombies, screen, vivo, administrador_de_sonido, contador_para_perder)
 
         pygame.display.update()

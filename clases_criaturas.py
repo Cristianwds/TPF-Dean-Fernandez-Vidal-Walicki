@@ -5,6 +5,7 @@ from pygame import mixer
 import funciones
 import sonido
 
+# Grupos de sprites para elementos interactivos y visuales
 grupo_plantas = pygame.sprite.Group()
 grupo_proyectiles = pygame.sprite.Group()
 grupo_zombies = pygame.sprite.Group()
@@ -14,14 +15,14 @@ class Criaturas(pygame.sprite.Sprite):
 
     def __init__(self, x, y, imagen, vida, reproductor_de_sonido):
         """
-            Clase base para todas las criaturas del juego (plantas y zombies).
+        Clase base para todas las criaturas del juego (plantas y zombies).
 
-            Inputs:
-            -------
-            x, y: coordenadas iniciales
-            imagen: imagen inicial de la criatura
-            vida: vida inicial
-            reproductor_de_sonido: instancia de Administrador_de_sonido
+        Inputs:
+        -------
+        x, y: coordenadas iniciales
+        imagen: imagen inicial de la criatura
+        vida: vida inicial
+        reproductor_de_sonido: instancia de Administrador_de_sonido
         """
         super().__init__()
         self.pos_x = x
@@ -33,15 +34,15 @@ class Criaturas(pygame.sprite.Sprite):
         
     def recibir_daño(self, daño):
         """
-        Resta vida a la criatura y la elimina si su vida llega a 0.
+        Recibe daño y elimina la planta si su vida llega a 0.
 
         Inputs:
         -------
         daño: cantidad de daño recibido
 
         Returns:
-        -------
-        bool: True si murió, False si sobrevivió
+        --------
+        bool: True si la planta muere, False si sobrevive
         """
         self.vida -= daño
         if self.vida <= 0:
@@ -112,8 +113,9 @@ class Enemigos(Criaturas):
                     self.reproductor_de_sonido.reproducir_sonido("zombie_masticar", -1, True)
                     if planta.recibir_daño(self.daño):
                         self.velocidad = constantes.VELOCIDAD_ZOMBIE
-            
+        
         if atacando == True and len(grupo_plantas) == 0:
+        # Si estaba atacando pero ya no hay plantas, vuelve a caminar   
             atacando = False
             self.velocidad = constantes.VELOCIDAD_ZOMBIE
 
@@ -191,6 +193,19 @@ class Enemigos(Criaturas):
 class Plantas(Criaturas):
     plantas_id = 0
     def __init__(self, x, y, imagen, vida, cooldown, costo, lista_entidades, reproductor_de_sonido):
+        """
+        Clase base para las plantas del juego.
+
+        Inputs:
+        -------
+        x, y: coordenadas iniciales
+        imagen: imagen inicial de la criatura
+        vida: vida inicial
+        cooldown: tiempo de espera entre cada colocacion
+        costo: precio en soles
+        lista_entidades: lista 5x9 donde se almacenan las plantas segun su ubicacion
+        reproductor_de_sonido: instancia de Administrador_de_sonido
+        """
         super().__init__(x, y, imagen, vida, reproductor_de_sonido)
         self.cooldown = cooldown
         self.costo = costo
@@ -219,6 +234,20 @@ class Plantas(Criaturas):
 
 class lanzaguisantes(Plantas):
     def __init__(self, x, y, lista_entidades, reproductor_de_sonido, costo=100, hielo = False, vida=300, cooldown=7500):
+        """
+        Planta atacante que dispara proyectiles rectos.
+
+        Inputs:
+        -------
+        x, y: coordenadas iniciales
+        lista_entidades: lista 5x9 donde se almacenan las plantas según su ubicación
+        reproductor_de_sonido: instancia de Administrador_de_sonido
+        costo: costo en soles
+        hielo: True si es hielaguisante, False si es normal
+        vida: vida máxima
+        cooldown: tiempo entre cada colocación
+        """
+
         if hielo == False:
             self.frames = [pygame.image.load(f"assets\lanzaguisante\\frame_{i}.png").convert_alpha() for i in range(constantes.CANT_FRAMES_PLANTAS["lanzaguisante"])]
         else:
@@ -240,6 +269,10 @@ class lanzaguisantes(Plantas):
         Plantas.__init__(self, x, y, self.image, vida, cooldown, costo, lista_entidades, reproductor_de_sonido)
 
     def update(self):
+        """
+        Actualiza la animación del lanzaguisantes.
+        Detecta si hay zombies en su fila y dispara proyectiles si corresponde.
+        """
         global grupo_zombies
         ahora = pygame.time.get_ticks()
         tiempo_frame= pygame.time.get_ticks()
@@ -269,6 +302,19 @@ class lanzaguisantes(Plantas):
 
 class Girasol(Plantas):
     def __init__(self, x, y, lista_entidades, reproductor_de_sonido, vida=300, cooldown=7500, costo=50):
+        """
+        Planta que genera soles cada un tiempo
+
+        Inputs:
+        -------
+        x, y: coordenadas iniciales
+        imagen: imagen inicial de la criatura
+        vida: vida inicial
+        cooldown: tiempo de espera entre cada colocacion
+        costo: precio en soles
+        lista_entidades: lista 5x9 donde se almacenan las plantas segun su ubicacion
+        reproductor_de_sonido: instancia de Administrador_de_sonido
+        """
         self.x = x +12
         self.y = y +12
         self.vida = vida
@@ -287,6 +333,14 @@ class Girasol(Plantas):
         self.intervalo_soles = 23000  # 23 segundos en milisegundos
 
     def update(self):
+        """
+        Actualiza la animación del girasol.
+        Si ha pasado suficiente tiempo, genera un nuevo sol.
+        
+        Returns:
+        --------
+        Sol | None: el sol generado, o None si aún no debe generarse.
+        """
         tiempo_frame= pygame.time.get_ticks()
 
         if tiempo_frame - self.ultimo_frame > self.velocidad_animacion:
@@ -303,6 +357,19 @@ class Girasol(Plantas):
 
 class Nuez(Plantas):
     def __init__(self, x, y, lista_entidades, reproductor_de_sonido, vida=4000, cooldown=30000, costo=50):
+        """
+        Planta defensora.
+
+        Inputs:
+        -------
+        x, y: coordenadas iniciales
+        imagen: imagen inicial de la criatura
+        vida: vida inicial
+        cooldown: tiempo de espera entre cada colocacion
+        costo: precio en soles
+        lista_entidades: lista 5x9 donde se almacenan las plantas segun su ubicacion
+        reproductor_de_sonido: instancia de Administrador_de_sonido
+        """
         self.x = x
         self.y = y
         self.vida = vida
@@ -317,6 +384,9 @@ class Nuez(Plantas):
         super().__init__(self.x + 17, self.y+ 17, self.image, vida, cooldown, costo, lista_entidades, reproductor_de_sonido)
 
     def update(self):
+        """
+        Actualiza la animación de la nuez defensiva.
+        """
         tiempo_frame= pygame.time.get_ticks()
 
         if tiempo_frame - self.ultimo_frame > self.velocidad_animacion:
@@ -328,10 +398,21 @@ class Nuez(Plantas):
 class Papapum(Plantas):
     def __init__(self, x, y,lista_entidades, reproductor_de_sonido, vida= 300, cooldown = 8000, costo = 25):
         """
+        Planta que explota cuando la toca un zombie.
         El papapum tiene tres estados:
         desactivado: por 600 ticks el papapum esta desactivado y puede ser comido por el zombie.
         activado: el papapum esta activado, se le activa su hitbox de explosion y si colisiona contra un zombie explota.
         explosion: una vez el zombie colisiono con el papapum se les inflinge daño a los zombies en la hitbox, se cambia de animacion y se elimina el papapum.
+
+        Inputs:
+        -------
+        x, y: coordenadas iniciales
+        imagen: imagen inicial de la criatura
+        vida: vida inicial
+        cooldown: tiempo de espera entre cada colocacion
+        costo: precio en soles
+        lista_entidades: lista 5x9 donde se almacenan las plantas segun su ubicacion
+        reproductor_de_sonido: instancia de Administrador_de_sonido
         """
         self.x = x
         self.y = y
@@ -383,7 +464,10 @@ class Papapum(Plantas):
 
     def update(self):
         """
-        El papapum aparece en estado desactivado, despues de un tiempo cambia de estado a activado y en este estado se verificia que si hay una colision con un zombie explote.
+        Controla el ciclo de vida del papapum:
+        - Estado 'desactivado': espera 600 ticks antes de activarse.
+        - Estado 'activado': al detectar colisión, explota.
+        - Estado 'explosion': muestra animación de explosión y luego se elimina.
         """
         tiempo_frame= pygame.time.get_ticks()
         if self.estado == "desactivado": #Cuando esta desactivado
@@ -426,6 +510,18 @@ class Papapum(Plantas):
 class Petacereza(pygame.sprite.Sprite):
     petacerezas_id = 0
     def __init__(self, x, y, administrador_de_sonido, costo = 150):
+        """
+        Planta que explota al ponerla.
+        No forma parte de la clase plantas porque no comparte algunos atributos
+        ni la misma funcionalidad.
+
+        Inputs:
+        -------
+        x, y: coordenadas iniciales
+        costo: precio en soles
+        lista_entidades: lista 5x9 donde se almacenan las plantas segun su ubicacion
+        reproductor_de_sonido: instancia de Administrador_de_sonido
+        """
         self.costo = costo
         self.x = x
         self.y = y
@@ -446,6 +542,11 @@ class Petacereza(pygame.sprite.Sprite):
         super().__init__()
 
     def update(self, grilla_entidades):
+        """
+        Ejecuta la animación de la petacereza.
+        Explota al llegar al frame 6 y daña a todos los zombies en el área.
+        Luego, se desvanece hasta eliminarse.
+        """
         tiempo_frame= pygame.time.get_ticks()
 
         if tiempo_frame - self.ultimo_frame > self.velocidad_animacion:
@@ -456,6 +557,10 @@ class Petacereza(pygame.sprite.Sprite):
                 self.image = self.frames[self.indice_frames]
             self.contador_explosion += 1 #Contador que se utiliza para verificar cuando tiene que explotar la petacereza.
         if self.contador_explosion == 6:
+            # En el 6º frame de animación, se produce la explosión real: 
+            # se reemplaza la animación por una imagen fija de explosión, 
+            # se reproduce el sonido y se aplica daño a todos los zombies en el área de efecto.
+
             self.image = pygame.image.load(r"assets\petacereza\petacereza_explosion_imagen.png")
             self.rect = self.image.get_rect(center = (self.x + constantes.CELDA_ANCHO / 2, self.y))
             self.administrador_de_sonido.reproducir_sonido("petacereza_explosion", 0, False)
@@ -470,8 +575,18 @@ class Petacereza(pygame.sprite.Sprite):
                 funciones.eliminar(grilla_entidades, self.id, Petacereza)
 
 class Proyectil(pygame.sprite.Sprite):
-
     def __init__(self,imagen,x,y,daño,administrador_de_sonido, hielo = False):
+        """
+        Objetos disparados por las plantas.
+
+        Inputs:
+        -------
+        x, y: coordenadas iniciales
+        imagen: imagen inicial de la criatura
+        daño: cantidad de vida que le saca a los zombies
+        hielo: define si realentiza o no a los zombies
+        administrador_de_sonido: instancia de Administrador_de_sonido
+        """
         super().__init__()
         self.x = x
         self.y = y
@@ -488,14 +603,25 @@ class Proyectil(pygame.sprite.Sprite):
         self.hitbox.center = self.rect.center
 
     def update(self):
+        """
+        Mueve el proyectil, detecta colisión con zombies y aplica daño.
+        Si es de hielo, también ralentiza al zombie.
+        Elimina el proyectil si sale de la pantalla o colisiona.
+        """
         self.rect.x += constantes.VELOCIDAD_PROYECTIL
         self.hitbox.center = self.rect.center  # mantener hitbox alineada
 
         for zombie in grupo_zombies:
+        # Recorre todos los zombies para verificar colisiones con el proyectil.
+        # Si impacta, inflige daño, reproduce un sonido, y si es un proyectil de hielo, ralentiza al zombie.
+
             if self.hitbox.colliderect(zombie.hitbox):
                 self.administrador_de_sonido.reproducir_sonido(random.choice(["hit1", "hit2", "hit3"]))
                 zombie.recibir_daño(self.daño)
                 if self.hielo:
+                # Marca al zombie como ralentizado y registra el momento en que fue afectado,
+                # para que la ralentización dure un tiempo determinado.
+
                     zombie.realentizado = True
                     zombie.tiemporealentizado = pygame.time.get_ticks()
                 self.kill()
@@ -506,6 +632,16 @@ class Proyectil(pygame.sprite.Sprite):
 
 class Sol(pygame.sprite.Sprite):
     def __init__(self, x, y, alturas_sol,administrador_de_sonido, velocidad = constantes.VELOCIDAD_SOL):#aparicion = constantes.TIEMPO_APARICION_SOL = 7500)
+        """
+        Representa los soles que caen del cielo o son generados por girasoles.
+
+        Inputs:
+        -------
+        x, y: coordenadas iniciales
+        alturas_sol: altura máxima a la que cae el sol
+        administrador_de_sonido: instancia de Administrador_de_sonido
+        velocidad: velocidad de caída del sol
+        """
         pygame.sprite.Sprite.__init__(self) 
         self.frames = [pygame.image.load(f"assets\\sol\\frame_{i}.png").convert_alpha() for i in range(30)]
         self.indice_frames = 0
@@ -525,6 +661,10 @@ class Sol(pygame.sprite.Sprite):
     # Animacion
     
     def update(self):
+        """
+        Actualiza la posición y animación del sol.
+        Elimina el sol si ha estado en pantalla más de 11 segundos.
+        """
         if self.pos_y < self.altura:
             self.pos_y += self.velocidad
             self.rect.center = (self.pos_x, self.pos_y) # Para que se actualize la ubiacion del rectagnulo del sol
@@ -538,6 +678,13 @@ class Sol(pygame.sprite.Sprite):
             self.kill()
 
     def recolectar (self):
+        """
+        Ejecuta el sonido de recogida y elimina el sprite.
+        
+        Returns:
+        --------
+        int: valor del sol (cantidad de soles sumados)
+        """
         self.administrador_de_sonido.reproducir_sonido("recoger_sol")
         self.kill()    
         return constantes.VALOR_SOL
