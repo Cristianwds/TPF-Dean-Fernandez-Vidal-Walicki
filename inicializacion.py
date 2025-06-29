@@ -223,11 +223,11 @@ def creacion_zombies(
 
     if nivel_dificultad == constantes.NV_SPAWN_BALDE and constantes.CONTADOR_NV_BALDE == 0:
         lista_ubis = [0, 1, 2, 3, 4]
-        ubi1 = lista_ubis.pop(random.choice(lista_ubis))
-        ubi2 = lista_ubis.pop(random.choice(lista_ubis))
+        ubi1 = random.choice(lista_ubis)
+        ubi2 = random.choice(lista_ubis)
         zombies_a_spawnear.append((ubi1, "cono", constantes.VIDA_ZOMBIES["cono"]))
         zombies_a_spawnear.append((ubi2, "balde", constantes.VIDA_ZOMBIES["balde"]))
-        constantes.contador_nv_balde += 1
+        constantes.CONTADOR_NV_BALDE += 1
 
     if nivel_dificultad >= constantes.NV_SPAWN_BALDE and (nivel_dificultad % 2) == 0:
         constantes.TIPOS_ZOMBIES.append("balde")
