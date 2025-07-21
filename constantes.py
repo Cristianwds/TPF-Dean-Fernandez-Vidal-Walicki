@@ -46,16 +46,16 @@ COLUMNAS_ZOMBIE = [COMIENZO_PASTO_Y + CELDA_ALTO * fil + DIF_POS_ZOMBIE for fil 
 TIPOS_ZOMBIES = ["normal"]
 Cant_frames = {
     "normal": [
-        len(os.listdir(r"assets\zombies\normal\caminata")),
-        len(os.listdir(r"assets\zombies\normal\ataque"))
+        len(os.listdir(r"assets/zombies/normal/caminata")),
+        len(os.listdir(r"assets/zombies/normal/ataque"))
     ],
     "cono": [
-        len(os.listdir(r"assets\zombies\cono\caminata")),
-        len(os.listdir(r"assets\zombies\cono\ataque"))
+        len(os.listdir(r"assets/zombies/cono/caminata")),
+        len(os.listdir(r"assets/zombies/cono/ataque"))
     ],
     "balde": [
-        len(os.listdir(r"assets\zombies\balde\caminata")),
-        len(os.listdir(r"assets\zombies\balde\ataque"))
+        len(os.listdir(r"assets/zombies/balde/caminata")),
+        len(os.listdir(r"assets/zombies/balde/ataque"))
     ]
 }
 
@@ -79,10 +79,10 @@ VEL_ANIM_LG = {
     True: 32
 }
 CANT_FRAMES_PLANTAS = {
-    "girasol": len(os.listdir(r"assets\girasol")),
-    "lanzaguisante": len(os.listdir(r"assets\lanzaguisante")),
-    "nuez": len(os.listdir(r"assets\nuez")),
-    "hielaguisantes": len(os.listdir(r"assets\hielaguisante"))
+    "girasol": len(os.listdir(r"assets/girasol")),
+    "lanzaguisante": len(os.listdir(r"assets/lanzaguisante")),
+    "nuez": len(os.listdir(r"assets/nuez")),
+    "hielaguisantes": len(os.listdir(r"assets/hielaguisante"))
 }
 COOLDOWN_PLANTAS = {
     "lanzaguisantes": 7500,

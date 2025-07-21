@@ -65,10 +65,10 @@ def cargar_fondos():
     dict: contiene imágenes escaladas para interfaz, menú de inicio, menú de salida, fondo de Crazy Dave, fondo del mapa, y pantalla de derrota.
     """
     return {
-        "interfaz": pygame.transform.scale(pygame.image.load(r'assets\interfaz.play.png'), (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA)),
-        "play": pygame.transform.scale(pygame.image.load(r'assets\Fondo_color.jpg'), (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA)),
-        "exit": pygame.transform.scale(pygame.image.load(r'assets\Fondo_colorexit.jpg'), (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA)),
-        "dave": pygame.transform.scale(pygame.image.load(r'assets\Crazydave.jpg'), (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA)),
+        "interfaz": pygame.transform.scale(pygame.image.load(r'assets/interfaz.play.png'), (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA)),
+        "play": pygame.transform.scale(pygame.image.load(r'assets/Fondo_color.jpg'), (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA)),
+        "exit": pygame.transform.scale(pygame.image.load(r'assets/Fondo_colorexit.jpg'), (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA)),
+        "dave": pygame.transform.scale(pygame.image.load(r'assets/Crazydave.jpg'), (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA)),
         "background": pygame.transform.scale(pygame.image.load(r"assets//map.jpeg").convert(), (constantes.ANCHO_VENTANA, constantes.ALTO_VENTANA)),
         "perdiste": pygame.transform.scale(pygame.image.load(r"assets/ZombiesWon.png"), (925, 770))
     }
@@ -109,12 +109,12 @@ def definir_preview():
     dict: contiene claves con el nombre de la planta y valores con una lista [imagen, offset_x, offset_y]
     """
     preview_dict = {
-    "lanzaguisantes": [pygame.image.load(r"assets\lanzaguisante\frame_0.png"),-15,-34],
-    "girasol": [pygame.image.load(r"assets\girasol\frame_1.png"),-3,-12],
-    "nuez": [pygame.image.load(r"assets\nuez\frame_0.png"),1,-5],
-    "petacereza": [pygame.image.load(r"assets\petacereza\gif\frame_1.png"), 0 , 0],
-    "papapum" : [pygame.image.load(r"assets\papapum\papapum_activado\frame_2.png"), -10, 0],
-    "hielaguisantes": [pygame.image.load(r"assets\hielaguisante\frame_0.png"),-68,-52]
+    "lanzaguisantes": [pygame.image.load(r"assets/lanzaguisante/frame_0.png"),-15,-34],
+    "girasol": [pygame.image.load(r"assets/girasol/frame_1.png"),-3,-12],
+    "nuez": [pygame.image.load(r"assets/nuez/frame_0.png"),1,-5],
+    "petacereza": [pygame.image.load(r"assets/petacereza/gif/frame_1.png"), 0 , 0],
+    "papapum" : [pygame.image.load(r"assets/papapum/papapum_activado/frame_2.png"), -10, 0],
+    "hielaguisantes": [pygame.image.load(r"assets/hielaguisante/frame_0.png"),-68,-52]
 }
     for values in preview_dict.values():
         values[0].set_alpha(128)
@@ -166,7 +166,7 @@ def definir_semillas(administrador_de_sonido):
     s_girasol = Semillas(
         413,
         10,
-        r"assets\semillas\semillas_girasol.png",
+        r"assets/semillas/semillas_girasol.png",
         administrador_de_sonido,
         "girasol",
         50,
@@ -193,7 +193,7 @@ def definir_semillas(administrador_de_sonido):
     s_petacereza = Semillas(
         602,
         10,
-        r"assets\semillas\semilla_petacereza.png",
+        r"assets/semillas/semilla_petacereza.png",
         administrador_de_sonido,
         "petacereza",
         150,
@@ -202,7 +202,7 @@ def definir_semillas(administrador_de_sonido):
     s_papapum = Semillas(
         665,
         10,
-        r"assets\papapum\semilla_papapum_.png",
+        r"assets/papapum/semilla_papapum_.png",
         administrador_de_sonido,
         "papapum",
         25,

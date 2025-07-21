@@ -12,7 +12,7 @@ class Administrador_de_sonido():
             sonido = pygame.mixer.Sound(ruta_sonido)
             self.sonidos[nombre_sonido] = sonido
         except pygame.error as error:
-            print(f"Error al cargar el sonido {nombre_sonido}\nRuta: {ruta_sonido}\nError: {error}")
+            print(f"Error al cargar el sonido {nombre_sonido}/nRuta: {ruta_sonido}/nError: {error}")
 
     def reproducir_sonido(self, nombre_sonido:str, loop = 0, evitar_superposicion = False):
 
@@ -57,26 +57,26 @@ def iniciar_administrador_sonido():
     """
     administrador_de_sonido = Administrador_de_sonido()
     diccionario_sonidos = {
-        "musica_menu_principal": r"assets\Musica\[Main Menu].mp3",
-        "musica_nivel_dia": r"assets\Musica\[Day Stage].mp3",
-        "hit1": r"assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\Hit1.ogg",
-        "hit2": r"assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\Hit2.mp3",
-        "hit3": r"assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\Hit3.ogg",
-        "semilla_seleccionar": r"assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\semillas\semillas_seleccion.ogg",
-        "semilla_plantar": r"assets\Sonidos_Plantas\Lanzaguisantes\Guisante contra zombi\semillas\semillas_plantar.ogg",
-        "zombie_masticar": r"assets\zombies\zombie_masticando.ogg",
-        "zombie_tragar": r"assets\zombies\zombie_tragando_planta.ogg",
-        "cortapastos_activar": r"assets\cortapasto\cortapastos_activa.ogg",
-        "pala_sonido": r"assets\pala\pala_sonido.mp3",
-        "petacereza_explosion": r"assets\petacereza\petacereza_explosion_sonido.ogg",
-        "perder": r"assets\Musica\[You Lost].mp3",
-        "botones": r"assets\boton_inicio.mp3",
-        "recoger_sol": r"assets\Sonidos_Plantas\sol_recoleccion.mp3",
-        "zombies_coming": r"assets\zombies\The Zombies Are coming Sound Effect.mp3",
-        "webiwabo": r"assets\dave_el_hermoso\webiwabo.ogg",
-        "ovawabodabawabaobadabowadaba": r"assets\dave_el_hermoso\ovawabodabawabaobadabowadaba.ogg",
-        "bwadawbabadfbaw": r"assets\dave_el_hermoso\bwadawbabadfbaw.ogg",
-        "budubuwedivadibo": r"assets\dave_el_hermoso\budubuwedivadibo.ogg",
+        "musica_menu_principal": r"assets/Musica/[Main Menu].mp3",
+        "musica_nivel_dia": r"assets/Musica/[Day Stage].mp3",
+        "hit1": r"assets/Sonidos_Plantas/Lanzaguisantes/Guisante contra zombi/Hit1.ogg",
+        "hit2": r"assets/Sonidos_Plantas/Lanzaguisantes/Guisante contra zombi/Hit2.mp3",
+        "hit3": r"assets/Sonidos_Plantas/Lanzaguisantes/Guisante contra zombi/Hit3.ogg",
+        "semilla_seleccionar": r"assets/Sonidos_Plantas/Lanzaguisantes/Guisante contra zombi/semillas/semillas_seleccion.ogg",
+        "semilla_plantar": r"assets/Sonidos_Plantas/Lanzaguisantes/Guisante contra zombi/semillas/semillas_plantar.ogg",
+        "zombie_masticar": r"assets/zombies/zombie_masticando.ogg",
+        "zombie_tragar": r"assets/zombies/zombie_tragando_planta.ogg",
+        "cortapastos_activar": r"assets/cortapasto/cortapastos_activa.ogg",
+        "pala_sonido": r"assets/pala/pala_sonido.mp3",
+        "petacereza_explosion": r"assets/petacereza/petacereza_explosion_sonido.ogg",
+        "perder": r"assets/Musica/[You Lost].mp3",
+        "botones": r"assets/boton_inicio.mp3",
+        "recoger_sol": r"assets/Sonidos_Plantas/sol_recoleccion.mp3",
+        "zombies_coming": r"assets/zombies/The Zombies Are coming Sound Effect.mp3",
+        "webiwabo": r"assets/dave_el_hermoso/webiwabo.ogg",
+        "ovawabodabawabaobadabowadaba": r"assets/dave_el_hermoso/ovawabodabawabaobadabowadaba.ogg",
+        "bwadawbabadfbaw": r"assets/dave_el_hermoso/bwadawbabadfbaw.ogg",
+        "budubuwedivadibo": r"assets/dave_el_hermoso/budubuwedivadibo.ogg",
     }
     for nombre_sonido, ruta_sonido in diccionario_sonidos.items():
         administrador_de_sonido.cargar_sonido(ruta_sonido, nombre_sonido)

@@ -100,7 +100,7 @@ class Cortapasto(pygame.sprite.Sprite):
         lista: lista de cortapastos por columna para su control
         reproductor_de_sonido: instancia de Administrador_de_sonido
         """
-        self.image = pygame.image.load("assets\cortapasto\cortapasto.png")
+        self.image = pygame.image.load("assets/cortapasto/cortapasto.png")
         self.rect = self.image.get_rect(topleft=[x, y])
         self.hitbox = pygame.Rect(0, 0, self.rect.width, self.rect.height - 60)
         self.hitbox.center = self.rect.center
@@ -143,13 +143,13 @@ class Pala(pygame.sprite.Sprite):
         -------
         reproductor_de_sonido: instancia de Administrador_de_sonido
         """
-        self.image = pygame.image.load(r"assets\pala\pala_icono.jpg")
+        self.image = pygame.image.load(r"assets/pala/pala_icono.jpg")
         self.x = 860
         self.y = 10
         self.rect = self.image.get_rect(topleft = [self.x, self.y])
         self.clicked = False
         self.reproductor_de_sonido = reproductor_de_sonido
-        self.cursor = pygame.image.load(r"assets\pala\pala_cursor.png")
+        self.cursor = pygame.image.load(r"assets/pala/pala_cursor.png")
         super().__init__()
 
     def update(self, evento):

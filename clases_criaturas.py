@@ -249,9 +249,9 @@ class lanzaguisantes(Plantas):
         """
 
         if hielo == False:
-            self.frames = [pygame.image.load(f"assets\lanzaguisante\\frame_{i}.png").convert_alpha() for i in range(constantes.CANT_FRAMES_PLANTAS["lanzaguisante"])]
+            self.frames = [pygame.image.load(f"assets/lanzaguisante//frame_{i}.png").convert_alpha() for i in range(constantes.CANT_FRAMES_PLANTAS["lanzaguisante"])]
         else:
-            self.frames = [pygame.image.load(f"assets\hielaguisante\\frame_{i}.png").convert_alpha() for i in range(constantes.CANT_FRAMES_PLANTAS["hielaguisantes"])]
+            self.frames = [pygame.image.load(f"assets/hielaguisante//frame_{i}.png").convert_alpha() for i in range(constantes.CANT_FRAMES_PLANTAS["hielaguisantes"])]
         self.hielo = hielo
         self.indice_frames = 0
         self.image = self.frames[self.indice_frames]
@@ -294,9 +294,9 @@ class lanzaguisantes(Plantas):
         if hay_zombie_en_frente and ((ahora - self.ultimo_disparo) >= 1500):
             self.ultimo_disparo = ahora
             if self.hielo:
-                guisante = Proyectil(r"assets\\proyectil\\guisantehielo.png", self.hitbox.x + 110, self.hitbox.y + 18, 20, self.reproductor_de_sonido, True)
+                guisante = Proyectil(r"assets//proyectil//guisantehielo.png", self.hitbox.x + 110, self.hitbox.y + 18, 20, self.reproductor_de_sonido, True)
             else:
-                guisante = Proyectil(r"assets\\proyectil\\guisante.png", self.hitbox.x + 60, self.hitbox.y, 20, self.reproductor_de_sonido)
+                guisante = Proyectil(r"assets//proyectil//guisante.png", self.hitbox.x + 60, self.hitbox.y, 20, self.reproductor_de_sonido)
             grupo_proyectiles.add(guisante)
 
 
@@ -318,7 +318,7 @@ class Girasol(Plantas):
         self.x = x +12
         self.y = y +12
         self.vida = vida
-        self.frames = [pygame.image.load(f"assets\girasol\\frame_{i}.png").convert_alpha() for i in range(constantes.CANT_FRAMES_PLANTAS["girasol"])]
+        self.frames = [pygame.image.load(f"assets/girasol//frame_{i}.png").convert_alpha() for i in range(constantes.CANT_FRAMES_PLANTAS["girasol"])]
         self.indice_frames = 0
         self.image = self.frames[self.indice_frames]
         self.cooldown = cooldown
@@ -375,7 +375,7 @@ class Nuez(Plantas):
         self.vida = vida
         self.cooldown = cooldown
         self.costo = costo
-        self.frames = [pygame.image.load(f"assets\\nuez\\frame_{i}.png").convert_alpha() for i in range(constantes.CANT_FRAMES_PLANTAS["nuez"])]
+        self.frames = [pygame.image.load(f"assets//nuez//frame_{i}.png").convert_alpha() for i in range(constantes.CANT_FRAMES_PLANTAS["nuez"])]
         self.indice_frames = 0
         self.ultimo_frame = pygame.time.get_ticks()
         self.velocidad_animacion= 50
@@ -419,9 +419,9 @@ class Papapum(Plantas):
         self.vida = vida
         self.cooldown = cooldown
         self.costo = costo
-        self.frames_activados = [pygame.image.load(f"assets\\papapum\\papapum_activado\\frame_{i}.png").convert_alpha() for i in range(28)]
-        self.frames_desactivados = [pygame.image.load(f"assets\\papapum\\papapum_desactivado\\frame_{i}.png").convert_alpha() for i in range(24)]
-        self.frames_explosion = [pygame.image.load(f"assets\\papapum\\papapum_explosion\\frame_{i}.png").convert_alpha() for i in range(26)]
+        self.frames_activados = [pygame.image.load(f"assets//papapum//papapum_activado//frame_{i}.png").convert_alpha() for i in range(28)]
+        self.frames_desactivados = [pygame.image.load(f"assets//papapum//papapum_desactivado//frame_{i}.png").convert_alpha() for i in range(24)]
+        self.frames_explosion = [pygame.image.load(f"assets//papapum//papapum_explosion//frame_{i}.png").convert_alpha() for i in range(26)]
         self.estado = "desactivado"
         self.contador_activacion = 0
         self.frame_desactivado_contador = 0
@@ -525,9 +525,9 @@ class Petacereza(pygame.sprite.Sprite):
         self.costo = costo
         self.x = x
         self.y = y
-        self.image = pygame.image.load(r"assets\petacereza\gif\frame_0.png")
+        self.image = pygame.image.load(r"assets/petacereza/gif/frame_0.png")
         self.administrador_de_sonido = administrador_de_sonido
-        self.frames = [pygame.image.load(f"assets\\petacereza\\gif\\frame_{i}.png").convert_alpha() for i in range(7)]
+        self.frames = [pygame.image.load(f"assets//petacereza//gif//frame_{i}.png").convert_alpha() for i in range(7)]
         self.indice_frames = 0
         self.ultimo_frame = pygame.time.get_ticks()
         self.velocidad_animacion= 200
@@ -561,7 +561,7 @@ class Petacereza(pygame.sprite.Sprite):
             # se reemplaza la animación por una imagen fija de explosión, 
             # se reproduce el sonido y se aplica daño a todos los zombies en el área de efecto.
 
-            self.image = pygame.image.load(r"assets\petacereza\petacereza_explosion_imagen.png")
+            self.image = pygame.image.load(r"assets/petacereza/petacereza_explosion_imagen.png")
             self.rect = self.image.get_rect(center = (self.x + constantes.CELDA_ANCHO / 2, self.y))
             self.administrador_de_sonido.reproducir_sonido("petacereza_explosion", 0, False)
             for zombie in grupo_zombies:
@@ -643,7 +643,7 @@ class Sol(pygame.sprite.Sprite):
         velocidad: velocidad de caída del sol
         """
         pygame.sprite.Sprite.__init__(self) 
-        self.frames = [pygame.image.load(f"assets\\sol\\frame_{i}.png").convert_alpha() for i in range(30)]
+        self.frames = [pygame.image.load(f"assets//sol//frame_{i}.png").convert_alpha() for i in range(30)]
         self.indice_frames = 0
         self.ultimo_frame = pygame.time.get_ticks()
         self.velocidad_animacion = 10
