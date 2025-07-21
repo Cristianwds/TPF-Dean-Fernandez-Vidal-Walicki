@@ -35,7 +35,7 @@ El siguiente proyecto se basa en la recreación del juego conocido como Plantas 
    #### - Huielaguizantes:
    Una variante del Lanzaguisantes que dispara guisantes congelados. Además de infligir daño, ralentiza significativamente el movimiento de los zombis, dándote más tiempo para reaccionar y atacar.
    #### - Petacereza:
-   Una planta explosiva de un solo uso que detona en un área pequeña, eliminando instantáneamente a múltiples zombis. Ideal para situaciones de emergencia o grupos densos de enemigos.
+   Una planta explosiva de un solo uso que detona en un área, eliminando instantáneamente a múltiples zombis. Ideal para situaciones de emergencia o grupos densos de enemigos.
    #### - Papapum:
    Una mina terrestre que requiere un tiempo para armarse bajo tierra. Una vez lista, explota al contacto con el primer zombi que la pisa, causando un gran daño en un área reducida. Útil para emboscadas             tempranas.
    #### - Nuez:
